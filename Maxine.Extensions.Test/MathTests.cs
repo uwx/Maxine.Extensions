@@ -23,7 +23,7 @@ public class MathTests
     public void TestBoundingBox_ContainsPoint()
     {
         // Arrange
-        var box = new BoundingBox<double>(0, 0, 10, 10);
+        var box = new BoundingBox<double>(0, 10, 0, 10);
 
         // Act
         var contains = BoundingBox<double>.Contains(box, 5, 5);
