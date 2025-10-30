@@ -17,7 +17,7 @@ public class IoUtils
         var buffer = pool.Rent((int)fs.Length);
         try
         {
-            fs.ReadExactly(buffer);
+            fs.ReadExactly(buffer.AsSpan(0, (int)fs.Length));
             return buffer;
         }
         catch
@@ -40,7 +40,7 @@ public class IoUtils
         var buffer = pool.Rent((int)fs.Length);
         try
         {
-            await fs.ReadExactlyAsync(buffer, cancellationToken);
+            await fs.ReadExactlyAsync(buffer.AsMemory(0, (int)fs.Length), cancellationToken);
             return buffer;
         }
         catch
