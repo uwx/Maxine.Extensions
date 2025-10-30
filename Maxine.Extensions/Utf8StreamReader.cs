@@ -27,7 +27,7 @@ public static class LineReader
         try
         {
             await foreach (var line in ReadLinesAsync(stream,
-                               (in ReadOnlySpan<byte> span) =>
+                               (in span) =>
                                {
                                    if (!span.TryCopyTo(mem.Memory.Span))
                                    {
