@@ -69,14 +69,22 @@ public static class LineReader
             var result = await reader.ReadAsync(cancellationToken);
             var buffer = result.Buffer;
 
-            while (ProcessLine(ReadLine(ref buffer)) is { ShouldReturn: true, Result: var t })
+            while (TryReadLine(ref buffer, out var lineBytes) && ProcessLine(lineBytes) is { ShouldReturn: true, Result: var t })
             {
                 yield return t!;
             }
             
             reader.AdvanceTo(buffer.Start, buffer.End);
             
-            if (result.IsCompleted) break;
+            if (result.IsCompleted)
+            {
+                // Process any remaining data in the buffer as the final line (no trailing newline)
+                if (buffer.Length > 0 && ProcessLine(buffer.ToArray()) is { ShouldReturn: true, Result: var finalLine })
+                {
+                    yield return finalLine!;
+                }
+                break;
+            }
         }
 
         await reader.CompleteAsync();
@@ -94,11 +102,11 @@ public static class LineReader
         {
             if (!skipEmptyBuffers || bytes.Length > 0)
             {
-                if (trimCarriageReturn && bytes[^1] == '\r')
+                if (trimCarriageReturn && bytes.Length > 0 && bytes[^1] == '\r')
                 {
                     bytes = bytes[..^1];
 
-                    if (skipEmptyBuffers || bytes.Length == 0)
+                    if (skipEmptyBuffers && bytes.Length == 0)
                     {
                         return (false, default);
                     }
@@ -137,14 +145,22 @@ public static class LineReader
             var result = await reader.ReadAsync(cancellationToken);
             var buffer = result.Buffer;
 
-            while (ProcessLine(ReadLine(ref buffer)) is { ShouldReturn: true, Result: var t })
+            while (TryReadLine(ref buffer, out var lineBytes) && ProcessLine(lineBytes) is { ShouldReturn: true, Result: var t })
             {
                 yield return t!;
             }
             
             reader.AdvanceTo(buffer.Start, buffer.End);
             
-            if (result.IsCompleted) break;
+            if (result.IsCompleted)
+            {
+                // Process any remaining data in the buffer as the final line (no trailing newline)
+                if (buffer.Length > 0 && ProcessLine(buffer.ToArray()) is { ShouldReturn: true, Result: var finalLine })
+                {
+                    yield return finalLine!;
+                }
+                break;
+            }
         }
 
         await reader.CompleteAsync();
@@ -162,11 +178,11 @@ public static class LineReader
         {
             if (!skipEmptyBuffers || bytes.Length > 0)
             {
-                if (trimCarriageReturn && bytes[^1] == '\r')
+                if (trimCarriageReturn && bytes.Length > 0 && bytes[^1] == '\r')
                 {
                     bytes = bytes[..^1];
 
-                    if (skipEmptyBuffers || bytes.Length == 0)
+                    if (skipEmptyBuffers && bytes.Length == 0)
                     {
                         return (false, default);
                     }
@@ -249,22 +265,18 @@ public static class LineReader
         await writer.CompleteAsync();
     }
 
-    private static ReadOnlySpan<byte> ReadLine(ref ReadOnlySequence<byte> buffer)
+    private static bool TryReadLine(ref ReadOnlySequence<byte> buffer, out ReadOnlySpan<byte> line)
     {
         var reader = new SequenceReader<byte>(buffer);
 
-        while (!reader.End)
+        if (reader.TryReadTo(out line, (byte)'\n'))
         {
-            if (reader.TryReadTo(out ReadOnlySpan<byte> line, (byte)'\n'))
-            {
-                buffer = buffer.Slice(reader.Position);
-                return line;
-            }
-
-            reader.Advance(buffer.Length);
+            buffer = buffer.Slice(reader.Position);
+            return true;
         }
 
-        return null;
+        line = default;
+        return false;
     }
 
     // public static async IAsyncEnumerable<T> DeserializeInZip<T>(string path)

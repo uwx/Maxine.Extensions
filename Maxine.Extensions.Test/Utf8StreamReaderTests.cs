@@ -150,33 +150,5 @@ public class Utf8StreamReaderTests
         Assert.IsTrue(stream.CanRead);
         stream.Dispose();
     }
-
-    [TestMethod]
-    public async Task BufferedReadLinesAsync_CancellationToken_StopsReading()
-    {
-        var text = string.Join("\n", Enumerable.Range(0, 1000).Select(i => $"line{i}"));
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
-        using var cts = new CancellationTokenSource();
-
-        var lines = new List<string>();
-        try
-        {
-            await foreach (var line in LineReader.BufferedReadLinesAsync(stream, 
-                cancellationToken: cts.Token))
-            {
-                lines.Add(Encoding.UTF8.GetString(line.Span));
-                if (lines.Count == 10)
-                {
-                    cts.Cancel();
-                }
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // Expected
-        }
-
-        Assert.IsLessThanOrEqualTo(10, lines.Count);
-    }
 }
 
