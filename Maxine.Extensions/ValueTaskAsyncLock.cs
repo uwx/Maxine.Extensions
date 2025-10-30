@@ -137,7 +137,7 @@ public sealed class ValueTaskAsyncLock
     /// </summary>
     /// <param name="cancellationToken">The cancellation token used to cancel the lock. If this is already set, then this method will attempt to take the lock immediately (succeeding if the lock is currently available).</param>
     /// <returns>A disposable that releases the lock when disposed.</returns>
-    private ValueAwaitableDisposable<IDisposable> LockAsync(CancellationToken cancellationToken)
+    public ValueAwaitableDisposable<IDisposable> LockAsync(CancellationToken cancellationToken)
     {
         return new ValueAwaitableDisposable<IDisposable>(RequestLockAsync(cancellationToken));
     }
