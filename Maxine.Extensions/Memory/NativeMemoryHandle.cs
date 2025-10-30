@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,15 +9,15 @@ public unsafe struct NativeMemoryHandle : IDisposable
 {
     private readonly void* _handle;
     
-    public void* Pointer => CheckDisposed() ? _handle : default;
+    public void* Pointer => CheckDisposed() ? _handle : null;
 
-    public IntPtr SafePointer => CheckDisposed() ? (nint)_handle : default;
+    public IntPtr SafePointer => CheckDisposed() ? (nint)_handle : IntPtr.Zero;
 
     public long ByteLength { get; }
 
     public Span<byte> Span => CheckDisposed() ? new(_handle, (int)ByteLength) : default;
 
-    public bool IsDisposed => _handle == default;
+    public bool IsDisposed => _handle == null;
 
     public NativeMemoryHandle(nuint size)
     {
@@ -47,7 +48,7 @@ public unsafe struct NativeMemoryHandle : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool CheckDisposed()
     {
-        if (_handle == default)
+        if (_handle == null)
         {
             Throw();
         }
