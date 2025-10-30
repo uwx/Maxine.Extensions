@@ -93,7 +93,7 @@ public class ArrayExtensionsTests
         var array = Array.Empty<int>();
         var result = array.Replace([1], [2]);
         
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     [TestMethod]

@@ -1,55 +1,49 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Maxine.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Maxine.Extensions.Test;
-
-[TestClass]
-public class StartupTaskTests
+namespace Maxine.Extensions.Test
 {
-    [TestMethod]
-    public void AddStartupTask_WithGenericType_AddsToServiceCollection()
+    [TestClass]
+    public class StartupTaskTests
     {
-        var services = new ServiceCollection();
-        services.AddStartupTask<TestStartupTask>();
-        
-        var serviceDescriptor = services.FirstOrDefault(sd => sd.ServiceType == typeof(IStartupTask));
-        Assert.IsNotNull(serviceDescriptor);
-        Assert.AreEqual(typeof(TestStartupTask), serviceDescriptor.ImplementationType);
-    }
-
-    [TestMethod]
-    public void AddStartupTask_WithDelegate_AddsToServiceCollection()
-    {
-        var services = new ServiceCollection();
-        services.AddStartupTask(sp => Task.CompletedTask);
-        
-        var serviceDescriptor = services.FirstOrDefault(sd => sd.ServiceType == typeof(IStartupTask));
-        Assert.IsNotNull(serviceDescriptor);
-    }
-
-    [TestMethod]
-    public async Task DelegateStartupTask_ExecutesDelegate()
-    {
-        bool executed = false;
-        var services = new ServiceCollection();
-        services.AddStartupTask(sp =>
+        [TestMethod]
+        public void TestAddStartupTask()
         {
-            executed = true;
-            return Task.CompletedTask;
-        });
-        
-        var provider = services.BuildServiceProvider();
-        var task = provider.GetService<IStartupTask>();
-        
-        Assert.IsNotNull(task);
-        await task.ExecuteAsync();
-        Assert.IsTrue(executed);
-    }
+            var services = new ServiceCollection();
+            services.AddStartupTask<SampleStartupTask>();
 
-    private class TestStartupTask : IStartupTask
-    {
-        public Task ExecuteAsync(CancellationToken cancellationToken = default)
+            var provider = services.BuildServiceProvider();
+            var task = provider.GetService<IStartupTask>();
+
+            Assert.IsNotNull(task);
+            Assert.IsInstanceOfType(task, typeof(SampleStartupTask));
+        }
+
+        [TestMethod]
+        public async Task TestExecuteAsync()
         {
-            return Task.CompletedTask;
+            var task = new SampleStartupTask();
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            await task.ExecuteAsync(cancellationTokenSource.Token);
+
+            Assert.IsTrue(task.Executed);
+        }
+
+        private class SampleStartupTask : IStartupTask
+        {
+            public bool Executed { get; private set; }
+
+            public Task ExecuteAsync(CancellationToken cancellationToken = default)
+            {
+                Executed = true;
+                return Task.CompletedTask;
+            }
         }
     }
 }

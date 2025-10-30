@@ -1,24 +1,54 @@
-﻿using Maxine.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Maxine.Extensions;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
-namespace Maxine.Extensions.Test;
-
-[TestClass]
-public class ImageUtilsTests
+namespace Maxine.Extensions.Test
 {
-    // ImageUtils has Windows-specific methods that require System.Drawing
-    // These tests are for Windows platform only
-    
-    [TestMethod]
-    public void ImageUtils_ClassExists()
+    [TestClass]
+    public class ImageUtilsTests
     {
-        // Verify the class can be instantiated
-        var imageUtils = new ImageUtils();
-        Assert.IsNotNull(imageUtils);
+        [TestMethod]
+        public void TestGetAlpha_WithAlphaChannel()
+        {
+            // Arrange
+            var tempFile = Path.GetTempFileName();
+            using (var bmp = new Bitmap(10, 10, PixelFormat.Format32bppArgb))
+            {
+                bmp.Save(tempFile);
+            }
+
+            // Act
+            ImageUtils.GetAlpha(tempFile, out var cutout, out var trans);
+
+            // Assert
+            Assert.IsFalse(cutout);
+            Assert.IsTrue(trans);
+
+            // Cleanup
+            File.Delete(tempFile);
+        }
+
+        [TestMethod]
+        public void TestGetAlpha_WithoutAlphaChannel()
+        {
+            // Arrange
+            var tempFile = Path.GetTempFileName();
+            using (var bmp = new Bitmap(10, 10, PixelFormat.Format24bppRgb))
+            {
+                bmp.Save(tempFile);
+            }
+
+            // Act
+            ImageUtils.GetAlpha(tempFile, out var cutout, out var trans);
+
+            // Assert
+            Assert.IsFalse(cutout);
+            Assert.IsFalse(trans);
+
+            // Cleanup
+            File.Delete(tempFile);
+        }
     }
-
-    // Note: GetAlpha method requires actual image files and is Windows-specific
-    // Full testing would require platform checks and test image files
-    // Placeholder test to ensure class compiles
 }
-
