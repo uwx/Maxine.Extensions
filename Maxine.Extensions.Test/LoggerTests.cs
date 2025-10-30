@@ -34,9 +34,8 @@ public class LoggerTests
         Console.WriteLine(v);
         
         // same string as above, no ":" symbol
-        Assert.AreEqual(v, expct);
+        Assert.AreEqual(expct, v);
     }
-    
 
     [TestMethod]
     public void TestInterpolatedStringHandlerRemoveProblematicCharsProducesNoName()
@@ -48,7 +47,7 @@ public class LoggerTests
         Console.WriteLine(v);
         
         // same string as above, no ":" symbol
-        Assert.AreEqual(v, expct);
+        Assert.AreEqual(expct, v);
     }
 }
 

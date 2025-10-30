@@ -9,19 +9,19 @@ public readonly struct ArrayOfVector2 : IEnumerable<Vector2>
     private readonly byte[] _data;
     public unsafe int Length => _data.Length / sizeof(Vector2);
     
-    public Span<float> X => MemoryMarshal.Cast<byte, float>(_data)[..Length];
-    public Span<float> Y => MemoryMarshal.Cast<byte, float>(_data)[Length..];
+    public Span<float> X => MemoryMarshal.Cast<byte, float>(_data.AsSpan())[..Length];
+    public Span<float> Y => MemoryMarshal.Cast<byte, float>(_data.AsSpan())[Length..];
 
     public Vector2 this[int index]
     {
         get
         {
-            var floats = MemoryMarshal.Cast<byte, float>(_data);
+            var floats = MemoryMarshal.Cast<byte, float>(_data.AsSpan());
             return new Vector2(floats[index], floats[index + Length]);
         }
         set
         {
-            var floats = MemoryMarshal.Cast<byte, float>(_data);
+            var floats = MemoryMarshal.Cast<byte, float>(_data.AsSpan());
             floats[index] = value.X;
             floats[index + Length] = value.Y;
         }

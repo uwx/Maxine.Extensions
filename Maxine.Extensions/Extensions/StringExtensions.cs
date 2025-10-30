@@ -310,4 +310,36 @@ public static class StringExtensions
 
     public static ReadOnlySpan<char> Trim(this ReadOnlySpan<char> span, char trimChar1, char trimChar2, char trimChar3)
         => span.Trim(new Buffer3<char>(trimChar1, trimChar2, trimChar3).Span);
+    
+    public static bool EqualsIgnoreCase(this string? a, string? b)
+    {
+        if (a == null) return b == null;
+        return a.Equals(b, StringComparison.OrdinalIgnoreCase);
+    }
+    
+    /// <summary>
+    /// Removes a suffix from a given string if it is present in the string; returns the unmodified string otherwise.
+    /// </summary>
+    /// <param name="str">The input string</param>
+    /// <param name="suffix">The substring representing the suffix to remove</param>
+    /// <returns>
+    /// A string without the suffix <paramref name="suffix"/>, or the unmodified string if it didn't have one
+    /// </returns>
+    public static string RemoveFromEnd(this string str, string suffix)
+    {
+        return str.EndsWith(suffix) ? str[..^suffix.Length] : str;
+    }
+    
+    /// <summary>
+    /// Removes a prefix from a given string if it is present in the string; returns the unmodified string otherwise.
+    /// </summary>
+    /// <param name="str">The input string</param>
+    /// <param name="prefix">The substring representing the prefix to remove</param>
+    /// <returns>
+    /// A string without the prefix <paramref name="prefix"/>, or the unmodified string if it didn't have one
+    /// </returns>
+    public static string RemoveFromStart(this string str, string prefix)
+    {
+        return str.StartsWith(prefix) ? str[prefix.Length..] : str;
+    }
 }

@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace Poki.Shared;
 
 [PublicAPI]
-public static class SharedUtils
+public static class ProjectUtils
 {
     private static string? _cachedSolutionDirectory;
     private static string? _cachedProjectDirectory;
@@ -40,19 +40,5 @@ public static class SharedUtils
         }
 
         return _cachedProjectDirectory = directory?.ToString();
-    }
-    
-    public static string GetDescription<T>(this T anEnum) where T : Enum
-    {
-        var fi = typeof(T).GetField(anEnum.ToString());
-
-        if (fi == null)
-        {
-            throw new InvalidOperationException("enum FieldInfo is null?");
-        }
-
-        return fi.GetCustomAttribute(typeof(DescriptionAttribute)) is DescriptionAttribute attr
-            ? attr.Description
-            : anEnum.ToString();
     }
 }

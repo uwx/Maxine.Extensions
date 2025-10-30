@@ -39,4 +39,8 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Maxine.Extensions\Maxine.Extensions.csproj" />
+    </ItemGroup>
+
 </Project>

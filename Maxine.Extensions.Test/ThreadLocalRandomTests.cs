@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Poki.Shared;
-using Poki.Utilities;
 
 namespace Poki.Tests;
 

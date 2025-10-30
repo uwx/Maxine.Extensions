@@ -19,7 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Maxine.Extensions.Shared\Maxine.Extensions.Shared.csproj" />
+      <ProjectReference Include="..\Maxine.Extensions.EntityFrameworkCore\Maxine.Extensions.EntityFrameworkCore.csproj" />
+      <ProjectReference Include="..\Maxine.Extensions\Maxine.Extensions.csproj" />
     </ItemGroup>
 
 </Project>

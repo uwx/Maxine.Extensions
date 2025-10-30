@@ -42,4 +42,21 @@ public static class LinqExtensions
             }
         }
     }
+    
+    public static OrderedDictionary<TKey, TValue> ToOrderedDictionary<TSource, TKey, TValue>(
+        this IEnumerable<TSource> enumerable,
+        Func<TSource, TKey> keySelector,
+        Func<TSource, TValue> elementSelector
+    ) where TKey : notnull
+    {
+        var dict = new OrderedDictionary<TKey, TValue>();
+
+        foreach (var source in enumerable)
+        {
+            dict[keySelector(source)] = elementSelector(source);
+        }
+
+        return dict;
+    }
+
 }

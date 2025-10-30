@@ -9,20 +9,20 @@ public readonly struct ArrayOfVector3 : IEnumerable<Vector3>
     private readonly byte[] _data;
     public unsafe int Length => _data.Length / sizeof(Vector3);
     
-    public Span<float> X => MemoryMarshal.Cast<byte, float>(_data)[..Length];
-    public Span<float> Y => MemoryMarshal.Cast<byte, float>(_data)[Length..(Length * 2)];
-    public Span<float> Z => MemoryMarshal.Cast<byte, float>(_data)[(Length * 2)..];
+    public Span<float> X => MemoryMarshal.Cast<byte, float>(_data.AsSpan())[..Length];
+    public Span<float> Y => MemoryMarshal.Cast<byte, float>(_data.AsSpan())[Length..(Length * 2)];
+    public Span<float> Z => MemoryMarshal.Cast<byte, float>(_data.AsSpan())[(Length * 2)..];
 
     public Vector3 this[int index]
     {
         get
         {
-            var floats = MemoryMarshal.Cast<byte, float>(_data);
+            var floats = MemoryMarshal.Cast<byte, float>(_data.AsSpan());
             return new Vector3(floats[index], floats[index + Length], floats[index + (Length * 2)]);
         }
         set
         {
-            var floats = MemoryMarshal.Cast<byte, float>(_data);
+            var floats = MemoryMarshal.Cast<byte, float>(_data.AsSpan());
             floats[index] = value.X;
             floats[index + Length] = value.Y;
             floats[index + (Length * 2)] = value.Z;

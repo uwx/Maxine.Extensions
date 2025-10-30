@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
-using Microsoft.Extensions.Logging;
-using RayTech.RayLog.MEL;
-using Tasks = System.Threading.Tasks;
 
 namespace Maxine.Extensions.Shared;
 
@@ -41,7 +38,7 @@ public static class CancellationTokenUtils
 
 public class CancelableTaskSource<TResult> : IDisposable, IAsyncDisposable
 {
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
     private bool _ranCanceledCallback;
     
     private event Func<ValueTask>? Canceled;
@@ -252,7 +249,7 @@ public class CancelableTaskSource<TResult> : IDisposable, IAsyncDisposable
     
     ~CancelableTaskSource()
     {
-        RayLogConsole.Log(LogLevel.Error, $"Leaked scope handle in {nameof(CancelableTaskSource<TResult>)}!!");
+        CancelableTaskSource.OnLeakedScopeHandle(this);
         Debugger.Break();
         Dispose();
     }
@@ -274,4 +271,13 @@ public class CancelableTaskSource<TResult> : IDisposable, IAsyncDisposable
         if (_registration is {} registration)
             await registration.DisposeAsync();
     }
+}
+
+public static class CancelableTaskSource
+{
+    public static Action<object> OnLeakedScopeHandle { internal get; set; } = _ =>
+    {
+        Console.WriteLine("Leaked scope handle in CancelableTaskSource!!");
+        Debugger.Break();
+    };
 }

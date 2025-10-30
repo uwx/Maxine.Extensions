@@ -113,6 +113,74 @@ public static class LineReader
         }
     }
 
+    public interface ILineCallback<out T>
+    {
+        public static abstract T Apply(in ReadOnlySpan<byte> bytes);
+    }
+
+    public static async IAsyncEnumerable<T> ReadLinesAsync<T, TCallback>(
+        Stream stream,
+        bool skipEmptyBuffers = true,
+        bool leaveOpen = false,
+        bool trimCarriageReturn = true,
+        [EnumeratorCancellation] CancellationToken cancellationToken = new())
+    where TCallback : ILineCallback<T>
+    {
+        var pipe = new Pipe();
+        
+        var reader = pipe.Reader;
+        
+        var writing = FillPipeAsync(stream, pipe.Writer);
+
+        while (true)
+        {
+            var result = await reader.ReadAsync(cancellationToken);
+            var buffer = result.Buffer;
+
+            while (ProcessLine(ReadLine(ref buffer)) is { ShouldReturn: true, Result: var t })
+            {
+                yield return t!;
+            }
+            
+            reader.AdvanceTo(buffer.Start, buffer.End);
+            
+            if (result.IsCompleted) break;
+        }
+
+        await reader.CompleteAsync();
+
+        await writing;
+
+        if (!leaveOpen)
+        {
+            await stream.DisposeAsync();
+        }
+
+        yield break;
+
+        (bool ShouldReturn, T? Result) ProcessLine(ReadOnlySpan<byte> bytes)
+        {
+            if (!skipEmptyBuffers || bytes.Length > 0)
+            {
+                if (trimCarriageReturn && bytes[^1] == '\r')
+                {
+                    bytes = bytes[..^1];
+
+                    if (skipEmptyBuffers || bytes.Length == 0)
+                    {
+                        return (false, default);
+                    }
+                }
+
+                return (true, TCallback.Apply(bytes));
+            }
+            else
+            {
+                return (false, default);
+            }
+        }
+    }
+
     // public static async IAsyncEnumerable<T> Deserialize2<T>(string path)
     // {
     //     using var reader = new StreamReader(File.OpenRead(path));

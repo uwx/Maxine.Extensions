@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using SoftCircuits.Collections;
 
 namespace Maxine.Extensions;
 
@@ -11,7 +10,7 @@ public class OrderedDictionaryConverterFactory : JsonConverterFactory
     public override bool CanConvert(Type typeToConvert)
     {
         return typeToConvert.IsConstructedGenericType &&
-               typeToConvert.GetGenericTypeDefinition() == typeof(SoftCircuits.Collections.OrderedDictionary<,>);
+               typeToConvert.GetGenericTypeDefinition() == typeof(OrderedDictionary<,>);
     }
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
@@ -32,7 +31,7 @@ public class OrderedDictionaryConverterFactory : JsonConverterFactory
     }
 
     private class OrderedDictionaryConverter<TKey, TValue>(JsonSerializerOptions options)
-        : JsonConverter<SoftCircuits.Collections.OrderedDictionary<TKey, TValue>>
+        : JsonConverter<OrderedDictionary<TKey, TValue>>
         where TKey : notnull
     {
         private readonly JsonConverter<TKey> _keyConverter = (JsonConverter<TKey>)options.GetConverter(typeof(TKey));
@@ -42,7 +41,7 @@ public class OrderedDictionaryConverterFactory : JsonConverterFactory
 
         // Cache the key and value types.
 
-        public override SoftCircuits.Collections.OrderedDictionary<TKey, TValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override OrderedDictionary<TKey, TValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.Null) return null;
             
@@ -51,7 +50,7 @@ public class OrderedDictionaryConverterFactory : JsonConverterFactory
                 throw new JsonException();
             }
 
-            var dictionary = new SoftCircuits.Collections.OrderedDictionary<TKey, TValue>();
+            var dictionary = new OrderedDictionary<TKey, TValue>();
 
             while (reader.Read())
             {
@@ -82,7 +81,7 @@ public class OrderedDictionaryConverterFactory : JsonConverterFactory
             throw new JsonException();
         }
 
-        public override void Write(Utf8JsonWriter writer, SoftCircuits.Collections.OrderedDictionary<TKey, TValue> dictionary, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, OrderedDictionary<TKey, TValue> dictionary, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 
