@@ -34,6 +34,9 @@
       <Compile Update="InterpolatedStringHandlers\LoggerExtensions.g.cs">
         <DependentUpon>LoggerExtensions.tt</DependentUpon>
       </Compile>
+      <Compile Update="InterpolatedStringHandlers\SpecificHandlers2.cs">
+        <DependentUpon>SpecificHandlers2.tt</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

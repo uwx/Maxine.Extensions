@@ -20,11 +20,11 @@ public ref struct StructuredLoggingTraceInterpolatedStringHandler
     public void AppendLiteral(string s) => _handler.AppendLiteral(s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, name);
+    public void AppendFormatted<T>(T value, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, name);
 
     // ReSharper disable once MethodOverloadWithOptionalParameter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, format, name);
+    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, format, name);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetTemplateAndArguments(out string template, out object?[] arguments) => _handler.GetTemplateAndArguments(out template, out arguments);
@@ -44,11 +44,11 @@ public ref struct StructuredLoggingDebugInterpolatedStringHandler
     public void AppendLiteral(string s) => _handler.AppendLiteral(s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, name);
+    public void AppendFormatted<T>(T value, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, name);
 
     // ReSharper disable once MethodOverloadWithOptionalParameter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, format, name);
+    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, format, name);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetTemplateAndArguments(out string template, out object?[] arguments) => _handler.GetTemplateAndArguments(out template, out arguments);
@@ -68,11 +68,11 @@ public ref struct StructuredLoggingInformationInterpolatedStringHandler
     public void AppendLiteral(string s) => _handler.AppendLiteral(s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, name);
+    public void AppendFormatted<T>(T value, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, name);
 
     // ReSharper disable once MethodOverloadWithOptionalParameter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, format, name);
+    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, format, name);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetTemplateAndArguments(out string template, out object?[] arguments) => _handler.GetTemplateAndArguments(out template, out arguments);
@@ -92,11 +92,11 @@ public ref struct StructuredLoggingWarningInterpolatedStringHandler
     public void AppendLiteral(string s) => _handler.AppendLiteral(s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, name);
+    public void AppendFormatted<T>(T value, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, name);
 
     // ReSharper disable once MethodOverloadWithOptionalParameter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, format, name);
+    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, format, name);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetTemplateAndArguments(out string template, out object?[] arguments) => _handler.GetTemplateAndArguments(out template, out arguments);
@@ -116,11 +116,11 @@ public ref struct StructuredLoggingErrorInterpolatedStringHandler
     public void AppendLiteral(string s) => _handler.AppendLiteral(s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, name);
+    public void AppendFormatted<T>(T value, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, name);
 
     // ReSharper disable once MethodOverloadWithOptionalParameter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, format, name);
+    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, format, name);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetTemplateAndArguments(out string template, out object?[] arguments) => _handler.GetTemplateAndArguments(out template, out arguments);
@@ -140,11 +140,11 @@ public ref struct StructuredLoggingCriticalInterpolatedStringHandler
     public void AppendLiteral(string s) => _handler.AppendLiteral(s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, name);
+    public void AppendFormatted<T>(T value, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, name);
 
     // ReSharper disable once MethodOverloadWithOptionalParameter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression(nameof(value))] string name = "") => _handler.AppendFormatted(value, format, name);
+    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, format, name);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetTemplateAndArguments(out string template, out object?[] arguments) => _handler.GetTemplateAndArguments(out template, out arguments);

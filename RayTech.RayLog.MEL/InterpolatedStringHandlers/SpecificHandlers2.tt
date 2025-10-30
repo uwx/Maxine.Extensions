@@ -9,7 +9,7 @@ string[] logLevels = [ "Trace", "Debug", "Information", "Warning", "Error", "Cri
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
-namespace Poki.RayLog;
+namespace RayTech.RayLog.MEL;
 
 <# foreach (var logLevel in logLevels) { #>
 
