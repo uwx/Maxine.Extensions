@@ -35,7 +35,7 @@ public class LockExtensionsTests
     [TestMethod]
     public void GrabReadLock_MultipleReaders_CanAcquireSimultaneously()
     {
-        var rwLock = new ReaderWriterLockSlim();
+        var rwLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         
         using (rwLock.GrabReadLock())
         using (rwLock.GrabReadLock())
