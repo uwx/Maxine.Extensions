@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
-using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Maxine.Extensions.Test;
@@ -52,8 +51,8 @@ public class UnitTest2
         var serialized = JsonSerializer.Serialize(t, t.GetType(), opts);
         Console.WriteLine(t.GetType() + ";" + serialized);
         
-        Assert.IsTrue(serialized.StartsWith('['));
-        Assert.IsTrue(serialized.EndsWith(']'));
+        Assert.StartsWith("[", serialized);
+        Assert.EndsWith("]", serialized);
         var deserialized = JsonSerializer.Deserialize(serialized, t.GetType(), opts);
 
         Assert.AreEqual(t, deserialized);
