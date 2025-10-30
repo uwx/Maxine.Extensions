@@ -46,143 +46,200 @@ public static class StringExtensions
 
     public ref struct SplitEnumeratorArgs1
     {
-        private int _c1;
+        private int _start;
+        private int _end;
         private readonly ReadOnlySpan<char> _s;
         private readonly char _c;
-        private int _pos;
+        private bool _started;
 
         internal SplitEnumeratorArgs1(ReadOnlySpan<char> s, char c)
         {
             _s = s;
             _c = c;
-            _pos = 0;
-            _c1 = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
 
         public SplitEnumeratorArgs1 GetEnumerator() => this;
 
         public bool MoveNext()
         {
-            if (_pos == -1)
+            if (!_started)
             {
-                return false;
+                _started = true;
+                if (_s.IsEmpty)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                _start = _end + 1;
+                if (_start > _s.Length)
+                {
+                    return false;
+                }
             }
 
-            var oldpos = _pos;
-            var pos = _pos = _s[(_pos + 1)..].IndexOf(_c);
-            if (pos != -1)
+            var nextIndex = _s[_start..].IndexOf(_c);
+            if (nextIndex == -1)
             {
-                _c1 = oldpos + 1;
-                return true;
+                _end = _s.Length;
+                return _start <= _s.Length;
             }
 
-            return false;
+            _end = _start + nextIndex;
+            return true;
         }
 
         public void Reset()
         {
-            _pos = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
         
         public ReadOnlySpan<char> Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _s[_c1.._pos];
+            get => _s[_start.._end];
         }
     }
     
     public ref struct SplitEnumeratorArgsN
     {
-        private int _c1;
+        private int _start;
+        private int _end;
         private readonly ReadOnlySpan<char> _s;
         private readonly ReadOnlySpan<char> _c;
-        private int _pos;
+        private bool _started;
 
         internal SplitEnumeratorArgsN(ReadOnlySpan<char> s, ReadOnlySpan<char> c)
         {
             _s = s;
             _c = c;
-            _pos = 0;
-            _c1 = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
 
         public SplitEnumeratorArgsN GetEnumerator() => this;
 
         public bool MoveNext()
         {
-            if (_pos == -1)
+            if (!_started)
             {
-                return false;
+                _started = true;
+                if (_s.IsEmpty)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                _start = _end + 1;
+                if (_start > _s.Length)
+                {
+                    return false;
+                }
             }
 
-            var oldpos = _pos;
-            var pos = _pos = _s[(_pos + 1)..].IndexOfAny(_c);
-            if (pos != -1)
+            var nextIndex = _s[_start..].IndexOfAny(_c);
+            if (nextIndex == -1)
             {
-                _c1 = oldpos + 1;
-                return true;
+                _end = _s.Length;
+                return _start <= _s.Length;
             }
 
-            return false;
+            _end = _start + nextIndex;
+            return true;
         }
 
         public void Reset()
         {
-            _pos = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
 
         public ReadOnlySpan<char> Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _s[_c1.._pos];
+            get => _s[_start.._end];
         }
     }
     
     public ref struct SplitEnumeratorArgs1WithOptions
     {
-        private int _c1;
+        private int _start;
+        private int _end;
         private readonly ReadOnlySpan<char> _s;
         private readonly char _c;
         private readonly StringSplitOptions _options;
-        private int _pos;
+        private bool _started;
 
         internal SplitEnumeratorArgs1WithOptions(ReadOnlySpan<char> s, char c, StringSplitOptions options)
         {
             _s = s;
             _c = c;
             _options = options;
-            _pos = 0;
-            _c1 = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
 
         public SplitEnumeratorArgs1WithOptions GetEnumerator() => this;
 
         public bool MoveNext()
         {
-            if (_pos == -1)
+            while (true)
             {
-                return false;
-            }
-
-            do
-            {
-                var oldpos = _pos;
-                var pos = _pos = _s[(_pos + 1)..].IndexOf(_c);
-                if (pos != -1)
+                if (!_started)
                 {
-                    _c1 = oldpos + 1;
+                    _started = true;
+                    if (_s.IsEmpty)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    _start = _end + 1;
+                    if (_start > _s.Length)
+                    {
+                        return false;
+                    }
+                }
+
+                var nextIndex = _s[_start..].IndexOf(_c);
+                if (nextIndex == -1)
+                {
+                    _end = _s.Length;
+                    if (_start > _s.Length)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    _end = _start + nextIndex;
+                }
+
+                if ((_options & StringSplitOptions.RemoveEmptyEntries) != 0 && Current.IsEmpty)
+                {
                     continue;
                 }
 
-                return false;
-            } while ((_options & StringSplitOptions.RemoveEmptyEntries) != 0 && Current.IsEmpty);
-
-            return true;
+                return true;
+            }
         }
 
         public void Reset()
         {
-            _pos = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
 
         public ReadOnlySpan<char> Current
@@ -190,7 +247,7 @@ public static class StringExtensions
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var v = _s[_c1.._pos];
+                var v = _s[_start.._end];
                 return (_options & StringSplitOptions.TrimEntries) != 0 ? v.Trim() : v;
             }
         }
@@ -198,49 +255,74 @@ public static class StringExtensions
     
     public ref struct SplitEnumeratorArgsNWithOptions
     {
-        private int _c1;
+        private int _start;
+        private int _end;
         private readonly ReadOnlySpan<char> _s;
         private readonly ReadOnlySpan<char> _c;
         private readonly StringSplitOptions _options;
-        private int _pos;
+        private bool _started;
 
         internal SplitEnumeratorArgsNWithOptions(ReadOnlySpan<char> s, ReadOnlySpan<char> c, StringSplitOptions options)
         {
             _s = s;
             _c = c;
             _options = options;
-            _pos = 0;
-            _c1 = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
 
         public SplitEnumeratorArgsNWithOptions GetEnumerator() => this;
 
         public bool MoveNext()
         {
-            if (_pos == -1)
+            while (true)
             {
-                return false;
-            }
-
-            do
-            {
-                var oldpos = _pos;
-                var pos = _pos = _s[(_pos + 1)..].IndexOfAny(_c);
-                if (pos != -1)
+                if (!_started)
                 {
-                    _c1 = oldpos + 1;
+                    _started = true;
+                    if (_s.IsEmpty)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    _start = _end + 1;
+                    if (_start > _s.Length)
+                    {
+                        return false;
+                    }
+                }
+
+                var nextIndex = _s[_start..].IndexOfAny(_c);
+                if (nextIndex == -1)
+                {
+                    _end = _s.Length;
+                    if (_start > _s.Length)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    _end = _start + nextIndex;
+                }
+
+                if ((_options & StringSplitOptions.RemoveEmptyEntries) != 0 && Current.IsEmpty)
+                {
                     continue;
                 }
 
-                return false;
-            } while ((_options & StringSplitOptions.RemoveEmptyEntries) != 0 && Current.IsEmpty);
-
-            return true;
+                return true;
+            }
         }
 
         public void Reset()
         {
-            _pos = 0;
+            _start = 0;
+            _end = 0;
+            _started = false;
         }
 
         public ReadOnlySpan<char> Current
@@ -248,7 +330,7 @@ public static class StringExtensions
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var v = _s[_c1.._pos];
+                var v = _s[_start.._end];
                 return (_options & StringSplitOptions.TrimEntries) != 0 ? v.Trim() : v;
             }
         }

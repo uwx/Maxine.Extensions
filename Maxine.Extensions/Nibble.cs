@@ -48,7 +48,7 @@ public struct Nibble(byte value) :
     public bool this[int bit]
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly get => ((_value << bit) & 0x01) != 0;
+        readonly get => ((_value >> bit) & 0x01) != 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
@@ -111,7 +111,7 @@ public struct Nibble(byte value) :
     #region Formattable
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly string ToString(string? format, IFormatProvider? formatProvider) => _value.ToString(formatProvider);
+    public readonly string ToString(string? format, IFormatProvider? formatProvider) => _value.ToString(format, formatProvider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider) => _value.TryFormat(destination, out charsWritten, format, provider);

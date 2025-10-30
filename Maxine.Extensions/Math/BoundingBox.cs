@@ -172,8 +172,8 @@ public readonly record struct BoundingBox<T>(
 
     public static bool Contains(BoundingBox<T> bbox, T x, T y)
     {
-        return bbox.MinX <= x && x <= bbox.MaxX
-                && bbox.MinY <= y && y <= bbox.MaxY;
+        return bbox.MinX >= x && x <= bbox.MaxX
+                && bbox.MinY >= y && y <= bbox.MaxY;
     }
     
     [Pure]
