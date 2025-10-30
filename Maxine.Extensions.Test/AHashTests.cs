@@ -5,11 +5,11 @@ using Maxine.Extensions.Collections;
 namespace Maxine.Extensions.Test;
 
 [TestClass]
-public class UnitTest1
+public class AHashTests
 {
-    [DllImport(@"E:\TempStuff\aHash\smhasher\ahash-cbindings\target\release\ahash_c.dll")]
+    [DllImport(@"H:\GitHub\Rust\aHash\smhasher\ahash-cbindings\target\release\ahash_c.dll")]
     public static extern unsafe ulong ahash64(byte* buf, int len, ulong key1_1, ulong key1_2, ulong key2_1, ulong key2_2);
-    
+
     [TestMethod]
     public unsafe void TestMethod1()
     {

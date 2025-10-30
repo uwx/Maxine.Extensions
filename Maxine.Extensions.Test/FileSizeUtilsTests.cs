@@ -30,8 +30,15 @@ public class FileSizeUtilsTests
     [TestMethod]
     public void HumanizeFileSize_1024BytesDecimal_Returns1point02KB()
     {
-        var result = FileSizeUtils.HumanizeFileSize(1024, isDecimal: true);
+        var result = FileSizeUtils.HumanizeFileSize<double>(1024, isDecimal: true);
         Assert.AreEqual("1.02 KB", result);
+    }
+
+    [TestMethod]
+    public void HumanizeFileSize_1024BytesDecimal_RoundsIfInt()
+    {
+        var result = FileSizeUtils.HumanizeFileSize(1024, isDecimal: true);
+        Assert.AreEqual("1 KB", result);
     }
 
     [TestMethod]
@@ -65,8 +72,15 @@ public class FileSizeUtilsTests
     [TestMethod]
     public void HumanizeFileSize_FractionalSize_ShowsDecimals()
     {
-        var result = FileSizeUtils.HumanizeFileSize(1536); // 1.5 KiB
+        var result = FileSizeUtils.HumanizeFileSize<double>(1536); // 1.5 KiB
         Assert.AreEqual("1.5 KiB", result);
+    }
+
+    [TestMethod]
+    public void HumanizeFileSize_FractionalSize_ShowsNoDecimalsIfInt()
+    {
+        var result = FileSizeUtils.HumanizeFileSize(1536); // 1.5 KiB
+        Assert.AreEqual("1 KiB", result);
     }
 
     [TestMethod]

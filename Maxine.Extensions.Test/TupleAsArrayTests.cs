@@ -5,7 +5,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 namespace Maxine.Extensions.Test;
 
 [TestClass]
-public class UnitTest2
+public class TupleAsArrayTests
 {
     public static IEnumerable<object[]> Data =>
     [

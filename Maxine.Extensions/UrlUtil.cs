@@ -38,8 +38,8 @@ public static class UrlUtil
                     new Span<char>(state.First, state.FirstLength).CopyTo(destination);
                     destination[state.FirstLength] = UrlSeparator;
                     new Span<char>(state.Second, state.SecondLength).CopyTo(destination[(state.FirstLength + 1)..]);
-                    destination[state.SecondLength] = UrlSeparator;
-                    new Span<char>(state.Third, state.ThirdLength).CopyTo(destination[^state.ThirdLength..]);
+                    destination[state.FirstLength + 1 + state.SecondLength] = UrlSeparator;
+                    new Span<char>(state.Third, state.ThirdLength).CopyTo(destination[(state.FirstLength + 1 + state.SecondLength + 1)..]);
                 }
             );
         }

@@ -4,7 +4,7 @@ using Maxine.Extensions.Collections;
 namespace Maxine.Extensions.Test;
 
 [TestClass]
-public class TestPositionOf
+public class PositionOfTests
 {
     [TestMethod]
     public void TestWorksForSingleSegment()

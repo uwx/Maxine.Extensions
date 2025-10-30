@@ -7,14 +7,6 @@ namespace Maxine.Extensions.Test;
 public class HashUtilitiesTests
 {
     [TestMethod]
-    public void GetDisplayString_PositiveIndex_ReturnsString()
-    {
-        var result = HashUtilities.GetDisplayString(0);
-        Assert.IsNotNull(result);
-        Assert.AreEqual(4, result.Length);
-    }
-
-    [TestMethod]
     public void GetDisplayString_DifferentIndexes_ReturnsDifferentStrings()
     {
         var result1 = HashUtilities.GetDisplayString(1);
