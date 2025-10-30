@@ -1,49 +1,47 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Maxine.Extensions.Math;
 using System;
 
-namespace Maxine.Extensions.Test
+namespace Maxine.Extensions.Test;
+
+[TestClass]
+public class MathTests
 {
-    [TestClass]
-    public class MathTests
+    [TestMethod]
+    public void TestAngle_ToRadians()
     {
-        [TestMethod]
-        public void TestAngle_ToRadians()
-        {
-            // Arrange
-            var angle = new Angle(180);
+        // Arrange
+        var angle = Angle<double>.FromDegrees(180);
 
-            // Act
-            var radians = angle.ToRadians();
+        // Act
+        var radians = angle.Radians;
 
-            // Assert
-            Assert.AreEqual(Math.PI, radians, 1e-6);
-        }
+        // Assert
+        Assert.AreEqual(Math.PI, radians, 1e-6);
+    }
 
-        [TestMethod]
-        public void TestBoundingBox_ContainsPoint()
-        {
-            // Arrange
-            var box = new BoundingBox(0, 0, 10, 10);
+    [TestMethod]
+    public void TestBoundingBox_ContainsPoint()
+    {
+        // Arrange
+        var box = new BoundingBox<double>(0, 0, 10, 10);
 
-            // Act
-            var contains = box.Contains(5, 5);
+        // Act
+        var contains = BoundingBox<double>.Contains(box, 5, 5);
 
-            // Assert
-            Assert.IsTrue(contains);
-        }
+        // Assert
+        Assert.IsTrue(contains);
+    }
 
-        [TestMethod]
-        public void TestRomanUtilities_ToRoman()
-        {
-            // Arrange
-            int number = 1987;
+    [TestMethod]
+    public void TestRomanUtilities_ToRoman()
+    {
+        // Arrange
+        int number = 1987;
 
-            // Act
-            var roman = RomanUtilities.ToRoman(number);
+        // Act
+        var roman = RomanUtilities.ToRomanNumeral(number);
 
-            // Assert
-            Assert.AreEqual("MCMLXXXVII", roman);
-        }
+        // Assert
+        Assert.AreEqual("MCMLXXXVII", roman);
     }
 }

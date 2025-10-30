@@ -75,6 +75,11 @@ public class DummyLogger<T> : ILogger<T>
 
     public IDisposable BeginScope<TState>(TState state)
     {
-        throw new NotImplementedException();
+        return new DummyScope();
+    }
+    
+    private class DummyScope : IDisposable
+    {
+        public void Dispose() { }
     }
 }

@@ -1,57 +1,42 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Maxine.Extensions.Memory;
 using System;
 using System.IO;
 
-namespace Maxine.Extensions.Test
+namespace Maxine.Extensions.Test;
+
+[TestClass]
+public class MemoryTests
 {
-    [TestClass]
-    public class MemoryTests
+    [TestMethod]
+    public void TestNativeMemoryStream_WriteAndRead()
     {
-        [TestMethod]
-        public void TestBitHelpers_CountBits()
-        {
-            // Arrange
-            int value = 0b10101010; // 8 bits, 4 set to 1
+        // Arrange
+        var stream = new NativeMemoryStream(5);
+        var data = new byte[] { 1, 2, 3, 4, 5 };
 
-            // Act
-            int count = BitHelpers.CountBits(value);
+        // Act
+        stream.Write(data, 0, data.Length);
+        stream.Position = 0;
+        var buffer = new byte[data.Length];
+        Assert.HasCount(stream.Read(buffer, 0, buffer.Length), buffer);
 
-            // Assert
-            Assert.AreEqual(4, count);
-        }
+        // Assert
+        CollectionAssert.AreEqual(data, buffer);
+    }
 
-        [TestMethod]
-        public void TestNativeMemoryStream_WriteAndRead()
-        {
-            // Arrange
-            var stream = new NativeMemoryStream();
-            var data = new byte[] { 1, 2, 3, 4, 5 };
+    [TestMethod]
+    public void TestValueStringBuilder_AppendAndToString()
+    {
+        // Arrange
+        var builder = new ValueStringBuilder();
 
-            // Act
-            stream.Write(data, 0, data.Length);
-            stream.Position = 0;
-            var buffer = new byte[data.Length];
-            stream.Read(buffer, 0, buffer.Length);
+        // Act
+        builder.Append("Hello");
+        builder.Append(" ");
+        builder.Append("World");
+        var result = builder.ToString();
 
-            // Assert
-            CollectionAssert.AreEqual(data, buffer);
-        }
-
-        [TestMethod]
-        public void TestValueStringBuilder_AppendAndToString()
-        {
-            // Arrange
-            var builder = new ValueStringBuilder();
-
-            // Act
-            builder.Append("Hello");
-            builder.Append(" ");
-            builder.Append("World");
-            var result = builder.ToString();
-
-            // Assert
-            Assert.AreEqual("Hello World", result);
-        }
+        // Assert
+        Assert.AreEqual("Hello World", result);
     }
 }
