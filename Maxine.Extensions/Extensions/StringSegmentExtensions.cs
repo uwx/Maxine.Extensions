@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Primitives;
 
-namespace Poki.Utilities;
+namespace Maxine.Extensions;
 
 public static class StringSegmentExtensions
 {

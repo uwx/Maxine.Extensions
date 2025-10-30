@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 // using Microsoft.Extensions.ObjectPool;
 
-namespace Maxine.Extensions;
+namespace Maxine.Extensions.Collections;
 
 // https://stackoverflow.com/a/60719233
 internal readonly struct ConcurrentQueueMultiDictionary<TKey, TValue> : IDictionary<TKey, ConcurrentQueue<TValue>>, IEnumerable<KeyValuePair<TKey, TValue>> where TKey : notnull

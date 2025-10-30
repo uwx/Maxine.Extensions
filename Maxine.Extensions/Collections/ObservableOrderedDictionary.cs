@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions.Collections;
 
 public class ObservableOrderedDictionary<TKey, TValue> : ObservableCollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
 {

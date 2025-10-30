@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Poki.Shared;
-
-namespace Poki.Tests;
+﻿namespace Maxine.Extensions.Test;
 
 [TestClass]
 public class ThreadLocalRandomTests

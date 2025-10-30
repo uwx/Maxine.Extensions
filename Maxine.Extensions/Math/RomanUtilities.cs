@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Poki.Utilities;
+namespace Maxine.Extensions;
 
 public static class RomanUtilities
 {

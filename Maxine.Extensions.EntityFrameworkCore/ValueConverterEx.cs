@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Maxine.Extensions.Shared.EntityFramework;
+namespace Maxine.Extensions.Shared;
 
 /// <summary>
 /// A <see cref="ValueConverter{TModel,TProvider}"/> implementation that allows for capturing <c>this</c> within the

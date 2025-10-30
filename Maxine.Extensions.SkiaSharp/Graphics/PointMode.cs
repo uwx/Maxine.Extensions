@@ -1,4 +1,4 @@
-﻿namespace Poki.Shared;
+﻿namespace Poki.Shared.Graphics;
 
 /// <summary>Possible values to interpret the incoming array of points for the <see cref="M:SkiaSharp.SKCanvas.DrawPoints(SkiaSharp.SKPointMode,SkiaSharp.SKPoint[],SkiaSharp.SKPaint)" /> method.</summary>
 public enum PointMode

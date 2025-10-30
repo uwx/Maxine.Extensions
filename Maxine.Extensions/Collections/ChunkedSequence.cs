@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
 
-namespace Maxine.Extensions;
+namespace Maxine.Extensions.Collections;
 
 public ref struct ChunkedSequence<T>
 {

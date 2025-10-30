@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions.Collections;
 
 [DebuggerTypeProxy(typeof(LazyResolveDebugView<>))]
 [DebuggerDisplay("Value={Value}")]

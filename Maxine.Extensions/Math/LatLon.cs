@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace MathUnit;
+namespace Maxine.Extensions;
 
 public readonly record struct LatLon<T>(Angle<T> Latitude, Angle<T> Longitude) where T : IBinaryFloatingPointIeee754<T>, IMinMaxValue<T>
 {

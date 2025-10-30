@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 // ReSharper disable PossibleMultipleEnumeration
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions.Collections;
 
 /// <summary>
 /// A wrapper to provide helper methods such as <see cref="Add"/> that return new arrays, much like
@@ -1188,7 +1188,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
     /// <returns>
     /// The position into which the new element was inserted, or -1 to indicate that the item was not inserted into the collection,
     /// </returns>
-    /// <exception cref="System.NotSupportedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     int IList.Add(object? value)
     {
         throw new NotSupportedException();
@@ -1197,7 +1197,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
     /// <summary>
     /// Removes all items from the <see cref="ICollection{T}"/>.
     /// </summary>
-    /// <exception cref="System.NotSupportedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     void IList.Clear()
     {
         throw new NotSupportedException();
@@ -1238,7 +1238,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
     /// </summary>
     /// <param name="index">The zero-based index at which <paramref name="value"/> should be inserted.</param>
     /// <param name="value">The object to insert into the <see cref="IList"/>.</param>
-    /// <exception cref="System.NotSupportedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     void IList.Insert(int index, object? value)
     {
         throw new NotSupportedException();
@@ -1295,7 +1295,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
     /// Removes the first occurrence of a specific object from the <see cref="IList"/>.
     /// </summary>
     /// <param name="value">The object to remove from the <see cref="IList"/>.</param>
-    /// <exception cref="System.NotSupportedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     void IList.Remove(object? value)
     {
         throw new NotSupportedException();
@@ -1305,7 +1305,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
     /// Removes the <see cref="IList{T}"/> item at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index of the item to remove.</param>
-    /// <exception cref="System.NotSupportedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     void IList.RemoveAt(int index)
     {
         throw new NotSupportedException();

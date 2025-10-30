@@ -1,9 +1,8 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Maxine.Extensions.Shared.EntityFramework;
+namespace Maxine.Extensions.Shared;
 
 internal static class FactoryStorage
 {

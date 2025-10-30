@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace RayTech.RayLog.MEL;
+namespace Maxine.Extensions.Collections;
 
 /// <summary>
 /// An immutable guaranteed O(1) hashless mapping from an enumeration of type <typeparamref name="TKey"/> to

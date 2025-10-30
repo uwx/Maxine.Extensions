@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions;
 
 // https://andrewlock.net/running-async-tasks-on-app-startup-in-asp-net-core-part-2/
 

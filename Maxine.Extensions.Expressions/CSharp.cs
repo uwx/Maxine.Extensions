@@ -33,7 +33,7 @@ using FastExpressionCompiler;
 using Microsoft.Extensions.Logging;
 using RayTech.RayLog.MEL;
 
-namespace Poki.Shared.HSNXT.Linq.Expressions;
+namespace Maxine.Extensions.Expressions;
 
 public static class CSharp
 {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Poki.Utilities;
+﻿using System.Diagnostics;
 
-namespace Poki.Tests;
+namespace Maxine.Extensions.Test;
 
 [TestClass]
 public class HashTests

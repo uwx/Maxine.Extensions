@@ -2,7 +2,7 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace Maxine.Extensions;
+namespace Maxine.Extensions.Collections;
 
 public readonly struct ArrayOfVector3 : IEnumerable<Vector3>
 {

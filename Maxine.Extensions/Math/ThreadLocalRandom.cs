@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace Poki.Shared;
+namespace Maxine.Extensions;
 
 /// <summary>
 /// Convenience class for dealing with randomness.

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Collections.Extensions;
 
-namespace Poki.Utilities;
+namespace Maxine.Extensions;
 
 public class ArbitraryBaseConverter<T, TUnsigned>
     where T : unmanaged, IBinaryInteger<T>

@@ -1,11 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using ObservableCollections;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions.Collections;
 
 /// <inheritdoc cref="IEnumerable{T}" />
 /// <summary>

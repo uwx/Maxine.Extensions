@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using SkiaSharp;
 
-namespace Poki.Shared;
+namespace Poki.Shared.Graphics;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public static class SkiaGraphicsExtensions

@@ -1,4 +1,4 @@
-﻿namespace Maxine.Extensions.Shared;
+﻿namespace Maxine.Extensions;
 
 public delegate void Debounced<in T>(T argument);
 

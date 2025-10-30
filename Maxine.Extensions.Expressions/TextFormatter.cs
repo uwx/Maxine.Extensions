@@ -26,7 +26,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace Poki.Shared.HSNXT.Linq.Expressions;
+namespace Maxine.Extensions.Expressions;
 
 public class TextFormatter : IFormatter
 {

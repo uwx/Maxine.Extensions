@@ -3,7 +3,7 @@ using System.Drawing;
 using JetBrains.Annotations;
 using SkiaSharp;
 
-namespace Poki.Shared;
+namespace Poki.Shared.Graphics;
 
 /// <summary>
 /// Represents a rounded rectangle.

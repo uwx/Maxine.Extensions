@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using JetBrains.Annotations;
 
-namespace Poki.Shared;
+namespace Poki.Shared.Graphics;
 
 /// <summary>The various formats used by <see cref="IGraphics.SaveToStream"/>.</summary>
 public enum ImageFormat

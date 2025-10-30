@@ -1,6 +1,6 @@
 ﻿using Maxine.Extensions.SpanExtensions;
 
-namespace Maxine.TU.VFS;
+namespace Maxine.VFS;
 
 public sealed class RelativeFileSystem : BaseFileSystem
 {

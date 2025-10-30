@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions;
 
 public static class BclExtensions
 {

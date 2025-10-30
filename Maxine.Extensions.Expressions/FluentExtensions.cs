@@ -35,7 +35,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Poki.Shared.HSNXT.Linq.Expressions;
+namespace Maxine.Extensions.Expressions;
 
 public static partial class FluentExtensions
 {

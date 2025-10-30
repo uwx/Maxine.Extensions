@@ -1,10 +1,8 @@
-using System;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RayTech.RayLog.MEL;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace Poki.Tests;
+namespace Maxine.Extensions.Test;
 
 [TestClass]
 public class LoggerTests

@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using FastExpressionCompiler;
-using Poki.Shared.HSNXT.Linq.Expressions;
 using static System.Linq.Expressions.Expression;
 
-namespace Poki.Shared;
+namespace Maxine.Extensions.Expressions;
 
 public delegate object ObjectConstructor(params object?[] args);
 

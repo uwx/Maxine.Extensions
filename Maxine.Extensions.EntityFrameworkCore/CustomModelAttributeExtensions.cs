@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Maxine.Extensions.Shared.EntityFramework;
+namespace Maxine.Extensions.Shared;
 
 [Flags]
 public enum DatabaseType

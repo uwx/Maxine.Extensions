@@ -3,6 +3,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Maxine.Extensions;
 
+namespace Maxine.Extensions;
+
 
 public static class TupleAsArrayConverter<T1>
 {

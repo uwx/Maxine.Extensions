@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Poki.Utilities;
+namespace Maxine.Extensions;
 
 public static class UrlUtil
 {

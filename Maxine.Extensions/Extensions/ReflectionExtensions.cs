@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions;
 
 public static class ReflectionExtensions
 {

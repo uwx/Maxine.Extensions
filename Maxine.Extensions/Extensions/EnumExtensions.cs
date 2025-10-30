@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 
-namespace Poki.Shared;
+namespace Maxine.Extensions;
 
 public static class EnumExtensions
 {

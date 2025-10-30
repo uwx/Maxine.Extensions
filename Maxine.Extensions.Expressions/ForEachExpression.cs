@@ -32,7 +32,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Poki.Shared.HSNXT.Linq.Expressions;
+namespace Maxine.Extensions.Expressions;
 
 public class ForEachExpression : CustomExpression
 {

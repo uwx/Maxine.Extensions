@@ -29,7 +29,7 @@
 #nullable disable
 using System.Linq.Expressions;
 
-namespace Poki.Shared.HSNXT.Linq.Expressions;
+namespace Maxine.Extensions.Expressions;
 
 [AttributeUsage(AttributeTargets.GenericParameter)]
 internal class DelegateConstraintAttribute : Attribute

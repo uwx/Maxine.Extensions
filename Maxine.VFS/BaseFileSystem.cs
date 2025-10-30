@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Maxine.TU.VFS;
+namespace Maxine.VFS;
 
 public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
 {

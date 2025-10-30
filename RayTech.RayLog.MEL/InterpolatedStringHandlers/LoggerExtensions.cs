@@ -1,8 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using RayTech.RayLog.MEL;
 
-namespace RayTech.RayLog.MEL;
+namespace Microsoft.Extensions.Logging;
 
 [PublicAPI]
 public static partial class LoggerExtensions

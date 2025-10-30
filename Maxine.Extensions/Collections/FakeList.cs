@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Maxine.Extensions;
+namespace Maxine.Extensions.Collections;
 
 public abstract class FakeList<T> : IList<T>
 {

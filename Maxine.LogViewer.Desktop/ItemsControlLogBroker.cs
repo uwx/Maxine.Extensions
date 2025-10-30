@@ -1,5 +1,5 @@
 ﻿using System.Windows.Threading;
-using Maxine.Extensions.Shared;
+using Maxine.Extensions.Collections;
 using Maxine.LogViewer.Sink;
 using Maxine.LogViewer.Sink.ViewModels;
 

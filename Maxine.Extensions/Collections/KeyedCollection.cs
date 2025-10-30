@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Maxine.Extensions;
+namespace Maxine.Extensions.Collections;
 
 public class KeyedCollection
 {

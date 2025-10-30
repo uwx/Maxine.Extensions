@@ -32,7 +32,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 
-namespace Poki.Shared.HSNXT.Linq.Expressions;
+namespace Maxine.Extensions.Expressions;
 
 [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
 [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]

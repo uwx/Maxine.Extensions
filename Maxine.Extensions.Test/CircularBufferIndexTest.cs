@@ -1,4 +1,6 @@
-namespace Maxine.Extensions.Shared.Test;
+using Maxine.Extensions.Collections;
+
+namespace Maxine.Extensions.Test;
 
 [TestClass]
 public class CircularBufferIndexTest

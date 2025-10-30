@@ -1,10 +1,9 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions;
 
 public static class MsdiExtensions
 {

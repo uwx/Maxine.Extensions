@@ -1,7 +1,6 @@
-﻿using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace Poki.Utilities;
+namespace Maxine.Extensions;
 
 /// <summary>
 /// Utility classes for converting between an arbitrary numeral system.

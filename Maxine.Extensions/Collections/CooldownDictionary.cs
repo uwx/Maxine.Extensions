@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace Poki.Services;
+namespace Maxine.Extensions.Collections;
 
 public class CooldownDictionary<TKey> where TKey : notnull
 {

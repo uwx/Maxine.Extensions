@@ -1,4 +1,4 @@
-﻿namespace Maxine.Extensions.Shared;
+﻿namespace Maxine.Extensions;
 
 public readonly struct TimerEx : IDisposable, IAsyncDisposable
 {

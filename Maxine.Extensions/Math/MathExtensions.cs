@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using MI = System.Runtime.CompilerServices.MethodImplAttribute;
 
-namespace MathUnit;
+namespace Maxine.Extensions;
 
 public static class MathExtensions
 {

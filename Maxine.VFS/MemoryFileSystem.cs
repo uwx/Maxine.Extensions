@@ -6,7 +6,7 @@ using Maxine.Extensions;
 using Maxine.Extensions.Streams;
 using Microsoft.IO;
 
-namespace Maxine.TU.VFS;
+namespace Maxine.VFS;
 
 public sealed class MemoryFileSystem : BaseFileSystem
 {

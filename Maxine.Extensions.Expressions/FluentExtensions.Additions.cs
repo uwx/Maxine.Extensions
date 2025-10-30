@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Poki.Shared.HSNXT.Linq.Expressions;
+namespace Maxine.Extensions.Expressions;
 
 public static partial class FluentExtensions
 {

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions;
 
 public sealed class Provider<T> : IDisposable, IAsyncDisposable
 {

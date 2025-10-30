@@ -1,9 +1,8 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace MathUnit;
+namespace Maxine.Extensions;
 
 public readonly record struct Length<T> : IComparable<Length<T>> where T : IBinaryFloatingPointIeee754<T>, IMinMaxValue<T>
 {

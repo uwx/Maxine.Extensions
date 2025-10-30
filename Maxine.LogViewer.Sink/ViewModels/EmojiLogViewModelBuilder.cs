@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using Maxine.Extensions.Shared;
+using Maxine.Extensions.Collections;
 using Microsoft.Extensions.Logging;
 using RayTech.RayLog.MEL;
 

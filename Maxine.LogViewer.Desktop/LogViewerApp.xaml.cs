@@ -6,18 +6,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Maxine.LogViewer.Desktop
-{
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class LogViewerApp : Application
-    {
-        internal Action<ItemsControlLogBroker> OnLoad { get; }
+namespace Maxine.LogViewer.Desktop;
 
-        public LogViewerApp(Action<ItemsControlLogBroker> onLoad)
-        {
-            OnLoad = onLoad;
-        }
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class LogViewerApp : Application
+{
+    internal Action<ItemsControlLogBroker> OnLoad { get; }
+
+    public LogViewerApp(Action<ItemsControlLogBroker> onLoad)
+    {
+        OnLoad = onLoad;
     }
 }

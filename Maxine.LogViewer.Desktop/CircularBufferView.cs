@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Threading;
-using Maxine.Extensions.Shared;
+using Maxine.Extensions.Collections;
 using ObservableCollections;
 
 namespace Maxine.LogViewer.Desktop;

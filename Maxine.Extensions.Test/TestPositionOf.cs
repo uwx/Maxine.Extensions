@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using Maxine.Extensions.Collections;
 
 namespace Maxine.Extensions.Test;
 

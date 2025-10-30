@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace Maxine.Extensions.Shared;
+namespace Maxine.Extensions;
 
 public static class CancellationTokenUtils
 {

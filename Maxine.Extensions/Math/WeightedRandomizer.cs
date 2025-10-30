@@ -28,7 +28,7 @@ THE SOFWARE.
 using System.Collections;
 using JetBrains.Annotations;
 
-namespace Poki.Shared;
+namespace Maxine.Extensions;
 
 public interface IWeightedRandomizer<out T> : IReadOnlyCollection<T> where T : notnull
 {

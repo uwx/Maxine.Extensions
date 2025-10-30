@@ -1,4 +1,4 @@
-﻿namespace Maxine.Extensions.Shared;
+﻿namespace Maxine.Extensions;
 
 /// <summary>
 /// Provides extensions for safely applying continuations to a <see cref="Task"/> or <see cref="Task{TResult}"/>.

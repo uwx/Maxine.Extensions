@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using SkiaSharp;
 
-namespace Poki.Shared;
+namespace Poki.Shared.Graphics;
 
 public sealed class SkiaGraphics : IGraphics
 {

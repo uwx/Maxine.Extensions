@@ -1,4 +1,4 @@
-﻿namespace Poki.Shared;
+﻿namespace Poki.Shared.Graphics;
 
 /// <summary>Possible text alignment values.</summary>
 public enum TextAlignment

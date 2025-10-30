@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace MathUnit;
+namespace Maxine.Extensions;
 
 internal static class Math2
 {

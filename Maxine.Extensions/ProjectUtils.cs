@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
-using System.Reflection;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
-namespace Poki.Shared;
+namespace Maxine.Extensions;
 
 [PublicAPI]
 public static class ProjectUtils

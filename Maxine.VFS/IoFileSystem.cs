@@ -1,4 +1,4 @@
-﻿namespace Maxine.TU.VFS;
+﻿namespace Maxine.VFS;
 
 public sealed class IoFileSystem : BaseFileSystem
 {
