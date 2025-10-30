@@ -1,8 +1,8 @@
-﻿using System.Numerics;
+using System.Numerics;
 
-namespace whenthetowerunites;
+namespace Maxine.Extensions;
 
-public static class GenericLinqMath
+public static class LinqMathExtensions
 {
     public static T Sum<T>(this IEnumerable<T> source) where T : IAdditionOperators<T, T, T>, IAdditiveIdentity<T, T>
     {
@@ -31,3 +31,4 @@ public static class GenericLinqMath
         return val / count;
     }
 }
+

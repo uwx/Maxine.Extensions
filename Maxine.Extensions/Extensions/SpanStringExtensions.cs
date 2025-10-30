@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Maxine.TU.Sims4Exporter;
+namespace Maxine.Extensions;
 
-public static class Extensionjs
+public static class SpanStringExtensions
 {
     public static string Truncate(this string str, int length)
     {
@@ -46,7 +45,6 @@ public static class Extensionjs
 
                 _index++;
                 return true;
-
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -336,61 +334,5 @@ public static class Extensionjs
             }
         }
     }
-    
-    [InlineArray(2)]
-    private struct Buffer2<T>
-    {
-        internal T? Arg0;
-
-        public ReadOnlySpan<T> Span
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => MemoryMarshal.CreateReadOnlySpan(ref Arg0, 2)!;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer2(T arg0, T arg1)
-        {
-            this[0] = arg0;
-            this[1] = arg1;
-        }
-    }
-
-    [InlineArray(3)]
-    private struct Buffer3<T>
-    {
-        internal T? Arg0;
-
-        public ReadOnlySpan<T> Span
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => MemoryMarshal.CreateReadOnlySpan(ref Arg0, 3)!;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer3(T arg0, T arg1, T arg2)
-        {
-            this[0] = arg0;
-            this[1] = arg1;
-            this[2] = arg2;
-        }
-    }
-
-    public static ReadOnlySpan<char> TrimEnd(this ReadOnlySpan<char> span, char trimChar1, char trimChar2)
-        => span.TrimEnd(new Buffer2<char>(trimChar1, trimChar2).Span);
-
-    public static ReadOnlySpan<char> TrimEnd(this ReadOnlySpan<char> span, char trimChar1, char trimChar2, char trimChar3)
-        => span.TrimEnd(new Buffer3<char>(trimChar1, trimChar2, trimChar3).Span);
-    
-    public static ReadOnlySpan<char> TrimStart(this ReadOnlySpan<char> span, char trimChar1, char trimChar2)
-        => span.TrimStart(new Buffer2<char>(trimChar1, trimChar2).Span);
-
-    public static ReadOnlySpan<char> TrimStart(this ReadOnlySpan<char> span, char trimChar1, char trimChar2, char trimChar3)
-        => span.TrimStart(new Buffer3<char>(trimChar1, trimChar2, trimChar3).Span);
-    
-    public static ReadOnlySpan<char> Trim(this ReadOnlySpan<char> span, char trimChar1, char trimChar2)
-        => span.Trim(new Buffer2<char>(trimChar1, trimChar2).Span);
-
-    public static ReadOnlySpan<char> Trim(this ReadOnlySpan<char> span, char trimChar1, char trimChar2, char trimChar3)
-        => span.Trim(new Buffer3<char>(trimChar1, trimChar2, trimChar3).Span);
 }
+

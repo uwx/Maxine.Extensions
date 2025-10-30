@@ -1,13 +1,13 @@
-﻿using System.Collections.Frozen;
+using System.Collections.Frozen;
 using System.Globalization;
-using System.IO;
 using System.Text;
 
-namespace Maxine.TU.Sims4Exporter;
+namespace Maxine.Extensions;
 
-public class StringHelpers
+public static class FileNameHelpers
 {
     private static readonly FrozenSet<char> InvalidFileNameCharsSet = Path.GetInvalidFileNameChars().ToFrozenSet();
+    
     public static string NormalizeFilename(string name)
     {
         var normalizedString = name.Normalize(NormalizationForm.FormD);
@@ -19,11 +19,6 @@ public class StringHelpers
         {
             switch (CharUnicodeInfo.GetUnicodeCategory(c))
             {
-                // case UnicodeCategory.LowercaseLetter:
-                // case UnicodeCategory.UppercaseLetter:
-                // case UnicodeCategory.DecimalDigitNumber:
-                //     stringBuilder.Append(c);
-                //     break;
                 case UnicodeCategory.ParagraphSeparator:
                 case UnicodeCategory.SpaceSeparator:
                     if (stringBuilder.Peek() != ' ')
@@ -62,8 +57,9 @@ public class StringHelpers
             }
         }
 
-        var str = new string(stringBuilder.AsSpan().TrimEnd('.', ' ').TrimStart(' '));
+        var str = new string(stringBuilder.AsSpan().TrimEnd(['.', ' ']).TrimStart(' '));
         stringBuilder.Dispose();
         return str;
     }
 }
+

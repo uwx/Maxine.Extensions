@@ -1,9 +1,9 @@
-﻿using System.Buffers;
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace WadArchiveJsonRenderer;
+namespace Maxine.Extensions;
 
 public ref struct ValueBytesBuilder
 {
@@ -90,7 +90,7 @@ public ref struct ValueBytesBuilder
     }
 
     /// <summary>Returns the underlying storage of the builder.</summary>
-    public Span<byte> Rawbytes => _bytes;
+    public Span<byte> RawBytes => _bytes;
 
     /// <summary>
     /// Returns a span around the contents of the builder.
@@ -285,3 +285,4 @@ public ref struct ValueBytesBuilder
         _pos = 0;
     }
 }
+

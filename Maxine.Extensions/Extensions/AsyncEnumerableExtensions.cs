@@ -1,7 +1,28 @@
-﻿namespace Maxine.TU.UploadHelpers;
+namespace Maxine.Extensions;
 
-public static class Extensions
+// https://stackoverflow.com/a/12389412
+public static class AsyncEnumerableExtensions
 {
+    public static async IAsyncEnumerable<TValue[]> ChunkAsync<TValue>(
+        this IAsyncEnumerable<TValue> values,
+        int chunkSize
+    )
+    {
+        var list = new List<TValue>();
+        await using var enumerator = values.GetAsyncEnumerator();
+        while (await enumerator.MoveNextAsync())
+        {
+            var chunkSizeTemp = chunkSize;
+            do
+            {
+                list.Add(enumerator.Current);
+            } while (--chunkSizeTemp > 0 && await enumerator.MoveNextAsync());
+
+            yield return list.ToArray();
+            list.Clear();
+        }
+    }
+
     /// <summary>
     /// Projects each element of an async-enumerable sequence to an async-enumerable sequence and merges the resulting async-enumerable sequences into one async-enumerable sequence.
     /// </summary>
@@ -21,5 +42,5 @@ public static class Extensions
             }
         }
     }
-
 }
+
