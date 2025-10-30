@@ -1,0 +1,26 @@
+﻿// all FlatSharp FBS attributes start with the 'fs_' prefix.
+attribute "fs_serializer";
+attribute "fs_valueStruct";
+attribute "fs_unsafeExternal";
+
+namespace Maxine.Extensions.KeyValue;
+
+struct Guid(fs_valueStruct, fs_unsafeExternal:"System.Guid") {
+    _a: int;
+    _b: short;
+    _c: short;
+    _d: ubyte;
+    _e: ubyte;
+    _f: ubyte;
+    _g: ubyte;
+    _h: ubyte;
+    _i: ubyte;
+    _j: ubyte;
+    _k: ubyte;
+}
+
+table KvDbTable(fs_serializer) {
+    TableGuid: Guid (required);
+    KeyTypeName: string (required);
+    ValueTypeName: string (required);
+}

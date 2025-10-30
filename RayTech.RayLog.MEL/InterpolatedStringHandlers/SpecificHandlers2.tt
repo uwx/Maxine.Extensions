@@ -1,0 +1,39 @@
+﻿<#@ template hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#
+string[] logLevels = { "Trace", "Debug", "Information", "Warning", "Error", "Critical" };
+#>
+#nullable enable
+
+using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
+
+namespace Poki.RayLog;
+
+<# foreach (var logLevel in logLevels) { #>
+
+[InterpolatedStringHandler]
+public ref struct StructuredLogging<#= logLevel #>InterpolatedStringHandler
+{
+    private StructuredLoggingInterpolatedStringHandler _handler;
+
+    public StructuredLogging<#= logLevel #>InterpolatedStringHandler(int literalLength, int formattedCount, ILogger logger, out bool isEnabled)
+    {
+        _handler = new StructuredLoggingInterpolatedStringHandler(literalLength, formattedCount, logger, LogLevel.<#= logLevel #>, out isEnabled);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AppendLiteral(string s) => _handler.AppendLiteral(s);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AppendFormatted<T>(T value, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, name);
+
+    // ReSharper disable once MethodOverloadWithOptionalParameter
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AppendFormatted<T>(T value, string? format, [CallerArgumentExpression("value")] string name = "") => _handler.AppendFormatted(value, format, name);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void GetTemplateAndArguments(out string template, out object?[] arguments) => _handler.GetTemplateAndArguments(out template, out arguments);
+}
+<# } #>

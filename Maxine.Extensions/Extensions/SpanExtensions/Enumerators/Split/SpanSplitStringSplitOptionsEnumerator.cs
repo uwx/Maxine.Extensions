@@ -1,0 +1,58 @@
+﻿namespace Maxine.Extensions.SpanExtensions;
+
+/// <summary> 
+/// Supports iteration over a <see cref="ReadOnlySpan{Char}"/> by splitting it at a specified delimiter and based on specified <see cref="StringSplitOptions"/>.  
+/// </summary>
+public ref struct SpanSplitStringSplitOptionsEnumerator(ReadOnlySpan<char> source, char delimiter, StringSplitOptions options)
+{
+    private ReadOnlySpan<char> _span = source;
+
+    /// <summary>
+    /// Gets the element in the collection at the current position of the enumerator. 
+    /// </summary>
+    public ReadOnlySpan<char> Current { get; internal set; } = default;
+
+    public SpanSplitStringSplitOptionsEnumerator GetEnumerator()
+    {
+        return this;
+    }
+
+    /// <summary>
+    /// Advances the enumerator to the next element of the collection.
+    /// </summary>
+    /// <returns><code>true</code> if the enumerator was successfully advanced to the next element; <code>false</code> if the enumerator has passed the end of the collection.</returns>
+    public bool MoveNext()
+    {
+        var span = _span;
+        if(span.IsEmpty)
+        {
+            return false;
+        }
+        var index = span.IndexOf(delimiter);
+
+        if(index == -1 || index >= span.Length)
+        {
+            _span = ReadOnlySpan<char>.Empty;
+            Current = span;
+            return true;
+        }
+        Current = span[..index];
+#if NET5_0_OR_GREATER
+        if(options.HasFlag(StringSplitOptions.TrimEntries))
+        {
+            Current = Current.Trim();
+        }
+#endif
+        if(options.HasFlag(StringSplitOptions.RemoveEmptyEntries))
+        {
+            if(Current.IsEmpty)
+            {
+                _span = span[(index + 1)..];
+                return MoveNext();
+            }
+        }
+        _span = span[(index + 1)..];
+        return true;
+    }
+
+}

@@ -1,0 +1,44 @@
+﻿# Ignore build output
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore Rider/JetBrains IDE files
+.idea/
+*.DotSettings*
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore NuGet packages
+*.nupkg
+# Ignore package restore logs
+project.lock.json
+
+# Ignore test results
+TestResults/
+
+# Ignore images and generated files
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.gif
+*.webp
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+*.log
+
+# Ignore temporary files
+~$*
+*.tmp
+*.bak

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.0-rc.2.25502.107"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Maxine.Extensions.Shared\Maxine.Extensions.Shared.csproj" />
+      <ProjectReference Include="..\RayTech.RayLog.MEL\RayTech.RayLog.MEL.csproj" />
+    </ItemGroup>
+
+</Project>

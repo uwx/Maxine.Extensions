@@ -1,0 +1,156 @@
+﻿using System.Collections;
+
+namespace Maxine.Extensions.SpanExtensions;
+
+public static partial class SpanExtensions
+{
+    /// <summary>
+    /// Splits a <see cref="Span{T}"/> into multiple Spans based on the specified <paramref name="delimiter"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the <see cref="Span{T}"/>.</typeparam>
+    /// <param name="span">The <see cref="Span{T}"/> to be split.</param>
+    /// <param name="delimiter">An instance of <typeparamref name="T"/> that delimits the various sub-Spans in the <see cref="Span{T}"/></param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitEnumerator{T}"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitEnumerator<T> Split<T>(this Span<T> span, T delimiter) where T : IEquatable<T>
+    {
+        return new SpanSplitEnumerator<T>(span, delimiter);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{T}"/> into at most <paramref name="count"/> Spans based on the specified <paramref name="delimiter"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the <see cref="Span{T}"/>.</typeparam>
+    /// <param name="span">The <see cref="Span{T}"/> to be split</param>
+    /// <param name="delimiter">An instance of <typeparamref name="T"/> that delimits the various sub-Spans in the <see cref="Span{T}"/></param>
+    /// <param name="count">the maximum number of results</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitWithCountEnumerator{T}"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitWithCountEnumerator<T> Split<T>(this Span<T> span, T delimiter, int count) where T : IEquatable<T>
+    {
+        return new SpanSplitWithCountEnumerator<T>(span, delimiter, count);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{Char}"/> into multiple Spans based on the specified <paramref name="delimiter"/> and the specified <paramref name="options"/>.
+    /// </summary> 
+    /// <param name="span">The <see cref="Span{Char}"/> to be split</param>
+    /// <param name="delimiter">A <see cref="char"/> that delimits the various sub-Spans in the <see cref="Span{Char}"/></param>
+    /// <param name="options">A bitwise combination of the enumeration values that specifies whether to trim results and include empty results.</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitStringSplitOptionsEnumerator"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitStringSplitOptionsEnumerator Split(this Span<char> span, char delimiter, StringSplitOptions options)
+    {
+        return new SpanSplitStringSplitOptionsEnumerator(span, delimiter, options);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{Char}"/> into at most <paramref name="count"/> Spans based on the specified <paramref name="delimiter"/> and the specified <paramref name="options"/>. 
+    /// </summary>  
+    /// <param name="span">The <see cref="Span{Char}"/> to be split</param>  
+    /// <param name="delimiter">A <see cref="char"/> that delimits the various sub-Spans in the <see cref="Span{Char}"/></param>  
+    /// <param name="options">A bitwise combination of the enumeration values that specifies whether to trim results and include empty results.</param>  
+    /// <param name="count">the maximum number of results</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitAnyStringSplitOptionsWithCountEnumerator"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitStringSplitOptionsWithCountEnumerator Split(this Span<char> span, char delimiter, StringSplitOptions options, int count)
+    {
+        return new SpanSplitStringSplitOptionsWithCountEnumerator(span, delimiter, options, count);
+    }
+
+    /// <summary>  
+    /// Splits a <see cref="Span{T}"/> into multiple Spans based on the any of the specified <paramref name="delimiters"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the <see cref="Span{T}"/>.</typeparam>
+    /// <param name="span">The <see cref="Span{T}"/> to be split</param>
+    /// <param name="delimiters">A <see cref="Span{T}"/>, that delimit the various sub-Spans in the <see cref="Span{T}"/>.</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitAnyEnumerator{T}"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitAnyEnumerator<T> SplitAny<T>(this Span<T> span, Span<T> delimiters) where T : IEquatable<T>
+    {
+        return new SpanSplitAnyEnumerator<T>(span, delimiters);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{T}"/> into at most <paramref name="count"/> Spans based on the any of the specified  <paramref name="delimiters"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the <see cref="Span{T}"/>.</typeparam>
+    /// <param name="span">The <see cref="Span{T}"/> to be split</param>
+    /// <param name="delimiters">A <see cref="Span{T}"/>, that delimit the various sub-Spans in the <see cref="Span{T}"/>.</param>
+    /// <param name="count">the maximum number of results</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitAnyWithCountEnumerator{T}"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitAnyWithCountEnumerator<T> SplitAny<T>(this Span<T> span, Span<T> delimiters, int count) where T : IEquatable<T>
+    {
+        return new SpanSplitAnyWithCountEnumerator<T>(span, delimiters, count);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{Char}"/> into multiple Spans based on the any of the specified <paramref name="delimiters"/>.
+    /// </summary>
+    /// <param name="span">The <see cref="Span{Char}"/> to be split</param>
+    /// <param name="delimiters">A <see cref="Span{Char}"/>, that delimit the various sub-Spans in the <see cref="Span{Char}"/>.</param>
+    /// <param name="options">A bitwise combination of the enumeration values that specifies whether to trim results and include empty results.</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitAnyStringSplitOptionsEnumerator"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitAnyStringSplitOptionsEnumerator SplitAny(this Span<char> span, Span<char> delimiters, StringSplitOptions options)
+    {
+        return new SpanSplitAnyStringSplitOptionsEnumerator(span, delimiters, options);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{Char}"/> into at most <paramref name="count"/> Spans based on the any of the specified <paramref name="delimiters"/>.
+    /// </summary>
+    /// <param name="span">The <see cref="Span{Char}"/> to be split</param>
+    /// <param name="delimiters">A <see cref="Span{Char}"/>, that delimit the various sub-Spans in the <see cref="Span{Char}"/>.</param>
+    /// <param name="options">A bitwise combination of the enumeration values that specifies whether to trim results and include empty results.</param>
+    /// <param name="count">the maximum number of results</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitAnyStringSplitOptionsWithCountEnumerator"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitAnyStringSplitOptionsWithCountEnumerator SplitAny(this Span<char> span, Span<char> delimiters, StringSplitOptions options, int count)
+    {
+        return new SpanSplitAnyStringSplitOptionsWithCountEnumerator(span, delimiters, options, count);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{T}"/> into multiple Spans based on the specified <paramref name="delimiter"/>.
+    /// </summary> 
+    /// <typeparam name="T">The type of elements in the <see cref="Span{T}"/>.</typeparam>
+    /// <param name="span">The <see cref="Span{T}"/> to be split</param>
+    /// <param name="delimiter">An instance of <see cref="Span{T}"/> that delimits the various sub-Spans in the <see cref="Span{T}"/></param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitSequenceEnumerator{T}"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitSequenceEnumerator<T> Split<T>(this Span<T> span, Span<T> delimiter) where T : IEquatable<T>
+    {
+        return new SpanSplitSequenceEnumerator<T>(span, delimiter);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{T}"/> into at most <paramref name="count"/> Spans based on the specified <paramref name="delimiter"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the <see cref="Span{T}"/>.</typeparam>
+    /// <param name="span">The <see cref="Span{T}"/> to be split</param>
+    /// <param name="delimiter">An instance of <see cref="Span{T}"/> that delimits the various sub-Spans in the <see cref="Span{T}"/></param>
+    /// <param name="count">the maximum number of results</param> 
+    /// <returns>An instance of the ref struct , which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitSequenceWithCountEnumerator<T> Split<T>(this Span<T> span, Span<T> delimiter, int count) where T : IEquatable<T>
+    {
+        return new SpanSplitSequenceWithCountEnumerator<T>(span, delimiter, count);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{Char}"/> into multiple Spans based on the specified <paramref name="delimiter"/>.
+    /// </summary>
+    /// <param name="span">The <see cref="Span{Char}"/> to be split</param>
+    /// <param name="delimiter">An instance of <see cref="Span{Char}"/> that delimits the various sub-Spans in the <see cref="Span{Char}"/></param>
+    /// <param name="options">A bitwise combination of the enumeration values that specifies whether to trim results and include empty results.</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitSequenceStringSplitOptionsEnumerator"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitSequenceStringSplitOptionsEnumerator Split(this Span<char> span, Span<char> delimiter, StringSplitOptions options)
+    {
+        return new SpanSplitSequenceStringSplitOptionsEnumerator(span, delimiter, options);
+    }
+
+    /// <summary>
+    /// Splits a <see cref="Span{Char}"/> into at most <paramref name="count"/> Spans based on the specified <paramref name="delimiter"/>.
+    /// </summary>
+    /// <param name="span">The <see cref="Span{Char}"/> to be split</param>
+    /// <param name="delimiter">An instance of <see cref="Span{Char}"/> that delimits the various sub-Spans in the <see cref="Span{Char}"/></param>
+    /// <param name="options">A bitwise combination of the enumeration values that specifies whether to trim results and include empty results.</param>
+    /// /// <param name="count">the maximum number of results</param>
+    /// <returns>An instance of the ref struct <see cref="SpanSplitSequenceStringSplitOptionsWithCountEnumerator"/>, which works the same way as every <see cref="IEnumerator"/> does and can be used in a foreach construct.</returns>
+    public static SpanSplitSequenceStringSplitOptionsWithCountEnumerator Split(this Span<char> span, Span<char> delimiter, StringSplitOptions options, int count)
+    {
+        return new SpanSplitSequenceStringSplitOptionsWithCountEnumerator(span, delimiter, options, count);
+    }
+}

@@ -1,0 +1,96 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Maxine.Extensions;
+
+<#
+    for (var i = 0; i < 7; i++)
+    {
+        var d = i + 1;
+
+        var ts = string.Join(", ", Enumerable.Range(1, d).Select(static e => $"T{e}"));
+#>
+
+public static class TupleAsArrayConverter<<#= ts #>>
+{
+    private static void WriteInternal<TTuple>(Utf8JsonWriter writer, TTuple tuple, JsonSerializerOptions options)
+        where TTuple : ITuple
+    {
+        writer.WriteStartArray();
+
+<#
+        for (var j = 1; j <= d; j++)
+        {
+#>
+        Helpers.Write<T<#= j #>>(writer, tuple[<#= j - 1 #>], options);
+<#
+        }
+#>
+
+        writer.WriteEndArray();
+    }
+
+    public class SystemTuple : JsonConverter<Tuple<<#= ts #>>>
+    {
+        public override Tuple<<#= ts #>>? Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Null) return null;
+            
+            Helpers.StartRead(ref reader);
+
+            var result = new Tuple<<#= ts #>>(
+<#
+        for (var j = 1; j <= d; j++)
+        {
+#>
+                Helpers.ReadOrThrow<T<#= j #>>(ref reader, options)!<#= j != d ? "," : "" #>
+<#
+        }
+#>
+            );
+
+            Helpers.EndRead(ref reader);
+
+            return result;
+        }
+
+        public override void Write(Utf8JsonWriter writer, Tuple<<#= ts #>> tuple, JsonSerializerOptions options)
+            => WriteInternal(writer, tuple, options);
+    }
+
+    public class ValueTuple : JsonConverter<ValueTuple<<#= ts #>>>
+    {
+        public override ValueTuple<<#= ts #>> Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Null) return default;
+            
+            Helpers.StartRead(ref reader);
+
+            var result = new ValueTuple<<#= ts #>>(
+<#
+        for (var j = 1; j <= d; j++)
+        {
+#>
+                Helpers.ReadOrThrow<T<#= j #>>(ref reader, options)!<#= j != d ? "," : "" #>
+<#
+        }
+#>
+            );
+
+            Helpers.EndRead(ref reader);
+
+            return result;
+        }
+
+        public override void Write(Utf8JsonWriter writer, ValueTuple<<#= ts #>> tuple, JsonSerializerOptions options)
+            => WriteInternal(writer, tuple, options);
+    }
+}
+
+<#
+    }
+#>

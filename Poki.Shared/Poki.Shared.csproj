@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FastExpressionCompiler" Version="5.3.0"/>
+      <PackageReference Include="JetBrains.Annotations" Version="2025.2.2"/>
+      <PackageReference Include="SkiaSharp" Version="3.119.2-preview.1"/>
+      <PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.2-preview.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="TupleAsArrayGenerated.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>TupleAsArrayGenerated.cs</LastGenOutput>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\extern\SharpYaml\src\SharpYaml\SharpYaml.csproj" />
+      <ProjectReference Include="..\Maxine.Extensions.Shared\Maxine.Extensions.Shared.csproj" />
+      <ProjectReference Include="..\RayTech.RayLog.MEL\RayTech.RayLog.MEL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="TupleAsArrayGenerated.cs">
+        <AutoGen>True</AutoGen>
+        <DesignTime>True</DesignTime>
+        <DependentUpon>TupleAsArrayGenerated.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>
