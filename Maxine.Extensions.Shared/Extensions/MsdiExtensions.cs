@@ -93,18 +93,18 @@ public static class MsdiExtensions
         public OptionsFactoryWithParameters(IEnumerable<IConfigureOptions<T>> setups, IEnumerable<IPostConfigureOptions<T>> postConfigures, IServiceProvider services) : base(setups, postConfigures)
         {
             _services = services;
-            _factory = ActivatorUtilities.CreateFactory(typeof(T), Array.Empty<Type>());
+            _factory = ActivatorUtilities.CreateFactory(typeof(T), []);
         }
 
         public OptionsFactoryWithParameters(IEnumerable<IConfigureOptions<T>> setups, IEnumerable<IPostConfigureOptions<T>> postConfigures, IEnumerable<IValidateOptions<T>> validations, IServiceProvider services) : base(setups, postConfigures, validations)
         {
             _services = services;
-            _factory = ActivatorUtilities.CreateFactory(typeof(T), Array.Empty<Type>());
+            _factory = ActivatorUtilities.CreateFactory(typeof(T), []);
         }
         
         protected override T CreateInstance(string name)
         {
-            return (T)_factory(_services, Array.Empty<object?>());
+            return (T)_factory(_services, []);
         }
     }
 }

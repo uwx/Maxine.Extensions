@@ -87,7 +87,7 @@ public class ForEachExpression : CustomExpression
         var index = Variable(typeof(int), "i");
 
         return Block(
-            new[] {index, Variable},
+            [index, Variable],
             index.Assign(Constant(0)),
             Loop(
                 Block(
@@ -130,7 +130,7 @@ public class ForEachExpression : CustomExpression
             variableInitializer = enumerator.Property(getCurrent).Convert(Variable.Type);
 
         Expression loop = Block(
-            new[] {Variable},
+            [Variable],
             Goto(@continue),
             Loop(
                 Block(
@@ -148,7 +148,7 @@ public class ForEachExpression : CustomExpression
         var dispose = CreateDisposeOperation(enumeratorType, enumerator);
 
         return Block(
-            new[] {enumerator},
+            [enumerator],
             enumerator.Assign(Call(Enumerable, getEnumerator)),
             dispose != null
                 ? TryFinally(loop, dispose)
@@ -204,13 +204,13 @@ public class ForEachExpression : CustomExpression
         var disposable = Variable(typeof(IDisposable));
 
         return Block(
-            new[] {disposable},
+            [disposable],
             disposable.Assign(enumerator.TypeAs(typeof(IDisposable))),
             disposable.ReferenceNotEqual(Constant(null)).IfThen(
                 Call(
                     disposable,
                     "Dispose",
-                    new Type [0])));
+                    [])));
     }
 
     private bool TryGetGenericEnumerableArgument(out Type argument)

@@ -70,11 +70,11 @@ public static class StartupTaskWebHostExtensions
 
         var factory = CreateServiceFactory(wrappedDescriptor);
 
-        var objectFactory = ActivatorUtilities.CreateFactory(typeof(TDecorator), new[] { typeof(TInterface) });
+        var objectFactory = ActivatorUtilities.CreateFactory(typeof(TDecorator), [typeof(TInterface)]);
         services.Replace(ServiceDescriptor.Describe
         (
             typeof(TInterface),
-            s => (TInterface)objectFactory(s, new[] { factory(s) }),
+            s => (TInterface)objectFactory(s, [factory(s)]),
             wrappedDescriptor.Lifetime
         ));
 
@@ -104,9 +104,9 @@ public static class StartupTaskWebHostExtensions
                 return service;
             }
 
-            factory ??= ActivatorUtilities.CreateFactory(descriptor.ImplementationType, Array.Empty<Type>());
+            factory ??= ActivatorUtilities.CreateFactory(descriptor.ImplementationType, []);
 
-            return factory(services, Array.Empty<object?>());
+            return factory(services, []);
         };
     }
 }

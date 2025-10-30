@@ -46,7 +46,7 @@ public sealed class ObservableCircularBuffer<T> : IList<T>, IList, IReadOnlyList
     /// Buffer capacity. Must be positive.
     /// </param>
     public ObservableCircularBuffer(int capacity)
-        : this(capacity, Array.Empty<T>())
+        : this(capacity, [])
     {
     }
 
@@ -452,7 +452,7 @@ public sealed class ObservableCircularBuffer<T> : IList<T>, IList, IReadOnlyList
     /// <returns>An IList with 2 segments corresponding to the buffer content.</returns>
     public IReadOnlyList<ArraySegment<T>> ToArraySegments()
     {
-        return new[] { ArrayOne(), ArrayTwo() };
+        return [ArrayOne(), ArrayTwo()];
     }
 
     #region IEnumerable<T> implementation
@@ -555,7 +555,7 @@ public sealed class ObservableCircularBuffer<T> : IList<T>, IList, IReadOnlyList
     {
         if (IsEmpty)
         {
-            return new ArraySegment<T>(Array.Empty<T>());
+            return new ArraySegment<T>([]);
         }
 
         if (_start < _end)
@@ -570,7 +570,7 @@ public sealed class ObservableCircularBuffer<T> : IList<T>, IList, IReadOnlyList
     {
         if (IsEmpty)
         {
-            return new ArraySegment<T>(Array.Empty<T>());
+            return new ArraySegment<T>([]);
         }
 
         if (_start < _end)

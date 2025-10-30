@@ -13,36 +13,36 @@ namespace WadArchiveJsonRenderer;
 public class TupleAsArrayFactory : JsonConverterFactory
 {
     private static readonly Type?[] SystemTuple =
-    {
+    [
         null,
         typeof(Tuple<>), typeof(Tuple<,>), typeof(Tuple<,,>), typeof(Tuple<,,,>),
         typeof(Tuple<,,,,>), typeof(Tuple<,,,,,>), typeof(Tuple<,,,,,,>), typeof(Tuple<,,,,,,,>)
-    };
+    ];
 
     private static readonly Type?[] ValueTuple =
-    {
+    [
         null,
         typeof(ValueTuple<>), typeof(ValueTuple<,>), typeof(ValueTuple<,,>), typeof(ValueTuple<,,,>),
         typeof(ValueTuple<,,,,>), typeof(ValueTuple<,,,,,>), typeof(ValueTuple<,,,,,,>), typeof(ValueTuple<,,,,,,,>)
-    };
+    ];
 
     private static readonly Type?[] SystemTupleConverter =
-    {
+    [
         null,
         typeof(TupleAsArrayConverter<>.SystemTuple), typeof(TupleAsArrayConverter<,>.SystemTuple),
         typeof(TupleAsArrayConverter<,,>.SystemTuple), typeof(TupleAsArrayConverter<,,,>.SystemTuple),
         typeof(TupleAsArrayConverter<,,,,>.SystemTuple), typeof(TupleAsArrayConverter<,,,,,>.SystemTuple),
         typeof(TupleAsArrayConverter<,,,,,,>.SystemTuple), typeof(TupleAsArrayConverter<,,,,,,>.SystemTuple<>)
-    };
+    ];
 
     private static readonly Type?[] ValueTupleConverter =
-    {
+    [
         null,
         typeof(TupleAsArrayConverter<>.ValueTuple), typeof(TupleAsArrayConverter<,>.ValueTuple),
         typeof(TupleAsArrayConverter<,,>.ValueTuple), typeof(TupleAsArrayConverter<,,,>.ValueTuple),
         typeof(TupleAsArrayConverter<,,,,>.ValueTuple), typeof(TupleAsArrayConverter<,,,,,>.ValueTuple),
         typeof(TupleAsArrayConverter<,,,,,,>.ValueTuple), typeof(TupleAsArrayConverter<,,,,,,>.ValueTuple<>)
-    };
+    ];
 
     private static readonly Type[] TupleTypes = Array
         .Empty<Type>()

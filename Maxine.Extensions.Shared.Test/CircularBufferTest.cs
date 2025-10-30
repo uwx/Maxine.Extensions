@@ -13,7 +13,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_ConstructorSizeIndexAccess_CorrectContent()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3]);
 
         Assert.AreEqual(5, buffer.Capacity);
         Assert.AreEqual(4, buffer.Count);
@@ -26,13 +26,13 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_Constructor_ExceptionWhenSourceIsLargerThanCapacity()
     {
-        Assert.Throws<ArgumentException>(() => new ObservableCircularBuffer<int>(3, new[] { 0, 1, 2, 3 }));
+        Assert.Throws<ArgumentException>(() => new ObservableCircularBuffer<int>(3, [0, 1, 2, 3]));
     }
 
     [TestMethod]
     public void CircularBuffer_GetEnumeratorConstructorDefinedArray_CorrectContent()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3]);
 
         int x = 0;
         foreach (var item in buffer)
@@ -94,7 +94,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_ToArrayConstructorDefinedArray_CorrectContent()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3]);
 
         CollectionAssert.AreEqual(buffer.ToArray(), new[] { 0, 1, 2, 3 });
     }
@@ -115,7 +115,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_ToArraySegmentsConstructorDefinedArray_CorrectContent()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3]);
 
         var arraySegments = buffer.ToArraySegments();
 
@@ -167,7 +167,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_Front_CorrectItem()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
 
         Assert.AreEqual(0, buffer.Front());
     }
@@ -175,14 +175,14 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_Back_CorrectItem()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
         Assert.AreEqual(4, buffer.Back());
     }
 
     [TestMethod]
     public void CircularBuffer_BackOfBufferOverflowByOne_CorrectItem()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
         buffer.PushBack(42);
         CollectionAssert.AreEqual(buffer.ToArray(), new[] { 1, 2, 3, 4, 42 });
         Assert.AreEqual(42, buffer.Back());
@@ -206,7 +206,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_PopBack_RemovesBackElement()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
 
         Assert.AreEqual(5, buffer.Count);
 
@@ -219,7 +219,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_PopBackInOverflowBuffer_RemovesBackElement()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
         buffer.PushBack(5);
 
         Assert.AreEqual(5, buffer.Count);
@@ -234,7 +234,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_PopFront_RemovesBackElement()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
 
         Assert.AreEqual(5, buffer.Count);
 
@@ -247,7 +247,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_PopFrontInOverflowBuffer_RemovesBackElement()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
         buffer.PushFront(5);
 
         Assert.AreEqual(5, buffer.Count);
@@ -262,7 +262,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_SetIndex_ReplacesElement()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 })
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4])
         {
             [1] = 10,
             [3] = 30
@@ -277,7 +277,7 @@ public class CircularBufferTests
         // test to confirm this issue does not happen anymore:
         // https://github.com/joaoportela/CircularBuffer-CSharp/issues/2
 
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 0, 1, 2, 3, 4 });
+        var buffer = new ObservableCircularBuffer<int>(5, [0, 1, 2, 3, 4]);
 
         buffer.PopFront(); // (make size and capacity different)
 
@@ -287,7 +287,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_Clear_ClearsContent()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 4, 3, 2, 1, 0 });
+        var buffer = new ObservableCircularBuffer<int>(5, [4, 3, 2, 1, 0]);
 
         buffer.Clear();
 
@@ -299,7 +299,7 @@ public class CircularBufferTests
     [TestMethod]
     public void CircularBuffer_Clear_WorksNormallyAfterClear()
     {
-        var buffer = new ObservableCircularBuffer<int>(5, new[] { 4, 3, 2, 1, 0 });
+        var buffer = new ObservableCircularBuffer<int>(5, [4, 3, 2, 1, 0]);
 
         buffer.Clear();
         for (int i = 0; i < 5; i++)

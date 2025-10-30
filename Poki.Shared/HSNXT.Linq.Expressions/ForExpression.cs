@@ -83,7 +83,7 @@ public class ForExpression : CustomExpression
         var @break = BreakTarget ?? Label("break");
 
         return Block(
-            new[] {Variable},
+            [Variable],
             Variable.Assign(Initializer),
             Loop(
                 Block(

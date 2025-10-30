@@ -284,6 +284,6 @@ public static class ExpressionUtils
     }
     
     private static readonly ConstructorInfo NewValueTaskInfo
-        = typeof(ValueTask).GetConstructor(new[] { typeof(Task) })
+        = typeof(ValueTask).GetConstructor([typeof(Task)])
           ?? throw new InvalidOperationException($"Did not find {nameof(ValueTask)} single-argument constructor");
 }

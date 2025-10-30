@@ -16,7 +16,7 @@ internal static class FactoryStorage
             return factory;
         }
 
-        return Factories[type] = ActivatorUtilities.CreateFactory(type, Array.Empty<Type>());
+        return Factories[type] = ActivatorUtilities.CreateFactory(type, []);
     }
 }
 

@@ -51,7 +51,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MutableArray()
     {
-        BackingArray = Array.Empty<T>();
+        BackingArray = [];
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -735,7 +735,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
         {
             if (match(self.BackingArray[i]))
             {
-                removeIndices ??= new List<int>();
+                removeIndices ??= [];
 
                 removeIndices.Add(i);
             }
@@ -850,7 +850,7 @@ public readonly struct MutableArray<T> : IImmutableList<T>, IList<T>, IList, ISt
         var self = this;
         if (self.BackingArray == null || self.BackingArray.Length == 0)
         {
-            return Enumerable.Empty<TResult>();
+            return [];
         }
 
         return self.BackingArray.OfType<TResult>();
@@ -1631,7 +1631,7 @@ internal static class ImmutableExtensions
 
         if (count == 0)
         {
-            return Array.Empty<T>();
+            return [];
         }
 
         T[] array = new T[count];

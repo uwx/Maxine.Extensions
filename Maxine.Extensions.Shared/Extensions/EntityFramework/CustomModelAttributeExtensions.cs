@@ -202,7 +202,7 @@ public static class CustomModelAttributeExtensions
                     if (!processorAttr.CanHaveMultiple)
                     {
                         // lazily initialize the tally
-                        uniqueAttributeTally ??= new HashSet<Type>();
+                        uniqueAttributeTally ??= [];
                         
                         if (!uniqueAttributeTally.Add(processorAttr.GetType()))
                         {

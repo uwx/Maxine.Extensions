@@ -135,9 +135,9 @@ public class CustomSKShaper : IDisposable
     )
     {
         public Result() : this(
-            Array.Empty<uint>(),
-            Array.Empty<uint>(),
-            Array.Empty<SKPoint>(),
+            [],
+            [],
+            [],
             0,
             0
         )

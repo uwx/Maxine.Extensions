@@ -48,26 +48,26 @@ public class HashTests
     {
         for (var i = 0; i < 1000; i++)
         {
-            yield return new object[] { i };
+            yield return [i];
         }
         
         for (var i = int.MaxValue; i > int.MaxValue - 1000; i++)
         {
-            yield return new object[] { i };
+            yield return [i];
         }
 
         for (var i = int.MinValue; i <= int.MinValue + 1000; i++)
         {
-            yield return new object[] { i };
+            yield return [i];
         }
 
         var random = new Random(1394276316);
         
-        yield return new object[] { 1394276316 };
+        yield return [1394276316];
 
         for (var i = 0; i < 1000; i++)
         {
-            yield return new object[] { random.Next() };
+            yield return [random.Next()];
         }
     }
 }

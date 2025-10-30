@@ -1149,7 +1149,7 @@ public class CSharpWriter : ExpressionWriter
     {
         Visit(Expression.Call(
             node.Expression,
-            typeof(object).GetMethod(nameof(GetType), new Type [0])));
+            typeof(object).GetMethod(nameof(GetType), [])));
 
         WriteSpace();
         WriteToken("==");

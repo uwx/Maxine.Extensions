@@ -34,7 +34,7 @@ public class CircularBufferIndexTest
         {
             for (var j = 0; j < 100; j++)
             {
-                yield return new object[] { i, j };
+                yield return [i, j];
             }
         }
     }

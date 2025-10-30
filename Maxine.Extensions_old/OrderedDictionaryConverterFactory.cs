@@ -24,7 +24,7 @@ public class OrderedDictionaryConverterFactory : JsonConverterFactory
             typeof(OrderedDictionaryConverter<,>).MakeGenericType(keyType, valueType),
             BindingFlags.Instance | BindingFlags.Public,
             binder: null,
-            args: new object[] { options },
+            args: [options],
             culture: null
         )!;
 

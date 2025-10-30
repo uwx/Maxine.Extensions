@@ -2,7 +2,7 @@
 <#@ output extension=".cs" #>
 <#@ assembly name="System.Core" #>
 <#
-string[] logLevels = { "Trace", "Debug", "Information", "Warning", "Error", "Critical" };
+string[] logLevels = [ "Trace", "Debug", "Information", "Warning", "Error", "Critical" ];
 #>
 #nullable enable
 

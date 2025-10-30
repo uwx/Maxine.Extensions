@@ -5,13 +5,13 @@ namespace RayTech.RayLog.MEL;
 public static class RayLogUtils
 {
     public static readonly string[] LevelNames =
-    {
+    [
         "Debug",
         "Info",
         "Warning",
         "Severe",
-        "Fatal",
-    };
+        "Fatal"
+    ];
 
     internal static readonly long StartTime;
 

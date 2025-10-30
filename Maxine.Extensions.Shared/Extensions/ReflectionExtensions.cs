@@ -10,7 +10,7 @@ public static class ReflectionExtensions
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns>The default constructor, or <c>null</c> if none exists.</returns>
-    public static ConstructorInfo? GetDefaultConstructor(this Type type) => type.GetConstructor(Array.Empty<Type>());
+    public static ConstructorInfo? GetDefaultConstructor(this Type type) => type.GetConstructor([]);
     
     /// <summary>
     /// Reflectively invokes a constructor with no parameters.

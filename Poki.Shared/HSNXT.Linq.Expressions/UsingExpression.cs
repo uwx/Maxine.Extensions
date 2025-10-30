@@ -64,7 +64,7 @@ public class UsingExpression : CustomExpression
         var endFinally = Label("end_finally");
 
         return Block(
-            new[] {Variable},
+            [Variable],
             Variable.Assign(Disposable),
             TryFinally(
                 Body,

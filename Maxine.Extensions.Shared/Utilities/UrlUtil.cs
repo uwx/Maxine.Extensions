@@ -11,7 +11,7 @@ public static class UrlUtil
         var seg1 = uri1.AsSpan().TrimEnd(UrlSeparator);
         var seg2 = uri2.AsSpan().TrimStart(UrlSeparator);
 
-        Span<char> chars = stackalloc char[] { UrlSeparator };
+        Span<char> chars = [UrlSeparator];
 
         return string.Concat(seg1, chars, seg2);
     }

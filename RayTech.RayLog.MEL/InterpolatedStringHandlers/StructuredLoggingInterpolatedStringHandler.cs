@@ -9,8 +9,8 @@ namespace RayTech.RayLog.MEL;
 [InterpolatedStringHandler]
 public ref struct StructuredLoggingInterpolatedStringHandler
 {
-    private static readonly char[] CharsToEscape = { '{', '}' }; // escape these chars if they appear in a literal
-    internal static readonly char[] CharsToRemove = { '{', ':', '}' }; // remove these chars if they appear in the argument name
+    private static readonly char[] CharsToEscape = ['{', '}']; // escape these chars if they appear in a literal
+    internal static readonly char[] CharsToRemove = ['{', ':', '}']; // remove these chars if they appear in the argument name
     
     private DefaultInterpolatedStringHandler _template;
     private ArgumentList _arguments;

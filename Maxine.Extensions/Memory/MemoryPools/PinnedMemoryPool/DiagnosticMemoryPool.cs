@@ -36,10 +36,10 @@ internal sealed class DiagnosticMemoryPool : MemoryPool<byte>
         _pool = pool;
         _allowLateReturn = allowLateReturn;
         _rentTracking = rentTracking;
-        _blocks = new HashSet<DiagnosticPoolBlock>();
+        _blocks = [];
         _syncObj = new object();
         _allBlocksReturned = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        _blockAccessExceptions = new List<Exception>();
+        _blockAccessExceptions = [];
     }
 
     public bool IsDisposed { get; private set; }

@@ -96,7 +96,7 @@ public class WeightedRandomizer<T> : IWeightedRandomizer<T> where T : notnull
         _weights = new Dictionary<T, int>(entries);
         TotalWeight = _weights.Sum(static kvp => kvp.Value <= 0 ? throw new InvalidOperationException("Weight cannot be negative") : kvp.Value);
 
-        _probabilityBoxes = new List<ProbabilityBox>();
+        _probabilityBoxes = [];
         _heightPerBox = 0;
 
         VerifyHaveItemsToChooseFrom();
