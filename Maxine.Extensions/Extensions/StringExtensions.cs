@@ -61,7 +61,7 @@ public static class StringExtensions
             _started = false;
         }
 
-        public SplitEnumeratorArgs1 GetEnumerator() => this;
+        public readonly SplitEnumeratorArgs1 GetEnumerator() => this;
 
         public bool MoveNext()
         {
@@ -124,7 +124,7 @@ public static class StringExtensions
             _started = false;
         }
 
-        public SplitEnumeratorArgsN GetEnumerator() => this;
+        public readonly SplitEnumeratorArgsN GetEnumerator() => this;
 
         public bool MoveNext()
         {
