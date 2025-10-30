@@ -59,6 +59,7 @@ public static class StartupTaskWebHostExtensions
     /// <typeparam name="TInterface">The interface type to decorate.</typeparam>
     /// <typeparam name="TDecorator">The decorator type.</typeparam>
     /// <returns>The service collection, with the decorated service.</returns>
+    [RequiresUnreferencedCode("Uses ActivatorUtilities.CreateFactory which requires unreferenced code for reflection-based instantiation")]
     public static IServiceCollection Decorate<
         TInterface,
         [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)] TDecorator
@@ -81,6 +82,7 @@ public static class StartupTaskWebHostExtensions
         return services;
     }
 
+    [RequiresUnreferencedCode("Uses ActivatorUtilities.CreateFactory which requires unreferenced code for reflection-based instantiation")]
     private static Func<IServiceProvider, object> CreateServiceFactory(ServiceDescriptor descriptor)
     {
         if (descriptor.ImplementationInstance != null)

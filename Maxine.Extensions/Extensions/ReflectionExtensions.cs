@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Maxine.Extensions;
 
@@ -10,6 +11,7 @@ public static class ReflectionExtensions
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns>The default constructor, or <c>null</c> if none exists.</returns>
+    [RequiresUnreferencedCode("Uses reflection to access constructors which may be trimmed")]
     public static ConstructorInfo? GetDefaultConstructor(this Type type) => type.GetConstructor([]);
     
     /// <summary>
@@ -17,6 +19,7 @@ public static class ReflectionExtensions
     /// </summary>
     /// <param name="ctor">The constructor.</param>
     /// <returns>The created object.</returns>
+    [RequiresUnreferencedCode("Reflection-based invocation may break with trimming or AOT compilation")]
     public static object Invoke(this ConstructorInfo ctor) => ctor.Invoke(null);
 
     /// <summary>
@@ -25,5 +28,6 @@ public static class ReflectionExtensions
     /// <param name="method">The constructor.</param>
     /// <param name="obj">The instance type, or <c>null</c> for static methods.</param>
     /// <returns>The method's return value.</returns>
+    [RequiresUnreferencedCode("Reflection-based invocation may break with trimming or AOT compilation")]
     public static object? Invoke(this MethodInfo method, object? obj) => method.Invoke(obj, null);
 }

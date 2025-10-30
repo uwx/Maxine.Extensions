@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Maxine.Extensions;
 
@@ -29,6 +30,7 @@ public static class TypeExtensions
      * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
      * SOFTWARE.
      */
+    [RequiresUnreferencedCode("Uses reflection to access type metadata which may be trimmed")]
     public static string HumanizeTypeName(this Type type)
     {
         if (type is { IsGenericType: false, FullName: {} fullName })

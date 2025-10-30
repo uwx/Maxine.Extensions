@@ -14,7 +14,7 @@ public static partial class SpanExtensions
     /// <param name="source">The <see cref="Span{T}"/> to operate on.</param>
     /// <param name="predicate">The Condition to be satisfied.</param>   
     /// <returns>A <see cref="bool"/> indicating whether or not every element in <paramref name="source"/> satisified the condition.</returns> 
-    public static bool All<T>(this Span<T> source, Predicate<T> predicate) where T : IEquatable<T>
+    public static bool All<T>(this scoped Span<T> source, Predicate<T> predicate) where T : IEquatable<T>
     {
         return ReadOnlySpanExtensions.All(source, predicate);
     }
@@ -26,7 +26,7 @@ public static partial class SpanExtensions
     /// <param name="source">The <see cref="Span{T}"/> to operate on.</param>    
     /// <param name="predicate">The Condition to be satisfied.</param>  
     /// <returns>A <see cref="bool"/> indicating whether or not any elements satisified the condition.</returns> 
-    public static bool Any<T>(this Span<T> source, Predicate<T> predicate) where T : IEquatable<T>
+    public static bool Any<T>(this scoped Span<T> source, Predicate<T> predicate) where T : IEquatable<T>
     {
         return ReadOnlySpanExtensions.Any(source, predicate);
     }
@@ -39,7 +39,7 @@ public static partial class SpanExtensions
     /// <typeparam name="T">The type of elements in <paramref name="source"/>.</typeparam>
     /// <param name="source">The <see cref="Span{T}"/> to operate on.</param> 
     /// <returns>The Sum of all the <typeparamref name="T"/>s in <paramref name="source"/>.</returns>
-    public static T Sum<T>(this Span<T> source) where T : INumber<T>
+    public static T Sum<T>(this scoped Span<T> source) where T : INumber<T>
     {
         return ReadOnlySpanExtensions.Sum<T>(source);
     }
@@ -242,7 +242,7 @@ public static partial class SpanExtensions
     /// <typeparam name="T">The type of elements in <paramref name="source"/>.</typeparam> 
     /// <param name="source">The <see cref="Span{T}"/> to operate on.</param>    
     /// <returns>The Average of all the values in <paramref name="source"/>.</returns>
-    public static T Average<T>(this Span<T> source) where T : INumber<T>
+    public static T Average<T>(this scoped Span<T> source) where T : INumber<T>
     {
         var sum = source.Sum();
         return sum / T.CreateChecked(source.Length);

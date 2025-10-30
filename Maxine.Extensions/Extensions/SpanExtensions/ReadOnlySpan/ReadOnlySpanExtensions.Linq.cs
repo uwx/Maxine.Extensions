@@ -15,7 +15,7 @@ public static partial class ReadOnlySpanExtensions
     /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to operate on.</param>
     /// <param name="predicate">The condition to be satisfied.</param>   
     /// <returns>A <see cref="bool"/> indicating whether or not every element in <paramref name="source"/> satisified the condition.</returns> 
-    public static bool All<T>(this ReadOnlySpan<T> source, Predicate<T> predicate) where T : IEquatable<T>
+    public static bool All<T>(this scoped ReadOnlySpan<T> source, Predicate<T> predicate) where T : IEquatable<T>
     {
         foreach (var t in source)
         {
@@ -35,7 +35,7 @@ public static partial class ReadOnlySpanExtensions
     /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to operate on.</param>    
     /// <param name="predicate">The condition to be satisfied.</param>  
     /// <returns>A <see cref="bool"/> indicating whether or not any elements satisified the condition.</returns> 
-    public static bool Any<T>(this ReadOnlySpan<T> source, Predicate<T> predicate) where T : IEquatable<T>
+    public static bool Any<T>(this scoped ReadOnlySpan<T> source, Predicate<T> predicate) where T : IEquatable<T>
     {
         foreach (var t in source)
         {
@@ -55,7 +55,7 @@ public static partial class ReadOnlySpanExtensions
     /// <typeparam name="T">The type of elements in <paramref name="source"/>.</typeparam>
     /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to operate on.</param> 
     /// <returns>The Sum of all the <typeparamref name="T"/>s in <paramref name="source"/>.</returns>
-    public static T Sum<T>(this ReadOnlySpan<T> source) where T : INumber<T>
+    public static T Sum<T>(this scoped ReadOnlySpan<T> source) where T : INumber<T>
     {
         var number = T.Zero;
         foreach (var t in source)
