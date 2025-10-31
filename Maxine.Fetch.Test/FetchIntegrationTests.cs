@@ -434,6 +434,40 @@ public class FetchIntegrationTests
         }
     }
 
+    [TestMethod]
+    public async Task FetchAsync_Response_UrlPropertyReturnsRequestUri()
+    {
+        // Arrange
+        var uri = $"{_baseUrl}hello";
+
+        // Act
+        using var response = await Fetch.FetchAsync(uri);
+
+        // Assert
+        Assert.IsNotNull(response.Url);
+        Assert.AreEqual(uri, response.Url!.ToString());
+    }
+
+    [TestMethod]
+    public async Task FetchAsync_WithUriOverload_WorksCorrectly()
+    {
+        // Arrange
+        var uri = new Uri($"{_baseUrl}json");
+        var request = new RequestNoUri
+        {
+            Method = HttpMethod.Get
+        };
+
+        // Act
+        using var response = await Fetch.FetchAsync(uri, request);
+        var data = await response.Json<TestJsonData>();
+
+        // Assert
+        Assert.IsTrue(response.Ok);
+        Assert.IsNotNull(data);
+        Assert.AreEqual("Hello from JSON", data.Message);
+    }
+
     private class TestJsonData
     {
         public string Message { get; set; } = string.Empty;
