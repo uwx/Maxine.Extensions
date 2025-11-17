@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Maxine.Extensions;
 
-public class StringHelpers
+public static class StringHelpers
 {
     private static readonly FrozenSet<char> InvalidFileNameCharsSet = Path.GetInvalidFileNameChars().ToFrozenSet();
     public static string NormalizeFilename(string name)

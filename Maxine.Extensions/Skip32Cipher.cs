@@ -25,7 +25,7 @@ namespace Maxine.Extensions;
 /// https://github.com/nlenepveu/Skip32
 /// </para>
 /// </summary>
-public class Skip32Cipher
+internal class Skip32Cipher
 {
     public const int KeySize = 10;
     public const int BlockSize = 4;
@@ -176,7 +176,7 @@ public class Skip32Cipher
         Debug.Assert(key.Length == KeySize);
 
         int k; /* round number */
-        // int i; /* round counter */
+        int i; /* round counter */
         int kstep;
 
         /* sort out direction */
@@ -196,7 +196,7 @@ public class Skip32Cipher
         var wr = (ushort)((data[2] << 8) + data[3]);
 
         /* 24 feistel rounds, doubled up */
-        //for (i = 0; i < roundCount / 2; ++i)
+        for (i = 0; i < roundCount / 2; ++i)
         {
             wr ^= (ushort)(G(key, k, wl) ^ k);
             k += kstep;
