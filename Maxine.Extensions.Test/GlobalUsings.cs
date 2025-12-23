@@ -1,0 +1,1 @@
+﻿global using Nibble = Maxine.Extensions.Nibble<byte>;

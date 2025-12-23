@@ -8,35 +8,55 @@ namespace Maxine.Extensions;
 
 [PublicAPI]
 [StructLayout(LayoutKind.Sequential)]
-public struct Nibble(byte value) :
+public struct Nibble<T> :
     ISpanFormattable,
     IUtf8SpanFormattable,
-    IEquatable<Nibble>,
-    IEquatable<byte>,
-    IComparable<Nibble>,
-    IComparable<byte>,
+    IEquatable<Nibble<T>>,
+    IEquatable<T>,
+    IComparable<Nibble<T>>,
+    IComparable<T>,
     IComparable,
     IConvertible,
-    IMinMaxValue<Nibble>,
-    ISpanParsable<Nibble>,
-    IAdditionOperators<Nibble, Nibble, Nibble>,
-    IAdditiveIdentity<Nibble, Nibble>,
-    IBitwiseOperators<Nibble, Nibble, Nibble>,
-    IComparisonOperators<Nibble, Nibble, bool>,
-    IDecrementOperators<Nibble>,
-    IDivisionOperators<Nibble, Nibble, Nibble>,
-    IIncrementOperators<Nibble>,
-    IMultiplicativeIdentity<Nibble, Nibble>,
-    IMultiplyOperators<Nibble, Nibble, Nibble>,
-    ISubtractionOperators<Nibble, Nibble, Nibble>,
-    IShiftOperators<Nibble, int, Nibble>,
-    IModulusOperators<Nibble, Nibble, Nibble>,
-    IUnaryPlusOperators<Nibble, Nibble>
+    IMinMaxValue<Nibble<T>>,
+    ISpanParsable<Nibble<T>>,
+    IAdditionOperators<Nibble<T>, Nibble<T>, Nibble<T>>,
+    IAdditiveIdentity<Nibble<T>, Nibble<T>>,
+    IBitwiseOperators<Nibble<T>, Nibble<T>, Nibble<T>>,
+    IComparisonOperators<Nibble<T>, Nibble<T>, bool>,
+    IDecrementOperators<Nibble<T>>,
+    IDivisionOperators<Nibble<T>, Nibble<T>, Nibble<T>>,
+    IIncrementOperators<Nibble<T>>,
+    IMultiplicativeIdentity<Nibble<T>, Nibble<T>>,
+    IMultiplyOperators<Nibble<T>, Nibble<T>, Nibble<T>>,
+    ISubtractionOperators<Nibble<T>, Nibble<T>, Nibble<T>>,
+    IShiftOperators<Nibble<T>, int, Nibble<T>>,
+    IModulusOperators<Nibble<T>, Nibble<T>, Nibble<T>>,
+    IUnaryPlusOperators<Nibble<T>, Nibble<T>>
+    where T : IBinaryInteger<T>, IMinMaxValue<T>, IConvertible
 {
-    private byte _value = value;
+    public static Nibble<T> AllZeros => new();
+
+    private T _value;
+
+    public Nibble(ReadOnlySpan<bool> parts)
+    {
+        _value = T.Zero;
+        for (var i = 0; i < parts.Length; i++)
+        {
+            if (parts[i])
+            {
+                _value |= T.One << i;
+            }
+        }
+    }
+
+    public Nibble(T value)
+    {
+        _value = value;
+    }
 
     // ReSharper disable once ConvertToAutoPropertyWhenPossible
-    public byte Value
+    public T Value
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly get => _value;
@@ -48,44 +68,44 @@ public struct Nibble(byte value) :
     public bool this[int bit]
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly get => ((_value >> bit) & 0x01) != 0;
+        readonly get => ((_value >> bit) & T.One) != T.Zero;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
-            var bitMask = 1 << bit;
+            var bitMask = T.One << bit;
             if (value)
             {
-                _value |= (byte)bitMask;
+                _value |= bitMask;
             }
             else
             {
-                _value &= (byte)~bitMask;
+                _value &= ~bitMask;
             }
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator Nibble(byte value) => new(value);
+    public static implicit operator Nibble<T>(T value) => new(value);
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator byte(Nibble nibble) => nibble._value;
+    public static implicit operator T(Nibble<T> nibble) => nibble._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Equals(Nibble other) => _value == other._value;
+    public readonly bool Equals(Nibble<T> other) => _value == other._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool Equals(byte other) => _value == other;
+    public readonly bool Equals(T? other) => _value == other;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly int CompareTo(Nibble other) => _value.CompareTo(other._value);
+    public readonly int CompareTo(Nibble<T> other) => _value.CompareTo(other._value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly int CompareTo(byte other) => _value.CompareTo(other);
+    public readonly int CompareTo(T? other) => _value.CompareTo(other);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override bool Equals([NotNullWhen(true)] object? obj)
-        => obj?.GetType() == typeof(Nibble) && ((Nibble)obj)._value == _value;
+        => obj?.GetType() == typeof(Nibble<T>) && ((Nibble<T>)obj)._value == _value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly override int GetHashCode()
@@ -96,10 +116,10 @@ public struct Nibble(byte value) :
         => $"{nameof(_value)}: {_value}";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Nibble left, Nibble right) => left._value == right._value;
+    public static bool operator ==(Nibble<T> left, Nibble<T> right) => left._value == right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(Nibble left, Nibble right) => !(left == right);
+    public static bool operator !=(Nibble<T> left, Nibble<T> right) => !(left == right);
 
     #region IComparable
     
@@ -127,76 +147,76 @@ public struct Nibble(byte value) :
     readonly TypeCode IConvertible.GetTypeCode() => _value.GetTypeCode();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => ((IConvertible)_value).ToBoolean(provider);
+    readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => _value.ToBoolean(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly byte IConvertible.ToByte(IFormatProvider? provider) => ((IConvertible)_value).ToByte(provider);
+    readonly byte IConvertible.ToByte(IFormatProvider? provider) => _value.ToByte(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly char IConvertible.ToChar(IFormatProvider? provider) => ((IConvertible)_value).ToChar(provider);
+    readonly char IConvertible.ToChar(IFormatProvider? provider) => _value.ToChar(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => ((IConvertible)_value).ToDateTime(provider);
+    readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => _value.ToDateTime(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => ((IConvertible)_value).ToDecimal(provider);
+    readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => _value.ToDecimal(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly double IConvertible.ToDouble(IFormatProvider? provider) => ((IConvertible)_value).ToDouble(provider);
+    readonly double IConvertible.ToDouble(IFormatProvider? provider) => _value.ToDouble(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly short IConvertible.ToInt16(IFormatProvider? provider) => ((IConvertible)_value).ToInt16(provider);
+    readonly short IConvertible.ToInt16(IFormatProvider? provider) => _value.ToInt16(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly int IConvertible.ToInt32(IFormatProvider? provider) => ((IConvertible)_value).ToInt32(provider);
+    readonly int IConvertible.ToInt32(IFormatProvider? provider) => _value.ToInt32(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly long IConvertible.ToInt64(IFormatProvider? provider) => ((IConvertible)_value).ToInt64(provider);
+    readonly long IConvertible.ToInt64(IFormatProvider? provider) => _value.ToInt64(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => ((IConvertible)_value).ToSByte(provider);
+    readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => _value.ToSByte(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly float IConvertible.ToSingle(IFormatProvider? provider) => ((IConvertible)_value).ToSingle(provider);
+    readonly float IConvertible.ToSingle(IFormatProvider? provider) => _value.ToSingle(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     readonly string IConvertible.ToString(IFormatProvider? provider) => _value.ToString(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly object IConvertible.ToType(Type conversionType, IFormatProvider? provider) => ((IConvertible)_value).ToType(conversionType, provider);
+    readonly object IConvertible.ToType(Type conversionType, IFormatProvider? provider) => _value.ToType(conversionType, provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly ushort IConvertible.ToUInt16(IFormatProvider? provider) => ((IConvertible)_value).ToUInt16(provider);
+    readonly ushort IConvertible.ToUInt16(IFormatProvider? provider) => _value.ToUInt16(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly uint IConvertible.ToUInt32(IFormatProvider? provider) => ((IConvertible)_value).ToUInt32(provider);
+    readonly uint IConvertible.ToUInt32(IFormatProvider? provider) => _value.ToUInt32(provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    readonly ulong IConvertible.ToUInt64(IFormatProvider? provider) => ((IConvertible)_value).ToUInt64(provider);
+    readonly ulong IConvertible.ToUInt64(IFormatProvider? provider) => _value.ToUInt64(provider);
     
     #endregion
 
     #region Parsable
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble Parse(string s, IFormatProvider? provider) => byte.Parse(s, provider);
+    public static Nibble<T> Parse(string s, IFormatProvider? provider) => T.Parse(s, provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Nibble result)
+    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Nibble<T> result)
     {
-        var res = byte.TryParse(s, provider, out var value);
-        result = value;
+        var res = T.TryParse(s, provider, out var value);
+        result = value!;
         return res;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => byte.Parse(s, provider);
+    public static Nibble<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => T.Parse(s, provider);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Nibble result)
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Nibble<T> result)
     {
-        var res = byte.TryParse(s, provider, out var value);
-        result = value;
+        var res = T.TryParse(s, provider, out var value);
+        result = value!;
         return res;
     }
     
@@ -204,86 +224,86 @@ public struct Nibble(byte value) :
 
     #region Number
 
-    static Nibble IAdditiveIdentity<Nibble, Nibble>.AdditiveIdentity
+    static Nibble<T> IAdditiveIdentity<Nibble<T>, Nibble<T>>.AdditiveIdentity
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => 0;
+        get => T.AdditiveIdentity;
     }
 
-    static Nibble IMultiplicativeIdentity<Nibble, Nibble>.MultiplicativeIdentity
+    static Nibble<T> IMultiplicativeIdentity<Nibble<T>, Nibble<T>>.MultiplicativeIdentity
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => 1;
+        get => T.MultiplicativeIdentity;
     }
 
-    public static Nibble MaxValue
+    public static Nibble<T> MaxValue
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => byte.MaxValue;
+        get => T.MaxValue;
     }
 
-    public static Nibble MinValue
+    public static Nibble<T> MinValue
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => byte.MinValue;
+        get => T.MinValue;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator +(Nibble value) => value;
+    public static Nibble<T> operator +(Nibble<T> value) => value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator +(Nibble left, Nibble right) => (byte)(left._value + right._value);
+    public static Nibble<T> operator +(Nibble<T> left, Nibble<T> right) => left._value + right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator &(Nibble left, Nibble right) => (byte)(left._value & right._value);
+    public static Nibble<T> operator &(Nibble<T> left, Nibble<T> right) => left._value & right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator |(Nibble left, Nibble right) => (byte)(left._value | right._value);
+    public static Nibble<T> operator |(Nibble<T> left, Nibble<T> right) => left._value | right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator ^(Nibble left, Nibble right) => (byte)(left._value ^ right._value);
+    public static Nibble<T> operator ^(Nibble<T> left, Nibble<T> right) => left._value ^ right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator ~(Nibble value) => (byte)~value._value;
+    public static Nibble<T> operator ~(Nibble<T> value) => ~value._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator >(Nibble left, Nibble right) =>  left._value > right._value;
+    public static bool operator >(Nibble<T> left, Nibble<T> right) =>  left._value > right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator >=(Nibble left, Nibble right) => left._value >= right._value;
+    public static bool operator >=(Nibble<T> left, Nibble<T> right) => left._value >= right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator <(Nibble left, Nibble right) =>  left._value < right._value;
+    public static bool operator <(Nibble<T> left, Nibble<T> right) =>  left._value < right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator <=(Nibble left, Nibble right) => left._value <= right._value;
+    public static bool operator <=(Nibble<T> left, Nibble<T> right) => left._value <= right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator --(Nibble value) => (byte)(value._value-1);
+    public static Nibble<T> operator --(Nibble<T> value) => value._value-T.One;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator /(Nibble left, Nibble right) => (byte)(left._value / right._value);
+    public static Nibble<T> operator /(Nibble<T> left, Nibble<T> right) => left._value / right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator %(Nibble left, Nibble right) => (byte)(left._value % right._value);
+    public static Nibble<T> operator %(Nibble<T> left, Nibble<T> right) => left._value % right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator ++(Nibble value) => (byte)(value._value+1);
+    public static Nibble<T> operator ++(Nibble<T> value) => value._value+T.One;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator *(Nibble left, Nibble right) => (byte)(left._value * right._value);
+    public static Nibble<T> operator *(Nibble<T> left, Nibble<T> right) => left._value * right._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator -(Nibble left, Nibble right) => (byte)(left._value - right._value);
+    public static Nibble<T> operator -(Nibble<T> left, Nibble<T> right) => left._value - right._value;
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator <<(Nibble value, int shiftAmount) => (byte)(value._value << shiftAmount);
+    public static Nibble<T> operator <<(Nibble<T> value, int shiftAmount) => value._value << shiftAmount;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator >>(Nibble value, int shiftAmount) => (byte)(value._value >> shiftAmount);
+    public static Nibble<T> operator >>(Nibble<T> value, int shiftAmount) => value._value >> shiftAmount;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Nibble operator >>>(Nibble value, int shiftAmount) => (byte)(value._value >>> shiftAmount);
+    public static Nibble<T> operator >>>(Nibble<T> value, int shiftAmount) => value._value >>> shiftAmount;
 
     #endregion
 }
