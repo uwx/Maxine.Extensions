@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maxine.Extensions.Expressio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maxine.Fetch.Test", "Maxine.Fetch.Test\Maxine.Fetch.Test.csproj", "{E6308531-35FB-4251-B5A9-9A5879133CC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maxine.Extensions.MessagePack", "Maxine.Extensions.MessagePack\Maxine.Extensions.MessagePack.csproj", "{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -192,6 +194,18 @@ Global
 		{E6308531-35FB-4251-B5A9-9A5879133CC0}.Release|x64.Build.0 = Release|Any CPU
 		{E6308531-35FB-4251-B5A9-9A5879133CC0}.Release|x86.ActiveCfg = Release|Any CPU
 		{E6308531-35FB-4251-B5A9-9A5879133CC0}.Release|x86.Build.0 = Release|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Debug|x64.Build.0 = Debug|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Release|x64.Build.0 = Release|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D8E3D8D-47AF-4BA1-896F-D7E107BCC319}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

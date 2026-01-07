@@ -1,0 +1,79 @@
+<#@ template language="C#" #>
+using System.Runtime.CompilerServices;
+using MessagePack;
+using MessagePack.Formatters;
+using JetBrains.Annotations;
+
+namespace Maxine.Extensions.MessagePack;
+
+<#
+    for (var i = 2; i <= 16; i++)
+    {
+        var typeCode = (sbyte)(-i);
+        var typeName = $"InlineArray{i}";
+#>
+[PublicAPI]
+public sealed class <#= typeName #>Formatter<T>(sbyte typeCode = <#= typeCode #>) : IMessagePackFormatter<<#= typeName #><T>>
+{
+	public static readonly <#= typeName #>Formatter<T> Instance = new();
+
+    public readonly sbyte TypeCode = typeCode;
+
+    public void Serialize(ref MessagePackWriter writer, <#= typeName #><T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(<#= i #>);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+<#
+        for (var j = 0; j < i; j++)
+        {
+#>
+        formatter.Serialize(ref writer, value[<#= j #>], options);
+<#
+        }
+#>
+    }
+
+    public <#= typeName #><T> Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new <#= typeName #><T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+<#
+        for (var j = 0; j < i; j++)
+        {
+#>
+				case <#= j #>:
+					result[<#= j #>] = formatter.Deserialize(ref reader, options);
+					break;
+<#
+        }
+#>
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
+}
+
+<#
+    }
+#>
