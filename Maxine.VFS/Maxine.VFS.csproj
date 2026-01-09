@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\PSO2ModManger_try3\Maxine.Extensions\Maxine.Extensions\Maxine.Extensions.csproj" />
       <ProjectReference Include="..\Maxine.Extensions\Maxine.Extensions.csproj" />
     </ItemGroup>
 

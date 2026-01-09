@@ -1,9 +1,16 @@
 ﻿namespace Maxine.VFS;
 
-public sealed class FallbackFileSystem : ReadOnlyFileSystem
+internal interface IFallbackFileSystem
+{
+    ReadOnlyFileSystem[] FileSystems { get; }
+}
+
+public sealed class FallbackFileSystem : ReadOnlyFileSystem, IFallbackFileSystem
 {
     private readonly bool _leaveOpen;
     private readonly ReadOnlyFileSystem[] _fileSystems;
+
+    ReadOnlyFileSystem[] IFallbackFileSystem.FileSystems => _fileSystems;
 
     public FallbackFileSystem(bool leaveOpen, params ReadOnlyFileSystem[] fileSystems) : this(fileSystems)
     {
@@ -12,7 +19,7 @@ public sealed class FallbackFileSystem : ReadOnlyFileSystem
 
     public FallbackFileSystem(params ReadOnlyFileSystem[] fileSystems)
     {
-        _fileSystems = fileSystems.SelectMany(e => e is FallbackFileSystem ffs ? ffs._fileSystems : [e]).ToArray();
+        _fileSystems = fileSystems.SelectMany(e => e is IFallbackFileSystem ffs ? ffs.FileSystems : [e]).ToArray();
     }
 
     public override ICollection<string> GetFiles(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly)

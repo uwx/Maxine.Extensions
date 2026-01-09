@@ -7,6 +7,7 @@ public interface IPath
         public static IoPath Instance { get; } = new();
         
         public char DirectorySeparatorChar => Path.DirectorySeparatorChar;
+
         public string? GetDirectoryName(string path) => Path.GetDirectoryName(path);
 
         public string Combine(params string[] paths) => Path.Combine(paths);
@@ -93,6 +94,7 @@ public interface IPath
     }
 
     char DirectorySeparatorChar { get; }
+    bool IsCaseSensitive => false;
 
     string? GetDirectoryName(string path);
     string Combine(string path, string path2) => Combine([path, path2]);
@@ -106,4 +108,13 @@ public interface IPath
     string ChangeExtension(string path, string newExtension);
 
     string GetFullPath(string path);
+    
+    bool PathEquals(string path1, string path2)
+    {
+        return string.Equals(
+            GetFullPath(path1).TrimEnd(DirectorySeparatorChar),
+            GetFullPath(path2).TrimEnd(DirectorySeparatorChar),
+            IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase
+        );
+    }
 }
