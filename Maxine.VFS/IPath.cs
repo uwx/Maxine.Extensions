@@ -44,7 +44,7 @@ public interface IPath
             // Handle absolute paths
             for (int i = paths.Length - 1; i >= 0; i--)
             {
-                if (paths[i].StartsWith(DirectorySeparatorCharConst) || paths[i].StartsWith(AltDirectorySeparatorChar) || 
+                if (paths[i].StartsWith(DirectorySeparatorCharConst) || paths[i].StartsWith(AltDirectorySeparatorChar) ||
                     (paths[i].Length >= 2 && paths[i][1] == ':' && char.IsLetter(paths[i][0])))
                 {
                     paths = paths[i..];
@@ -103,7 +103,10 @@ public interface IPath
             {
                 path = path[2..];
             }
-            
+
+            // Check if path is absolute (starts with /)
+            var isAbsolute = path.StartsWith(DirectorySeparatorCharConst);
+
             // Replace .. segments
             var segments = new List<string>();
             foreach (var segment in path.Split(DirectorySeparatorCharConst))
@@ -115,13 +118,14 @@ public interface IPath
                         segments.RemoveAt(segments.Count - 1);
                     }
                 }
-                else if (segment != ".")
+                else if (segment != "." && segment != "")
                 {
                     segments.Add(segment);
                 }
             }
 
-            return string.Join(DirectorySeparatorCharConst, segments);
+            var result = string.Join(DirectorySeparatorCharConst, segments);
+            return isAbsolute ? DirectorySeparatorCharConst + result : result;
         }
     }
 

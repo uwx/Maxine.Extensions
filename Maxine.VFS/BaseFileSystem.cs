@@ -138,8 +138,13 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
 
     public virtual Stream CreateFile(string path) => OpenFile(path, FileMode.Create, FileAccess.ReadWrite);
     public abstract Stream OpenFile(string path, FileMode mode = FileMode.OpenOrCreate, FileAccess access = FileAccess.ReadWrite);
+    public virtual ValueTask<Stream> OpenFileAsync(string path, FileMode mode = FileMode.OpenOrCreate, FileAccess access = FileAccess.ReadWrite)
+    {
+        return new ValueTask<Stream>(OpenFile(path, mode, access));
+    }
     public virtual Stream OpenWrite(string path) => OpenFile(path, FileMode.OpenOrCreate, FileAccess.Write);
     public override Stream OpenRead(string path) => OpenFile(path, FileMode.Open, FileAccess.Read);
+    public override ValueTask<Stream> OpenReadAsync(string path) => OpenFileAsync(path, FileMode.Open, FileAccess.Read);
 
     public abstract void CreateDirectory(string path);
     public abstract void DeleteFile(string path);
@@ -236,7 +241,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
             {
                 CreateDirectory(dir);
             }
-            await using var stream = OpenFile(path, FileMode.Create, FileAccess.Write);
+            await using var stream = await OpenFileAsync(path, FileMode.Create, FileAccess.Write);
             await stream.WriteAsync(data, cancellationToken);
         }
     }

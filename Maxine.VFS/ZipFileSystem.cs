@@ -24,20 +24,32 @@ public class ZipFileSystem : ReadOnlyFileSystem
             var fileEntry = new FileInZip(entry);
             _files[fullPath] = fileEntry;
 
-            // Ensure parent directories exist
-            var currentPath = directoryPath;
-            while (!string.IsNullOrEmpty(currentPath) && !_directories.ContainsKey(currentPath))
+            // Ensure parent directories exist - process from root to leaf
+            if (!string.IsNullOrEmpty(directoryPath) && !_directories.ContainsKey(directoryPath))
             {
-                var parentPath = Path.GetDirectoryName(currentPath) ?? "";
-                var dirEntry = new MemoryDirectory(currentPath);
-                if (!_directories.TryGetValue(parentPath, out var parentDirEntry))
+                // Build list of missing directories from root to leaf
+                var missingDirs = new Stack<string>();
+                var currentPath = directoryPath;
+                while (!string.IsNullOrEmpty(currentPath) && !_directories.ContainsKey(currentPath))
                 {
-                    _directories[parentPath] = parentDirEntry = new MemoryDirectory(parentPath);
+                    missingDirs.Push(currentPath);
+                    currentPath = Path.GetDirectoryName(currentPath) ?? "";
                 }
 
-                parentDirEntry.Add(dirEntry);
-                _directories[currentPath] = dirEntry;
-                currentPath = parentPath;
+                // Create directories from root to leaf
+                while (missingDirs.Count > 0)
+                {
+                    var dirPath = missingDirs.Pop();
+                    var parentPath = Path.GetDirectoryName(dirPath) ?? "";
+                    var dirEntry = new MemoryDirectory(dirPath);
+
+                    if (_directories.TryGetValue(parentPath, out var parentDirEntry))
+                    {
+                        parentDirEntry.Add(dirEntry);
+                    }
+
+                    _directories[dirPath] = dirEntry;
+                }
             }
 
             // Add file to its parent directory

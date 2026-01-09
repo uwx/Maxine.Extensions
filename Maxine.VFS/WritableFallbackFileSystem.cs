@@ -1,4 +1,6 @@
-﻿namespace Maxine.VFS;
+﻿using Maxine.Extensions.Collections.SpanLinq;
+
+namespace Maxine.VFS;
 
 public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
 {
@@ -9,15 +11,16 @@ public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
 
     ReadOnlyFileSystem[] IFallbackFileSystem.FileSystems => _fileSystems;
 
-    public WritableFallbackFileSystem(bool leaveOpen, BaseFileSystem newFileTarget, params ReadOnlyFileSystem[] fileSystems) : this(newFileTarget, fileSystems)
+    public WritableFallbackFileSystem(bool leaveOpen, BaseFileSystem newFileTarget, params ReadOnlySpan<ReadOnlyFileSystem> fileSystems) : this(newFileTarget, fileSystems)
     {
         _leaveOpen = leaveOpen;
     }
 
-    public WritableFallbackFileSystem(BaseFileSystem newFileTarget, params ReadOnlyFileSystem[] fileSystems)
+    public WritableFallbackFileSystem(BaseFileSystem newFileTarget, params ReadOnlySpan<ReadOnlyFileSystem> fileSystems)
     {
-        var allFileSystems = fileSystems.SelectMany(e => e is IFallbackFileSystem ffs ? ffs.FileSystems : [e]).ToList();
-        allFileSystems.Insert(0, newFileTarget);
+        var allFileSystems = fileSystems
+            .SelectMany(e => e is IFallbackFileSystem ffs ? ffs.FileSystems : [e])
+            .Prepend(newFileTarget);
         _fileSystems = allFileSystems.ToArray();
         _writeFileSystems = _fileSystems.OfType<BaseFileSystem>().ToArray();
         _newFileTarget = newFileTarget;

@@ -39,7 +39,7 @@ public class IPathTests
     {
         var path = IPath.MemoryPath.Instance;
         var result = path.Combine("C:\\Windows\\System32", "file.txt");
-        
+
         // When a Windows absolute path is encountered, it should start from there
         StringAssert.StartsWith(result, "C:");
     }
@@ -49,7 +49,7 @@ public class IPathTests
     {
         var path = IPath.MemoryPath.Instance;
         var result = path.Combine("base\\path", "C:\\absolute\\override");
-        
+
         // When a Windows absolute path is encountered, it should start from there
         StringAssert.StartsWith(result, "C:");
     }
@@ -62,7 +62,7 @@ public class IPathTests
     public void MemoryPath_GetFullPath_NormalizesBackslashesToForwardSlashes(string input)
     {
         var path = IPath.MemoryPath.Instance;
-        
+
         // Test through GetFullPath which should normalize
         var result = path.GetFullPath(input);
         Assert.IsFalse(result.Contains('\\'), $"Result '{result}' should not contain backslashes");
@@ -111,7 +111,7 @@ public class IPathTests
     {
         var path = IPath.MemoryPath.Instance;
         var result = path.Combine("base", "\\absolute\\path");
-        
+
         // Check if path starts with backslash and verify it's treated as absolute
         StringAssert.StartsWith(result, "\\");
     }
