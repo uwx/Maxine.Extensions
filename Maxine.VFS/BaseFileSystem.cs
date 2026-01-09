@@ -22,6 +22,11 @@ public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
 
     public abstract Stream OpenRead(string path);
 
+    public virtual ValueTask<Stream> OpenReadAsync(string path)
+    {
+        return new ValueTask<Stream>(OpenRead(path));
+    }
+
     public virtual byte[] ReadAllBytes(string path)
     {
         using var stream = OpenRead(path);

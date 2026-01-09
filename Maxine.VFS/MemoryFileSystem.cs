@@ -8,7 +8,7 @@ using Microsoft.IO;
 
 namespace Maxine.VFS;
 
-public sealed class MemoryFileSystem : BaseFileSystem
+public class MemoryFileSystem : BaseFileSystem
 {
     /*
     The MIT License (MIT)
@@ -21,7 +21,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
      */
 
-    public override IPath Path => IPath.MemoryPath.Instance;
+    public sealed override IPath Path => IPath.MemoryPath.Instance;
 
     private readonly Dictionary<string, MemoryDirectory> _directories = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -31,27 +31,6 @@ public sealed class MemoryFileSystem : BaseFileSystem
     private readonly Dictionary<string, MemoryFile> _files = new(StringComparer.OrdinalIgnoreCase);
 
     private readonly ReaderWriterLockSlim _lock = new(LockRecursionPolicy.SupportsRecursion);
-
-    private bool HasParent(string path, [NotNullWhen(true)] out MemoryDirectory? parent)
-    {
-        if (path == "")
-        {
-            parent = null;
-            return false;
-        }
-            
-        path = Path.GetFullPath(path);
-
-        if (Path.GetDirectoryName(path) is { } parentName)
-        {
-            return _directories.TryGetValue(parentName, out parent);
-        }
-
-        parent = _directories[""];
-        return true;
-    }
-
-    private bool HasParent(string path) => HasParent(path, out _);
 
     public override ICollection<string> GetFiles(string path)
     {
@@ -65,24 +44,12 @@ public sealed class MemoryFileSystem : BaseFileSystem
 
     public override IEnumerable<string> EnumerateFiles(string path)
     {
-        using var _ = _lock.GrabReadLock();
-
-        path = Path.GetFullPath(path);
-
-        return _directories.TryGetValue(path, out var v)
-            ? v.Where(static e => !e.IsDirectory).Select(static x => x.FullName)
-            : [];
+        return MemoryVfsHelpers.EnumerateFiles(Path, _directories, path, _lock);
     }
 
     public override IEnumerable<string> EnumerateDirectories(string path)
     {
-        using var _ = _lock.GrabReadLock();
-
-        path = Path.GetFullPath(path);
-
-        return _directories.TryGetValue(path, out var v)
-            ? v.Where(static e => e.IsDirectory).Select(static x => x.FullName)
-            : [];
+        return MemoryVfsHelpers.EnumerateDirectories(Path, _directories, path, _lock);
     }
 
     public override ICollection<string> GetFiles(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly)
@@ -107,72 +74,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
 
     private IEnumerable<string> EnumerateChildren(string path, string searchPattern, Func<BaseFsEntry, bool> predicate, SearchOption searchOption = SearchOption.TopDirectoryOnly)
     {
-        path = Path.GetFullPath(path);
-
-        searchPattern = searchPattern.Replace('/', '\\');
-
-        Func<string, bool> isMatchPattern;
-        if (searchPattern is "*" or "*.*")
-        {
-            isMatchPattern = static _ => true;
-        }
-        else
-        {
-            var re2 = new Regex(
-                Regex.Escape(searchPattern)
-                    .Replace(@"\*", ".*")
-                    .Replace(@"\?", "."),
-                RegexOptions.IgnoreCase | RegexOptions.Compiled
-            );
-
-            isMatchPattern = path1 => re2.IsMatch(path1);
-        }
-
-        MemoryDirectory? v;
-        using (_lock.GrabReadLock())
-        {
-            if (!_directories.TryGetValue(path, out v))
-                throw new DirectoryNotFoundException();
-        }
-
-        if (searchOption == SearchOption.TopDirectoryOnly)
-        {
-            foreach (var e in v)
-            {
-                if (predicate(e) && isMatchPattern(e.FullName))
-                {
-                    yield return e.FullName;
-                }
-            }
-        }
-        else
-        {
-            foreach (var se in RecurseDirectory(v))
-            {
-                yield return se;
-            }
-        }
-
-        yield break;
-
-        IEnumerable<string> RecurseDirectory(MemoryDirectory dir)
-        {
-            foreach (var x in dir)
-            {
-                if (predicate(x) && isMatchPattern(x.FullName))
-                {
-                    yield return x.FullName;
-                }
-
-                if (x is MemoryDirectory subdir)
-                {
-                    foreach (var se in RecurseDirectory(subdir))
-                    {
-                        yield return se;
-                    }
-                }
-            }
-        }
+        return MemoryVfsHelpers.EnumerateChildren(Path, _directories, path, searchPattern, predicate, searchOption, _lock);
     }
 
     public override bool FileExists(string path) => _files.ContainsKey(Path.GetFullPath(path));
@@ -185,7 +87,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
 
         path = Path.GetFullPath(path);
         
-        if (!HasParent(path, out var parent)) throw new DirectoryNotFoundException();
+        if (!MemoryVfsHelpers.HasParent(_directories, Path, path, out var parent)) throw new DirectoryNotFoundException();
         if (_directories.ContainsKey(path)) throw new IOException("Directory already exists");
             
         if (mode is FileMode.CreateNew && _files.ContainsKey(path)) throw new IOException("File already exists");
@@ -263,7 +165,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
 
         path = Path.GetFullPath(path);
 
-        if (!HasParent(path, out var parent))
+        if (!MemoryVfsHelpers.HasParent(_directories, Path, path, out var parent))
         {
             throw new DirectoryNotFoundException();
         }
@@ -286,7 +188,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
             throw new IOException("Cannot delete the root directory");
         }
 
-        if (!HasParent(path, out var parent))
+        if (!MemoryVfsHelpers.HasParent(_directories, Path, path, out var parent))
         {
             throw new DirectoryNotFoundException();
         }
@@ -324,7 +226,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
         from = Path.GetFullPath(from);
         to = Path.GetFullPath(to);
         
-        if (!HasParent(to, out var destParent)) throw new DirectoryNotFoundException();
+        if (!MemoryVfsHelpers.HasParent(_directories, Path, to, out var destParent)) throw new DirectoryNotFoundException();
         if (from == to) throw new IOException("Source and destination are the same");
         if (DirectoryExists(to)) throw new IOException();
         if (FileExists(to) && !overwrite) throw new IOException();
@@ -409,7 +311,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
         using var _ = _lock.GrabWriteLock();
 
         path = Path.GetFullPath(path);
-        if (!HasParent(path, out var parent)) throw new DirectoryNotFoundException();
+        if (!MemoryVfsHelpers.HasParent(_directories, Path, path, out var parent)) throw new DirectoryNotFoundException();
 
         if (!_files.TryGetValue(path, out var f))
         {
@@ -426,7 +328,7 @@ public sealed class MemoryFileSystem : BaseFileSystem
         using var _ = _lock.GrabWriteLock();
 
         path = Path.GetFullPath(path);
-        if (!HasParent(path, out var parent)) throw new DirectoryNotFoundException();
+        if (!MemoryVfsHelpers.HasParent(_directories, Path, path, out var parent)) throw new DirectoryNotFoundException();
 
         if (!_files.TryGetValue(path, out var f))
         {
