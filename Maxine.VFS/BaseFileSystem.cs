@@ -89,6 +89,29 @@ public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
             yield return line;
         }
     }
+    public virtual Dictionary<string, byte[]> ReadAllFilesToDictionary(string path, string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly)
+    {
+        var result = new Dictionary<string, byte[]>();
+
+        foreach (var file in EnumerateFiles(path, searchPattern, searchOption))
+        {
+            result[file] = ReadAllBytes(file);
+        }
+
+        return result;
+    }
+    
+    public virtual async Task<Dictionary<string, byte[]>> ReadAllFilesToDictionaryAsync(string path, string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly, CancellationToken cancellationToken = default)
+    {
+        var result = new Dictionary<string, byte[]>();
+
+        await foreach (var file in EnumerateFiles(path, searchPattern, searchOption).ToAsyncEnumerable().WithCancellation(cancellationToken))
+        {
+            result[file] = await ReadAllBytesAsync(file, cancellationToken);
+        }
+
+        return result;
+    }
         
     public abstract FileAttributes GetAttributes(string file);
         
@@ -119,13 +142,13 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
     public abstract void CopyFile(string from, string to, bool overwrite = false);
     public abstract void MoveFile(string from, string to, bool overwrite = false);
 
-    public virtual void WriteAllBytes(string path, byte[] bytes)
+    public virtual void WriteAllBytes(string path, ReadOnlySpan<byte> bytes)
     {
         using var stream = CreateFile(path);
         stream.Write(bytes);
     }
 
-    public virtual async Task WriteAllBytesAsync(string path, byte[] bytes, CancellationToken cancellationToken = default)
+    public virtual async Task WriteAllBytesAsync(string path, ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken = default)
     {
         await using var stream = CreateFile(path);
         await stream.WriteAsync(bytes, cancellationToken);
@@ -147,7 +170,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
         await stream.WriteAsync(text.AsMemory(), cancellationToken);
     }
 
-    public virtual void WriteAllLines(string path, string[] text, Encoding? encoding = null)
+    public virtual void WriteAllLines(string path, ReadOnlySpan<string> text, Encoding? encoding = null)
     {
         encoding ??= Utf8NoBom;
             
@@ -161,14 +184,14 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
         }
     }
 
-    public virtual async Task WriteAllLinesAsync(string path, string[] text, Encoding? encoding = null, CancellationToken cancellationToken = default)
+    public virtual async Task WriteAllLinesAsync(string path, ReadOnlyMemory<string> text, Encoding? encoding = null, CancellationToken cancellationToken = default)
     {
         encoding ??= Utf8NoBom;
             
         await using var stream = new StreamWriter(CreateFile(path), encoding);
         for (var i = 0; i < text.Length; i++)
         {
-            var line = text[i];
+            var line = text.Span[i];
 
             if (i < text.Length - 1) await stream.WriteLineAsync(line.AsMemory(), cancellationToken);
             else await stream.WriteAsync(line.AsMemory(), cancellationToken);
@@ -185,5 +208,31 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
     public virtual TextWriter CreateText(string file, Encoding? encoding = null)
     {
         return new StreamWriter(OpenFile(file, access: FileAccess.Write), Utf8NoBom);
+    }
+    
+    public virtual void WriteAllFilesFromDictionary(IReadOnlyDictionary<string, byte[]> files)
+    {
+        foreach (var (path, data) in files)
+        {
+            if (Path.GetDirectoryName(path) is { } dir && !DirectoryExists(dir))
+            {
+                CreateDirectory(dir);
+            }
+            using var stream = OpenFile(path, FileMode.Create, FileAccess.Write);
+            stream.Write(data, 0, data.Length);
+        }
+    }
+    
+    public virtual async Task WriteAllFilesFromDictionaryAsync(IReadOnlyDictionary<string, byte[]> files, CancellationToken cancellationToken = default)
+    {
+        foreach (var (path, data) in files)
+        {
+            if (Path.GetDirectoryName(path) is { } dir && !DirectoryExists(dir))
+            {
+                CreateDirectory(dir);
+            }
+            await using var stream = OpenFile(path, FileMode.Create, FileAccess.Write);
+            await stream.WriteAsync(data, cancellationToken);
+        }
     }
 }
