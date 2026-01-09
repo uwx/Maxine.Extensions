@@ -1,15 +1,15 @@
-﻿using MessagePack;
+﻿using System.Runtime.InteropServices;
+using MessagePack;
 using MessagePack.Formatters;
 
 namespace Maxine.Extensions.MessagePack;
 
-// https://gist.github.com/AArnott/099d5b4d559cbcca2c1c2b0bd61aa951
 public static class DedupingResolver
 {
-	public static DedupingResolver<T> Create<T>(T inner) where T : IFormatterResolver
-	{
-		return new DedupingResolver<T>(inner);
-	}
+    public static DedupingResolver<T> Create<T>(T inner) where T : IFormatterResolver
+    {
+        return new DedupingResolver<T>(inner);
+    }
 }
 
 public class DedupingResolver<TResolver> : IFormatterResolver where TResolver : IFormatterResolver
@@ -18,6 +18,7 @@ public class DedupingResolver<TResolver> : IFormatterResolver where TResolver : 
 
 	private readonly TResolver _inner;
 	private readonly Dictionary<object, int> _serializedObjects = [];
+	private readonly HashSet<object> _serializingObjects = [];
 	private readonly List<object?> _deserializedObjects = [];
 	private readonly Dictionary<Type, IMessagePackFormatter> _dedupingFormatters = [];
 	private int _serializingObjectCounter;
@@ -39,13 +40,13 @@ public class DedupingResolver<TResolver> : IFormatterResolver where TResolver : 
 
 	private IMessagePackFormatter<T>? GetDedupingFormatter<T>()
 	{
-		if (!_dedupingFormatters.TryGetValue(typeof(T), out IMessagePackFormatter? formatter))
+		ref var formatter = ref CollectionsMarshal.GetValueRefOrAddDefault(_dedupingFormatters, typeof(T), out var exists);
+		if (!exists)
 		{
 			formatter = new DedupingFormatter<T>(this);
-			_dedupingFormatters.Add(typeof(T), formatter);
 		}
 
-		return (IMessagePackFormatter<T>)formatter;
+		return (IMessagePackFormatter<T>)formatter!;
 	}
 
 	private class DedupingFormatter<T> : IMessagePackFormatter<T>
@@ -101,8 +102,21 @@ public class DedupingResolver<TResolver> : IFormatterResolver where TResolver : 
 			}
 			else
 			{
-				_owner._serializedObjects.Add(value, _owner._serializingObjectCounter++);
-				_owner._inner.GetFormatterWithVerify<T>().Serialize(ref writer, value, options);
+				// Check for cyclical reference
+				if (!_owner._serializingObjects.Add(value))
+				{
+					throw new MessagePackSerializationException($"Cyclical reference detected while serializing object of type {typeof(T).Name}");
+				}
+
+				try
+				{
+					_owner._serializedObjects.Add(value, _owner._serializingObjectCounter++);
+					_owner._inner.GetFormatterWithVerify<T>().Serialize(ref writer, value, options);
+				}
+				finally
+				{
+					_owner._serializingObjects.Remove(value);
+				}
 			}
 		}
 	}
