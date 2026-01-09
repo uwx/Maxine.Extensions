@@ -4,26 +4,27 @@ public interface IPath
 {
     internal sealed class IoPath : IPath
     {
+        private const char AltDirectorySeparatorChar = '\\';
         public static IoPath Instance { get; } = new();
 
         public char DirectorySeparatorChar => Path.AltDirectorySeparatorChar;
 
-        public string? GetDirectoryName(string path) => Path.GetDirectoryName(path)?.Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar);
+        public string? GetDirectoryName(string path) => Path.GetDirectoryName(path)?.Replace(AltDirectorySeparatorChar, DirectorySeparatorChar);
 
-        public string Combine(params ReadOnlySpan<string> paths) => Path.Combine(paths).Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar);
+        public string Combine(params ReadOnlySpan<string> paths) => Path.Combine(paths).Replace(AltDirectorySeparatorChar, DirectorySeparatorChar);
         public string GetFileNameWithoutExtension(string path) => Path.GetFileNameWithoutExtension(path);
         public string GetFileName(string path) => Path.GetFileName(path);
         public string GetExtension(string path) => Path.GetExtension(path);
 
         public string ChangeExtension(string path, string newExtension) => Path.ChangeExtension(path, newExtension);
 
-        public string GetFullPath(string path) => Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar);
+        public string GetFullPath(string path) => Path.GetFullPath(path).Replace(AltDirectorySeparatorChar, DirectorySeparatorChar);
     }
 
     public sealed class MemoryPath : IPath
     {
         private const char DirectorySeparatorCharConst = '/';
-        private const char AltDirectorySeparatorChar = '/';
+        private const char AltDirectorySeparatorChar = '\\';
 
         public static MemoryPath Instance { get; } = new();
 
@@ -39,7 +40,20 @@ public interface IPath
         }
 
         public string Combine(params ReadOnlySpan<string> paths)
-            => string.Join(DirectorySeparatorCharConst, paths);
+        {
+            // Handle absolute paths
+            for (int i = paths.Length - 1; i >= 0; i--)
+            {
+                if (paths[i].StartsWith(DirectorySeparatorCharConst) || paths[i].StartsWith(AltDirectorySeparatorChar) || 
+                    (paths[i].Length >= 2 && paths[i][1] == ':' && char.IsLetter(paths[i][0])))
+                {
+                    paths = paths[i..];
+                    break;
+                }
+            }
+
+            return string.Join(DirectorySeparatorCharConst, paths);
+        }
 
         public string GetFileNameWithoutExtension(string path)
         {
@@ -83,14 +97,31 @@ public interface IPath
 
         public string GetFullPath(string path)
         {
-            path = path.Replace('\\', DirectorySeparatorCharConst).TrimEnd(DirectorySeparatorCharConst);
+            path = path.Replace(AltDirectorySeparatorChar, DirectorySeparatorCharConst).TrimEnd(DirectorySeparatorCharConst);
 
             if (path.StartsWith("./"))
             {
                 path = path[2..];
             }
+            
+            // Replace .. segments
+            var segments = new List<string>();
+            foreach (var segment in path.Split(DirectorySeparatorCharConst))
+            {
+                if (segment == "..")
+                {
+                    if (segments.Count > 0)
+                    {
+                        segments.RemoveAt(segments.Count - 1);
+                    }
+                }
+                else if (segment != ".")
+                {
+                    segments.Add(segment);
+                }
+            }
 
-            return path;
+            return string.Join(DirectorySeparatorCharConst, segments);
         }
     }
 

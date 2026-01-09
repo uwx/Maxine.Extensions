@@ -105,7 +105,7 @@ public sealed class RelativeReadOnlyFileSystem : ReadOnlyFileSystem
 
     private string StripPrefix(string path)
     {
-        if (path.StartsWith(_rootDirectory))
+        if (ResolvePath(path).StartsWith(_rootDirectory))
         {
             var span = path.AsSpan();
             span = span[_rootDirectory.Length..];
