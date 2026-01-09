@@ -6,7 +6,7 @@ public interface IPath
     {
         public static IoPath Instance { get; } = new();
         
-        public char DirectorySeparatorChar => Path.DirectorySeparatorChar;
+        public char DirectorySeparatorChar => Path.AltDirectorySeparatorChar;
 
         public string? GetDirectoryName(string path) => Path.GetDirectoryName(path);
 
