@@ -5,7 +5,7 @@ public interface IPath
     internal sealed class IoPath : IPath
     {
         public static IoPath Instance { get; } = new();
-        
+
         public char DirectorySeparatorChar => Path.AltDirectorySeparatorChar;
 
         public string? GetDirectoryName(string path) => Path.GetDirectoryName(path)?.Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar);
@@ -83,9 +83,9 @@ public interface IPath
 
         public string GetFullPath(string path)
         {
-            path = path.Replace(AltDirectorySeparatorChar, '\\').TrimEnd('\\');
+            path = path.Replace('\\', DirectorySeparatorCharConst).TrimEnd(DirectorySeparatorCharConst);
 
-            if (path.StartsWith(@".\"))
+            if (path.StartsWith("./"))
             {
                 path = path[2..];
             }
@@ -102,14 +102,14 @@ public interface IPath
     string Combine(string path, string path2, string path3) => Combine([path, path2, path3]);
     string Combine(string path, string path2, string path3, string path4) => Combine([path, path2, path3, path4]);
     string Combine(params ReadOnlySpan<string> paths);
-    
+
     string GetFileNameWithoutExtension(string path);
     string GetFileName(string path);
     string GetExtension(string path);
     string ChangeExtension(string path, string newExtension);
 
     string GetFullPath(string path);
-    
+
     bool PathEquals(string path1, string path2)
     {
         return string.Equals(

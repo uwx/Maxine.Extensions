@@ -6,13 +6,13 @@ public sealed class RelativeFileSystem : BaseFileSystem
 {
     private readonly BaseFileSystem _innerFileSystem;
     private readonly string _rootDirectory;
-    
+
     public override IPath Path => _innerFileSystem.Path;
 
     public RelativeFileSystem(string rootDirectory) : this(new IoFileSystem(), rootDirectory)
     {
     }
-    
+
     public RelativeFileSystem(BaseFileSystem innerFileSystem, string rootDirectory)
     {
         _innerFileSystem = innerFileSystem;
@@ -23,19 +23,18 @@ public sealed class RelativeFileSystem : BaseFileSystem
     {
         if (path is "" or "/" or "\\") return _rootDirectory;
 
-        var fullPath = Path.GetFullPath(path);
-        if (fullPath.StartsWith(_rootDirectory)) return path;
-        return Path.Combine(_rootDirectory, path);
+        var combined = Path.Combine(_rootDirectory, path);
+        return Path.GetFullPath(combined);
     }
 
     private string StripPrefix(string path)
     {
-        if (ResolvePath(path).StartsWith(_rootDirectory))
+        if (path.StartsWith(_rootDirectory))
         {
             var span = path.AsSpan();
             span = span[_rootDirectory.Length..];
 
-            if (span.StartsWithAnySequence(['\\'], ['/'], [Path.DirectorySeparatorChar]))
+            if (span.Length > 0 && span.StartsWithAnySequence(['\\'], ['/'], [Path.DirectorySeparatorChar]))
             {
                 span = span[1..];
             }
@@ -62,8 +61,8 @@ public sealed class RelativeFileSystem : BaseFileSystem
             .Select(StripPrefix)
             .ToArray();
 
-    public override bool FileExists(string path) => _innerFileSystem.Exists(ResolvePath(path));
-    public override bool DirectoryExists(string path) => _innerFileSystem.Exists(ResolvePath(path));
+    public override bool FileExists(string path) => _innerFileSystem.FileExists(ResolvePath(path));
+    public override bool DirectoryExists(string path) => _innerFileSystem.DirectoryExists(ResolvePath(path));
 
     public override Stream OpenFile(string path, FileMode mode = FileMode.OpenOrCreate, FileAccess access = FileAccess.ReadWrite) => _innerFileSystem.OpenFile(ResolvePath(path), mode, access);
 
@@ -83,13 +82,13 @@ public sealed class RelativeReadOnlyFileSystem : ReadOnlyFileSystem
 {
     private readonly ReadOnlyFileSystem _innerFileSystem;
     private readonly string _rootDirectory;
-    
+
     public override IPath Path => _innerFileSystem.Path;
 
     public RelativeReadOnlyFileSystem(string rootDirectory) : this(new IoFileSystem(), rootDirectory)
     {
     }
-    
+
     public RelativeReadOnlyFileSystem(ReadOnlyFileSystem innerFileSystem, string rootDirectory)
     {
         _innerFileSystem = innerFileSystem;
@@ -100,19 +99,18 @@ public sealed class RelativeReadOnlyFileSystem : ReadOnlyFileSystem
     {
         if (path is "" or "/" or "\\") return _rootDirectory;
 
-        var fullPath = Path.GetFullPath(path);
-        if (fullPath.StartsWith(_rootDirectory)) return path;
-        return Path.Combine(_rootDirectory, path);
+        var combined = Path.Combine(_rootDirectory, path);
+        return Path.GetFullPath(combined);
     }
 
     private string StripPrefix(string path)
     {
-        if (ResolvePath(path).StartsWith(_rootDirectory))
+        if (path.StartsWith(_rootDirectory))
         {
             var span = path.AsSpan();
             span = span[_rootDirectory.Length..];
 
-            if (span.StartsWithAnySequence(['\\'], ['/'], [Path.DirectorySeparatorChar]))
+            if (span.Length > 0 && span.StartsWithAnySequence(['\\'], ['/'], [_innerFileSystem.Path.DirectorySeparatorChar]))
             {
                 span = span[1..];
             }
@@ -139,8 +137,8 @@ public sealed class RelativeReadOnlyFileSystem : ReadOnlyFileSystem
             .Select(StripPrefix)
             .ToArray();
 
-    public override bool FileExists(string path) => _innerFileSystem.Exists(ResolvePath(path));
-    public override bool DirectoryExists(string path) => _innerFileSystem.Exists(ResolvePath(path));
+    public override bool FileExists(string path) => _innerFileSystem.FileExists(ResolvePath(path));
+    public override bool DirectoryExists(string path) => _innerFileSystem.DirectoryExists(ResolvePath(path));
 
     public override Stream OpenRead(string path) => _innerFileSystem.OpenRead(ResolvePath(path));
 

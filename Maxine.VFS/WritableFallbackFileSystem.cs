@@ -16,7 +16,9 @@ public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
 
     public WritableFallbackFileSystem(BaseFileSystem newFileTarget, params ReadOnlyFileSystem[] fileSystems)
     {
-        _fileSystems = fileSystems.SelectMany(e => e is IFallbackFileSystem ffs ? ffs.FileSystems : [e]).ToArray();
+        var allFileSystems = fileSystems.SelectMany(e => e is IFallbackFileSystem ffs ? ffs.FileSystems : [e]).ToList();
+        allFileSystems.Insert(0, newFileTarget);
+        _fileSystems = allFileSystems.ToArray();
         _writeFileSystems = _fileSystems.OfType<BaseFileSystem>().ToArray();
         _newFileTarget = newFileTarget;
     }
@@ -28,10 +30,46 @@ public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
         => EnumerateDirectories(path, searchPattern, searchOption).ToArray();
 
     public override IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly)
-        => _fileSystems.SelectMany(e => e.EnumerateFiles(path, searchPattern, searchOption));
+    {
+        foreach (var fs in _fileSystems)
+        {
+            IEnumerable<string> files;
+            try
+            {
+                files = fs.EnumerateFiles(path, searchPattern, searchOption);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                continue;
+            }
+
+            foreach (var file in files)
+            {
+                yield return file;
+            }
+        }
+    }
 
     public override IEnumerable<string> EnumerateDirectories(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly)
-        => _fileSystems.SelectMany(e => e.EnumerateDirectories(path, searchPattern, searchOption));
+    {
+        foreach (var fs in _fileSystems)
+        {
+            IEnumerable<string> directories;
+            try
+            {
+                directories = fs.EnumerateDirectories(path, searchPattern, searchOption);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                continue;
+            }
+
+            foreach (var directory in directories)
+            {
+                yield return directory;
+            }
+        }
+    }
 
     public override bool FileExists(string path)
         => _fileSystems.Any(e => e.FileExists(path));
@@ -82,6 +120,7 @@ public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
             if (fs.FileExists(path))
             {
                 fs.DeleteFile(path);
+                return;
             }
         }
 
@@ -95,6 +134,7 @@ public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
             if (fs.DirectoryExists(path))
             {
                 fs.DeleteDirectory(path, recursive);
+                return;
             }
         }
 
@@ -112,7 +152,7 @@ public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
                 return;
             }
         }
-        
+
         // if paths are the same, no-op
         if (Path.PathEquals(from, to))
         {
@@ -136,7 +176,7 @@ public class WritableFallbackFileSystem : BaseFileSystem, IFallbackFileSystem
                 return;
             }
         }
-        
+
         // if paths are the same, no-op
         if (Path.PathEquals(from, to))
         {

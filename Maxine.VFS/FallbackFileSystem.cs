@@ -29,10 +29,46 @@ public sealed class FallbackFileSystem : ReadOnlyFileSystem, IFallbackFileSystem
         => EnumerateDirectories(path, searchPattern, searchOption).ToArray();
 
     public override IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly)
-        => _fileSystems.SelectMany(e => e.EnumerateFiles(path, searchPattern, searchOption));
+    {
+        foreach (var fs in _fileSystems)
+        {
+            IEnumerable<string> files;
+            try
+            {
+                files = fs.EnumerateFiles(path, searchPattern, searchOption);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                continue;
+            }
+
+            foreach (var file in files)
+            {
+                yield return file;
+            }
+        }
+    }
 
     public override IEnumerable<string> EnumerateDirectories(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly)
-        => _fileSystems.SelectMany(e => e.EnumerateDirectories(path, searchPattern, searchOption));
+    {
+        foreach (var fs in _fileSystems)
+        {
+            IEnumerable<string> directories;
+            try
+            {
+                directories = fs.EnumerateDirectories(path, searchPattern, searchOption);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                continue;
+            }
+
+            foreach (var directory in directories)
+            {
+                yield return directory;
+            }
+        }
+    }
 
     public override bool FileExists(string path)
         => _fileSystems.Any(e => e.FileExists(path));

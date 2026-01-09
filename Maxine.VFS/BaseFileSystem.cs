@@ -19,9 +19,9 @@ public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
     public virtual bool Exists(string path) => FileExists(path) || DirectoryExists(path);
     public abstract bool FileExists(string path);
     public abstract bool DirectoryExists(string path);
-        
+
     public abstract Stream OpenRead(string path);
-        
+
     public virtual byte[] ReadAllBytes(string path)
     {
         using var stream = OpenRead(path);
@@ -57,14 +57,14 @@ public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
     public virtual string ReadAllText(string path, Encoding? encoding = null)
     {
         encoding ??= Encoding.UTF8;
-            
+
         return encoding.GetString(ReadAllBytes(path));
     }
 
     public virtual async Task<string> ReadAllTextAsync(string path, Encoding? encoding = null, CancellationToken cancellationToken = default)
     {
         encoding ??= Encoding.UTF8;
-            
+
         return encoding.GetString(await ReadAllBytesAsync(path, cancellationToken));
     }
 
@@ -100,7 +100,7 @@ public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
 
         return result;
     }
-    
+
     public virtual async Task<Dictionary<string, byte[]>> ReadAllFilesToDictionaryAsync(string path, string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly, CancellationToken cancellationToken = default)
     {
         var result = new Dictionary<string, byte[]>();
@@ -112,9 +112,9 @@ public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
 
         return result;
     }
-        
+
     public abstract FileAttributes GetAttributes(string file);
-        
+
     public virtual void Dispose()
     {
     }
@@ -124,12 +124,12 @@ public abstract class ReadOnlyFileSystem : IDisposable, IAsyncDisposable
         return ValueTask.CompletedTask;
     }
 }
-    
+
 public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDisposable
 {
     protected static Encoding Utf8NoBom { get; } = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
-    public virtual IPath Path => IPath.IoPath.Instance;
+    public override IPath Path => IPath.IoPath.Instance;
 
     public virtual Stream CreateFile(string path) => OpenFile(path, FileMode.Create, FileAccess.ReadWrite);
     public abstract Stream OpenFile(string path, FileMode mode = FileMode.OpenOrCreate, FileAccess access = FileAccess.ReadWrite);
@@ -157,7 +157,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
     public virtual void WriteAllText(string path, ReadOnlySpan<char> text, Encoding? encoding = null)
     {
         encoding ??= Utf8NoBom;
-            
+
         using var stream = new StreamWriter(CreateFile(path), encoding);
         stream.Write(text);
     }
@@ -165,7 +165,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
     public virtual async Task WriteAllTextAsync(string path, string text, Encoding? encoding = null, CancellationToken cancellationToken = default)
     {
         encoding ??= Utf8NoBom;
-            
+
         await using var stream = new StreamWriter(CreateFile(path), encoding);
         await stream.WriteAsync(text.AsMemory(), cancellationToken);
     }
@@ -173,7 +173,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
     public virtual void WriteAllLines(string path, ReadOnlySpan<string> text, Encoding? encoding = null)
     {
         encoding ??= Utf8NoBom;
-            
+
         using var stream = new StreamWriter(CreateFile(path), encoding);
         for (var i = 0; i < text.Length; i++)
         {
@@ -187,7 +187,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
     public virtual async Task WriteAllLinesAsync(string path, ReadOnlyMemory<string> text, Encoding? encoding = null, CancellationToken cancellationToken = default)
     {
         encoding ??= Utf8NoBom;
-            
+
         await using var stream = new StreamWriter(CreateFile(path), encoding);
         for (var i = 0; i < text.Length; i++)
         {
@@ -209,7 +209,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
     {
         return new StreamWriter(OpenFile(file, access: FileAccess.Write), Utf8NoBom);
     }
-    
+
     public virtual void WriteAllFilesFromDictionary(IReadOnlyDictionary<string, byte[]> files)
     {
         foreach (var (path, data) in files)
@@ -222,7 +222,7 @@ public abstract class BaseFileSystem : ReadOnlyFileSystem, IDisposable, IAsyncDi
             stream.Write(data, 0, data.Length);
         }
     }
-    
+
     public virtual async Task WriteAllFilesFromDictionaryAsync(IReadOnlyDictionary<string, byte[]> files, CancellationToken cancellationToken = default)
     {
         foreach (var (path, data) in files)
