@@ -21,7 +21,7 @@ public class MountingFileSystem : BaseFileSystem
     
     public void MountFileSystem(ReadOnlyFileSystem fileSystem)
     {
-        _fileSystems = _fileSystems.Add(fileSystem);
+        _fileSystems = [fileSystem, .._fileSystems];
         RebuildFileSystem();
     }
 
