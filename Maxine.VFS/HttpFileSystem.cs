@@ -13,7 +13,7 @@ public class HttpFileSystem : ReadOnlyFileSystem
     };
 
     private readonly Dictionary<string, HttpRemoteFile> _files = new(StringComparer.OrdinalIgnoreCase);
-    
+
     public HttpFileSystem(HttpClient client, Func<string, Uri> uriFromFilePathBuilder)
     {
         _client = client;
