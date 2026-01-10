@@ -105,14 +105,12 @@ public class HttpFileSystemTests
     }
 
     [TestMethod]
-    public void DirectoryExists_AlwaysReturnsFalse()
+    public void DirectoryExists_ReturnsFalseIfNoKnownFiles()
     {
         var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
         using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
 
         Assert.IsFalse(fs.DirectoryExists(""));
-        Assert.IsFalse(fs.DirectoryExists("dir"));
-        Assert.IsFalse(fs.DirectoryExists("dir/subdir"));
     }
 
     [TestMethod]
@@ -306,7 +304,7 @@ public class HttpFileSystemTests
         var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
         using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
 
-        var files = fs.EnumerateFiles("dir", "*.txt", SearchOption.AllDirectories).ToList();
+        var files = fs.EnumerateFiles("", "*.txt", SearchOption.AllDirectories).ToList();
 
         Assert.AreEqual(0, files.Count);
     }
@@ -328,7 +326,7 @@ public class HttpFileSystemTests
         var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
         using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
 
-        var dirs = fs.EnumerateDirectories("dir", "*", SearchOption.AllDirectories).ToList();
+        var dirs = fs.EnumerateDirectories("", "*", SearchOption.AllDirectories).ToList();
 
         Assert.AreEqual(0, dirs.Count);
     }
@@ -545,5 +543,231 @@ public class HttpFileSystemTests
 
         Assert.AreEqual(largeData.Length, actualData.Length);
         CollectionAssert.AreEqual(largeData, actualData);
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithSingleFile_AddsFileToFileSystem()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "file.txt" });
+
+        Assert.IsTrue(fs.FileExists("file.txt"));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithMultipleFiles_AddsAllFiles()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "file1.txt", "file2.txt", "file3.txt" });
+
+        Assert.IsTrue(fs.FileExists("file1.txt"));
+        Assert.IsTrue(fs.FileExists("file2.txt"));
+        Assert.IsTrue(fs.FileExists("file3.txt"));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithNestedPaths_CreatesDirectories()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "dir/subdir/file.txt" });
+
+        Assert.IsTrue(fs.DirectoryExists("dir"));
+        Assert.IsTrue(fs.DirectoryExists("dir/subdir"));
+        Assert.IsTrue(fs.FileExists("dir/subdir/file.txt"));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithFileInRoot_WorksCorrectly()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "root.txt" });
+
+        Assert.IsTrue(fs.FileExists("root.txt"));
+        var files = fs.GetFiles("").ToList();
+        Assert.IsTrue(files.Any(f => f.EndsWith("root.txt")));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_CreatesParentDirectoriesInOrder()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "a/b/c/d/file.txt" });
+
+        Assert.IsTrue(fs.DirectoryExists("a"));
+        Assert.IsTrue(fs.DirectoryExists("a/b"));
+        Assert.IsTrue(fs.DirectoryExists("a/b/c"));
+        Assert.IsTrue(fs.DirectoryExists("a/b/c/d"));
+        Assert.IsTrue(fs.FileExists("a/b/c/d/file.txt"));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_AllowsEnumeratingFiles()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "dir/file1.txt", "dir/file2.txt", "dir/subdir/file3.txt" });
+
+        var files = fs.EnumerateFiles("dir").ToList();
+        Assert.AreEqual(2, files.Count);
+        Assert.IsTrue(files.Any(f => f.EndsWith("file1.txt")));
+        Assert.IsTrue(files.Any(f => f.EndsWith("file2.txt")));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_AllowsEnumeratingDirectories()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "dir1/file.txt", "dir2/file.txt", "dir3/subdir/file.txt" });
+
+        var dirs = fs.EnumerateDirectories("").ToList();
+        Assert.AreEqual(3, dirs.Count);
+        Assert.IsTrue(dirs.Any(d => d.EndsWith("dir1")));
+        Assert.IsTrue(dirs.Any(d => d.EndsWith("dir2")));
+        Assert.IsTrue(dirs.Any(d => d.EndsWith("dir3")));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithDuplicateFiles_OverwritesEntry()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "file.txt" });
+        fs.AddKnownFiles(new[] { "file.txt" }); // Add again
+
+        Assert.IsTrue(fs.FileExists("file.txt"));
+        var files = fs.GetFiles("").ToList();
+        Assert.AreEqual(1, files.Count(f => f.EndsWith("file.txt")));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_AllowsOpeningFiles()
+    {
+        var requestedPath = "";
+        var client = CreateMockClient(req =>
+        {
+            requestedPath = req.RequestUri?.AbsolutePath ?? "";
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("Test content")
+            };
+        });
+
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+        fs.AddKnownFiles(new[] { "dir/file.txt" });
+
+        using var stream = fs.OpenRead("dir/file.txt");
+        using var reader = new StreamReader(stream);
+        var content = reader.ReadToEnd();
+
+        Assert.AreEqual("Test content", content);
+        Assert.AreEqual("/dir/file.txt", requestedPath);
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithSearchPattern_FiltersCorrectly()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "dir/file1.txt", "dir/file2.doc", "dir/file3.txt" });
+
+        var txtFiles = fs.GetFiles("dir", "*.txt").ToList();
+        Assert.AreEqual(2, txtFiles.Count);
+        Assert.IsTrue(txtFiles.All(f => f.EndsWith(".txt")));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithRecursiveSearch_FindsAllFiles()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[]
+        {
+            "dir/file1.txt",
+            "dir/subdir1/file2.txt",
+            "dir/subdir2/file3.txt",
+            "dir/subdir1/deepdir/file4.txt"
+        });
+
+        var allFiles = fs.GetFiles("dir", "*", SearchOption.AllDirectories).ToList();
+        Assert.AreEqual(4, allFiles.Count);
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithEmptyList_DoesNotThrow()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(Array.Empty<string>());
+
+        var files = fs.GetFiles("").ToList();
+        Assert.AreEqual(0, files.Count);
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_WithMixedPaths_OrganizesCorrectly()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[]
+        {
+            "root.txt",
+            "dir1/file1.txt",
+            "dir2/subdir/file2.txt",
+            "another.txt"
+        });
+
+        Assert.AreEqual(2, fs.GetFiles("").Count);
+        Assert.AreEqual(1, fs.GetFiles("dir1").Count);
+        Assert.AreEqual(1, fs.GetFiles("dir2/subdir").Count);
+        Assert.AreEqual(2, fs.GetDirectories("").Count);
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_DirectoryExistsForParent_ReturnsTrue()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[] { "parent/child/grandchild/file.txt" });
+
+        Assert.IsTrue(fs.DirectoryExists("parent"));
+        Assert.IsTrue(fs.DirectoryExists("parent/child"));
+        Assert.IsTrue(fs.DirectoryExists("parent/child/grandchild"));
+        Assert.IsFalse(fs.DirectoryExists("parent/nonexistent"));
+    }
+
+    [TestMethod]
+    public void AddKnownFiles_EnumerateDirectoriesRecursively_FindsAll()
+    {
+        var client = CreateMockClient(req => new HttpResponseMessage(HttpStatusCode.OK));
+        using var fs = new HttpFileSystem(client, path => new Uri($"http://example.com/{path}"));
+
+        fs.AddKnownFiles(new[]
+        {
+            "a/b/c/file1.txt",
+            "a/d/file2.txt",
+            "a/e/f/file3.txt"
+        });
+
+        var allDirs = fs.GetDirectories("a", "*", SearchOption.AllDirectories).ToList();
+        Assert.IsTrue(allDirs.Count >= 4); // b, c, d, e, f
     }
 }

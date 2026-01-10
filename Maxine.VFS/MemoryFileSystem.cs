@@ -392,6 +392,24 @@ internal abstract class BaseFsEntry(string fullName) : IDisposable, IAsyncDispos
     {
         return ValueTask.CompletedTask;
     }
+
+    protected virtual bool Equals(BaseFsEntry other)
+    {
+        return IsDirectory == other.IsDirectory && string.Equals(FullName, other.FullName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public sealed override bool Equals(object? obj)
+    {
+        if (obj is null) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != GetType()) return false;
+        return Equals((BaseFsEntry)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(IsDirectory, FullName);
+    }
 }
 
 internal sealed class MemoryDirectory(string fullName) : BaseFsEntry(fullName), ISet<BaseFsEntry>

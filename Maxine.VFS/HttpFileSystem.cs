@@ -2,6 +2,8 @@
 
 public class HttpFileSystem : ReadOnlyFileSystem
 {
+    public override IPath Path => IPath.MemoryPath.Instance;
+    
     private readonly HttpClient _client;
     private readonly Func<string, Uri> _uriFromFilePathBuilder;
 
@@ -24,7 +26,7 @@ public class HttpFileSystem : ReadOnlyFileSystem
         {
             var fullPath = Path.GetFullPath(entry);
             var directoryPath = Path.GetDirectoryName(fullPath) ?? "";
-            var fileEntry = new HttpRemoteFile(entry, _client, _uriFromFilePathBuilder);
+            var fileEntry = new HttpRemoteFile(entry);
             _files[fullPath] = fileEntry;
 
             // Ensure parent directories exist - process from root to leaf
@@ -161,7 +163,7 @@ public class HttpFileSystem : ReadOnlyFileSystem
     }
 }
 
-internal sealed class HttpRemoteFile(string fullName, HttpClient client, Func<string, Uri> uriFromFilePathBuilder) : BaseFsEntry(fullName)
+internal sealed class HttpRemoteFile(string fullName) : BaseFsEntry(fullName)
 {
     public override bool IsDirectory => false;
 }
