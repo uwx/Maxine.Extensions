@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NFMWorld.Library\NFMWorld.Library.csproj" />
+      <ProjectReference Include="..\NFMWorld.Lua\NFMWorld.Lua.csproj" />
     </ItemGroup>
 
 </Project>
