@@ -72,17 +72,26 @@ public static class RayLogConsole
         textWriter.Write(Environment.NewLine);
     }
 
+    private static readonly string NewLinePadding = $"    {Environment.NewLine}";
     private static void WriteMessage(TextWriter textWriter, string? message)
     {
         if (!string.IsNullOrEmpty(message))
         {
-            WriteReplacing(textWriter, Environment.NewLine, $"    {Environment.NewLine}", message);
+            WriteReplacing(textWriter, Environment.NewLine, NewLinePadding, message);
         }
+
+        return;
 
         static void WriteReplacing(TextWriter writer, string oldValue, string newValue, string message)
         {
-            var newMessage = message.Replace(oldValue, newValue);
-            writer.Write(newMessage);
+            var messageSpan = message.AsSpan();
+            foreach (var range in messageSpan.Split(oldValue))
+            {
+                writer.Write(messageSpan[range]);
+                // after each segment except the last, write the newValue
+                if (range.End.GetOffset(messageSpan.Length) < messageSpan.Length)
+                    writer.Write(newValue);
+            }
         }
     }
     
@@ -97,8 +106,13 @@ public static class RayLogConsole
             LogLevel.Error => "fail",
             LogLevel.Critical => "crit",
             LogLevel.None => "unkn",
-            _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
+            _ => ThrowArgumentOutOfRangeException()
         };
+
+        string ThrowArgumentOutOfRangeException()
+        {
+            throw new ArgumentOutOfRangeException(nameof(logLevel));
+        }
     }
 
     private readonly record struct ConsoleColors(ConsoleColor? Foreground = null, ConsoleColor? Background = null);
@@ -110,25 +124,25 @@ file static class TextWriterExtensions
     {
         return color switch
         {
-            ConsoleColor.Black => "\x1B[38;5;0m", // Black
-            ConsoleColor.DarkBlue => "\x1B[38;5;4m", // Blue
-            ConsoleColor.DarkGreen => "\x1B[38;5;2m", // Green
-            ConsoleColor.DarkCyan => "\x1B[38;5;6m", // Cyan
-            ConsoleColor.DarkRed => "\x1B[38;5;1m", // Red
-            ConsoleColor.DarkMagenta => "\x1B[38;5;5m", // Purple
-            ConsoleColor.DarkYellow => "\x1B[38;5;3m", // Brown
-            ConsoleColor.Gray => "\x1B[38;5;7m", // Gray
+            ConsoleColor.Black => "\e[38;5;0m", // Black
+            ConsoleColor.DarkBlue => "\e[38;5;4m", // Blue
+            ConsoleColor.DarkGreen => "\e[38;5;2m", // Green
+            ConsoleColor.DarkCyan => "\e[38;5;6m", // Cyan
+            ConsoleColor.DarkRed => "\e[38;5;1m", // Red
+            ConsoleColor.DarkMagenta => "\e[38;5;5m", // Purple
+            ConsoleColor.DarkYellow => "\e[38;5;3m", // Brown
+            ConsoleColor.Gray => "\e[38;5;7m", // Gray
             
-            ConsoleColor.DarkGray => "\x1B[38;5;8m", // Dark Gray
-            ConsoleColor.Blue => "\x1B[38;5;12m", // Light Blue
-            ConsoleColor.Green => "\x1B[38;5;10m", // Light Green
-            ConsoleColor.Cyan => "\x1B[38;5;14m", // Light Cyan
-            ConsoleColor.Red => "\x1B[38;5;9m", // Light Red
-            ConsoleColor.Magenta => "\x1B[38;5;13m", // Light Purple
-            ConsoleColor.Yellow => "\x1B[38;5;11m", // Yellow
-            ConsoleColor.White => "\x1B[38;5;15m", // White
+            ConsoleColor.DarkGray => "\e[38;5;8m", // Dark Gray
+            ConsoleColor.Blue => "\e[38;5;12m", // Light Blue
+            ConsoleColor.Green => "\e[38;5;10m", // Light Green
+            ConsoleColor.Cyan => "\e[38;5;14m", // Light Cyan
+            ConsoleColor.Red => "\e[38;5;9m", // Light Red
+            ConsoleColor.Magenta => "\e[38;5;13m", // Light Purple
+            ConsoleColor.Yellow => "\e[38;5;11m", // Yellow
+            ConsoleColor.White => "\e[38;5;15m", // White
             
-            _ => "\x1B[39m" // Use default foreground color
+            _ => "\e[39m" // Use default foreground color
         };
     }
 
@@ -136,25 +150,25 @@ file static class TextWriterExtensions
     {
         return color switch
         {
-            ConsoleColor.Black => "\x1B[48;5;0m", // Black
-            ConsoleColor.DarkBlue => "\x1B[48;5;4m", // Blue
-            ConsoleColor.DarkGreen => "\x1B[48;5;2m", // Green
-            ConsoleColor.DarkCyan => "\x1B[48;5;6m", // Cyan
-            ConsoleColor.DarkRed => "\x1B[48;5;1m", // Red
-            ConsoleColor.DarkMagenta => "\x1B[48;5;5m", // Purple
-            ConsoleColor.DarkYellow => "\x1B[48;5;3m", // Brown
-            ConsoleColor.Gray => "\x1B[48;5;7m", // Gray
+            ConsoleColor.Black => "\e[48;5;0m", // Black
+            ConsoleColor.DarkBlue => "\e[48;5;4m", // Blue
+            ConsoleColor.DarkGreen => "\e[48;5;2m", // Green
+            ConsoleColor.DarkCyan => "\e[48;5;6m", // Cyan
+            ConsoleColor.DarkRed => "\e[48;5;1m", // Red
+            ConsoleColor.DarkMagenta => "\e[48;5;5m", // Purple
+            ConsoleColor.DarkYellow => "\e[48;5;3m", // Brown
+            ConsoleColor.Gray => "\e[48;5;7m", // Gray
             
-            ConsoleColor.DarkGray => "\x1B[48;5;8m", // Dark Gray
-            ConsoleColor.Blue => "\x1B[48;5;12m", // Light Blue
-            ConsoleColor.Green => "\x1B[48;5;10m", // Light Green
-            ConsoleColor.Cyan => "\x1B[48;5;14m", // Light Cyan
-            ConsoleColor.Red => "\x1B[48;5;9m", // Light Red
-            ConsoleColor.Magenta => "\x1B[48;5;13m", // Light Purple
-            ConsoleColor.Yellow => "\x1B[48;5;11m", // Yellow
-            ConsoleColor.White => "\x1B[48;5;15m", // White
+            ConsoleColor.DarkGray => "\e[48;5;8m", // Dark Gray
+            ConsoleColor.Blue => "\e[48;5;12m", // Light Blue
+            ConsoleColor.Green => "\e[48;5;10m", // Light Green
+            ConsoleColor.Cyan => "\e[48;5;14m", // Light Cyan
+            ConsoleColor.Red => "\e[48;5;9m", // Light Red
+            ConsoleColor.Magenta => "\e[48;5;13m", // Light Purple
+            ConsoleColor.Yellow => "\e[48;5;11m", // Yellow
+            ConsoleColor.White => "\e[48;5;15m", // White
             
-            _ => "\x1B[49m" // Use default background color
+            _ => "\e[49m" // Use default background color
         };
     }
     

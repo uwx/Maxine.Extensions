@@ -55,7 +55,7 @@ public static class RayLogUtils
         ];
             
         chars[0] = '+';
-        Pad0(secs, ref chars, 1);
+        Pad0(secs, in chars, 1);
         chars[3] = '.';
         chars[4] = Digit(ms / 100);
         chars[5] = 's';
@@ -73,9 +73,9 @@ public static class RayLogUtils
         ];
             
         chars[0] = '+';
-        Pad0(mins, ref chars, 1);
+        Pad0(mins, in chars, 1);
         chars[3] = ':';
-        Pad0(secs, ref chars, 4);
+        Pad0(secs, in chars, 4);
 
         return new string(chars);
     }
@@ -92,11 +92,11 @@ public static class RayLogUtils
         ];
                 
         chars[0] = '+';
-        Pad0(hours, ref chars, 1);
+        Pad0(hours, in chars, 1);
         chars[3] = ':';
-        Pad0(mins, ref chars, 4);
+        Pad0(mins, in chars, 4);
         chars[6] = ':';
-        Pad0(secs, ref chars, 7);
+        Pad0(secs, in chars, 7);
 
         return new string(chars);
     }
@@ -121,17 +121,17 @@ public static class RayLogUtils
             
         dayString.AsSpan().CopyTo(chars[1..dayLen]);
         chars[1 + dayLen] = ':';
-        Pad0(hours, ref chars, 2 + dayLen);
+        Pad0(hours, in chars, 2 + dayLen);
         chars[4 + dayLen] = ':';
-        Pad0(mins, ref chars, 5 + dayLen);
+        Pad0(mins, in chars, 5 + dayLen);
         chars[7 + dayLen] = ':';
-        Pad0(secs, ref chars, 8 + dayLen);
+        Pad0(secs, in chars, 8 + dayLen);
 
         return new string(chars);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Pad0(int num, ref Span<char> span, int start)
+    private static void Pad0(int num, in Span<char> span, int start)
     {
         if (num < 10)
         {
