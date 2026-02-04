@@ -13,7 +13,7 @@
         <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3"/>
         <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-preview.2.26081.104" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="10.0.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.1" />
         <PackageReference Include="Nito.AsyncEx" Version="5.1.2"/>
