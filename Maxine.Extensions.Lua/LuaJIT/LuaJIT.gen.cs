@@ -60,6 +60,13 @@ namespace Maxine.Extensions.LuaJIT
         [SuppressGCTransition]
         public static extern int luaopen_string_buffer(lua_State* L);
 
+        /// <summary>
+        /// [-0, +0, m]
+        /// Opens all standard Lua libraries into the given state.
+        /// </summary>
+        /// <code>
+        /// void luaL_openlibs (lua_State *L);
+        /// </code>
         [DllImport("luajit", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void luaL_openlibs(lua_State* L);
     }

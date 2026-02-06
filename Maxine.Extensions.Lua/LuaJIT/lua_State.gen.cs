@@ -8,6 +8,13 @@ using unsafe lua_Hook = delegate* unmanaged[Cdecl]<Maxine.Extensions.LuaJIT.lua_
 
 namespace Maxine.Extensions.LuaJIT
 {
+    /// <summary>
+    /// Opaque structure that keeps the whole state of a Lua interpreter. The Lua library is fully reentrant: it has no global variables. All information about a state is kept in this structure.
+    /// A pointer to this state must be passed as the first argument to every function in the library, except to lua_newstate, which creates a Lua state from scratch.
+    /// </summary>
+    /// <code>
+    /// typedef struct lua_State lua_State;
+    /// </code>
     public partial struct lua_State
     {
     }

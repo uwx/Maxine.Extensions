@@ -8,6 +8,15 @@ using unsafe lua_Hook = delegate* unmanaged[Cdecl]<Maxine.Extensions.LuaJIT.lua_
 
 namespace Maxine.Extensions.LuaJIT
 {
+    /// <summary>
+    /// Type for arrays of functions to be registered by luaL_register. name is the function name and func is a pointer to the function. Any array of luaL_Reg must end with an sentinel entry in which both name and func are NULL.
+    /// </summary>
+    /// <code>
+    /// typedef struct luaL_Reg {
+    /// const char *name;
+    /// lua_CFunction func;
+    /// } luaL_Reg;
+    /// </code>
     public unsafe partial struct luaL_Reg
     {
         [NativeTypeName("const char *")]
