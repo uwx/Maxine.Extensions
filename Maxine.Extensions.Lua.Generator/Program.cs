@@ -7,12 +7,12 @@ using Maxine.Extensions.Streams;
 
 Console.WriteLine("Hello, World!");
 
-for (var i = 0; i < (args.Length - 1); i += 3)
+for (var i = 0; i < args.Length; i += 4)
 {
     var rootPath = args[i];
     var libPath = args[i + 1];
     var className = args[i + 2];
-    var outputPath = Path.Combine(args[^1], className);
+    var outputPath = args[i + 3];
     
     Directory.CreateDirectory(outputPath);
     
@@ -215,7 +215,6 @@ for (var i = 0; i < (args.Length - 1); i += 3)
                 Options = PInvokeGeneratorConfigurationOptions.GenerateAggressiveInlining |
                           PInvokeGeneratorConfigurationOptions.GenerateCallConvMemberFunction |
                           PInvokeGeneratorConfigurationOptions.GenerateCppAttributes |
-                          PInvokeGeneratorConfigurationOptions.GenerateDisableRuntimeMarshalling |
                           PInvokeGeneratorConfigurationOptions.GenerateDocIncludes |
                           PInvokeGeneratorConfigurationOptions.GenerateGuidMember |
                           PInvokeGeneratorConfigurationOptions.GenerateMacroBindings |
@@ -362,17 +361,20 @@ for (var i = 0; i < (args.Length - 1); i += 3)
                     ["char"] = "byte",
                     ["lua_Number"] = "lua_Number",
                     ["lua_Integer"] = "lua_Integer",
+                    ["lua_Unsigned"] = "lua_Unsigned",
                     ["lua_CFunction"] = "lua_CFunction",
                     ["lua_Alloc"] = "lua_Alloc",
                     ["lua_Reader"] = "lua_Reader",
                     ["lua_Writer"] = "lua_Writer",
                     ["lua_Hook"] = "lua_Hook",
                     ["FILE"] = "void",
+                    ["lua_tostring"] = "_lua_tostring",
                 },
                 WithTransparentStructs = new Dictionary<string, (string Name, PInvokeGeneratorTransparentStructKind Kind)>
                 {
-                    ["lua_Number"] = ("double", PInvokeGeneratorTransparentStructKind.TypedefHex),
-                    ["lua_Integer"] = ("long", PInvokeGeneratorTransparentStructKind.Typedef),
+                    ["lua_Number"] = ("double", PInvokeGeneratorTransparentStructKind.Typedef),
+                    ["lua_Integer"] = ("nint", PInvokeGeneratorTransparentStructKind.Typedef),
+                    ["lua_Unsigned"] = ("nuint", PInvokeGeneratorTransparentStructKind.Typedef),
                 },
                 LibraryPath = libPath,
                 DefaultClass = className,
@@ -495,12 +497,12 @@ for (var i = 0; i < (args.Length - 1); i += 3)
         docs = parser.ParseManual(htmlContent);
 
         // Output results
-        // foreach (var kvp in docs.OrderBy(x => x.Key))
-        // {
-        //     Console.WriteLine($"// {kvp.Key}");
-        //     Console.WriteLine(kvp.Value);
-        //     Console.WriteLine();
-        // }
+        foreach (var kvp in docs.OrderBy(x => x.Key))
+        {
+            Console.WriteLine($"// {kvp.Key}");
+            Console.WriteLine(kvp.Value);
+            Console.WriteLine();
+        }
     }
     else
     {

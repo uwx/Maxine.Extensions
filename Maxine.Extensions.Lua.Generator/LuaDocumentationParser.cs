@@ -94,7 +94,7 @@ public class LuaDocumentationParser
             sibling = sibling.NextSibling;
         }
         
-        return sb.ToString().Trim();
+        return sb.ToString().Replace("&", "&amp;").Replace("\r\n", "\n").Replace("\n", "<br/>\n").Trim();
     }
     
     private string CleanText(string text)
