@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DefineConstants>LUA_5_4,LUA_5_0_OR_LATER,LUA_5_1_OR_LATER,LUA_5_2_OR_LATER,LUA_5_3_OR_LATER,LUA_5_4_OR_LATER</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Maxine.Extensions.Lua54\Maxine.Extensions.Lua54.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\Maxine.Extensions.Lua\GlobalUsings.cs">
+            <Link>GlobalUsings.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\DelegateExtensions.cs">
+            <Link>KeraLua\DelegateExtensions.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\Delegates.cs">
+            <Link>KeraLua\Delegates.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\GlobalUsings.cs">
+            <Link>KeraLua\GlobalUsings.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\Lua.cs">
+            <Link>KeraLua\Lua.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaCompare.cs">
+            <Link>KeraLua\LuaCompare.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaDebug.cs">
+            <Link>KeraLua\LuaDebug.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaGC.cs">
+            <Link>KeraLua\LuaGC.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaHookEvent.cs">
+            <Link>KeraLua\LuaHookEvent.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaHookMask.cs">
+            <Link>KeraLua\LuaHookMask.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaOperation.cs">
+            <Link>KeraLua\LuaOperation.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaRegister.cs">
+            <Link>KeraLua\LuaRegister.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaRegistry.cs">
+            <Link>KeraLua\LuaRegistry.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaStatus.cs">
+            <Link>KeraLua\LuaStatus.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\KeraLua\LuaType.cs">
+            <Link>KeraLua\LuaType.cs</Link>
+        </Compile>
+    </ItemGroup>
+</Project>

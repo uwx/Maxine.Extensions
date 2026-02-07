@@ -5,12 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DefineConstants>
-            LUA_5_1,
-            LUAJIT,
-            LUA_5_0_OR_LATER,
-            LUA_5_1_OR_LATER
-        </DefineConstants>
+        <DefineConstants>LUA_5_1,LUAJIT,LUA_5_0_OR_LATER,LUA_5_1_OR_LATER</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>

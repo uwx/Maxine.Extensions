@@ -14,6 +14,8 @@
         <Compile Remove="LuaValue.cs"/>
         <Compile Remove="Macros.cs"/>
         <Compile Remove="Wrappers.cs"/>
+        <Compile Remove="KeraLua/**/*"/>
+        <Compile Remove="NLua/**/*"/>
     </ItemGroup>
 
 </Project>

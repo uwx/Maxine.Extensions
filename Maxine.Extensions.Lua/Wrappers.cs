@@ -901,6 +901,30 @@ public static unsafe partial class Lua55
     }
 
 #if LUA_5_1_OR_LATER
+#if LUA_5_3_OR_LATER
+    /// <inheritdoc cref="lua_getfield(lua_State*, int, byte*)"/>
+    public static int lua_getfield(lua_State* L, int idx, string k)
+    {
+        var kPtr = k == null ? null : (byte*)Marshal.StringToHGlobalAnsi(k);
+        try
+        {
+            return lua_getfield(L, idx, kPtr);
+        }
+        finally
+        {
+            if (kPtr != null) Marshal.FreeHGlobal((nint)kPtr);
+        }
+    }
+
+    /// <inheritdoc cref="lua_getfield(lua_State*, int, byte*)"/>
+    public static int lua_getfield(lua_State* L, int idx, ReadOnlySpan<byte> k)
+    {
+        fixed (byte* kPtr = k)
+        {
+            return lua_getfield(L, idx, kPtr);
+        }
+    }
+#else
     /// <inheritdoc cref="lua_getfield(lua_State*, int, byte*)"/>
     public static void lua_getfield(lua_State* L, int idx, string k)
     {
@@ -923,6 +947,7 @@ public static unsafe partial class Lua55
             lua_getfield(L, idx, kPtr);
         }
     }
+#endif
 
     /// <inheritdoc cref="lua_setfield(lua_State*, int, byte*)"/>
     public static void lua_setfield(lua_State* L, int idx, string k)
@@ -1205,5 +1230,199 @@ public static unsafe partial class Lua55
     }
 
     #endregion
+#endif
+
+    /// <inheritdoc cref="lua_getinfo(lua_State*, byte*, lua_Debug*)"/>
+    public static int lua_getinfo(lua_State* L, ReadOnlySpan<byte> what, lua_Debug* ar)
+    {
+        fixed (byte* whatPtr = what)
+        {
+            return lua_getinfo(L, whatPtr, ar);
+        }
+    }
+
+    /// <inheritdoc cref="lua_getinfo(lua_State*, byte*, lua_Debug*)"/>
+    public static int lua_getinfo(lua_State* L, string what, lua_Debug* ar)
+    {
+        var whatPtr = what == null ? null : (byte*)Marshal.StringToHGlobalAnsi(what);
+        try
+        {
+            return lua_getinfo(L, whatPtr, ar);
+        }
+        finally
+        {
+            if (whatPtr != null) Marshal.FreeHGlobal((nint)whatPtr);
+        }
+    }
+    
+#if LUA_5_3_OR_LATER
+    /// <inheritdoc cref="lua_stringtonumber(lua_State*, byte*)"/>
+    public static nuint lua_stringtonumber(lua_State* L, ReadOnlySpan<byte> s)
+    {
+        fixed (byte* sPtr = s)
+        {
+            return lua_stringtonumber(L, sPtr);
+        }
+    }
+    
+    /// <inheritdoc cref="lua_stringtonumber(lua_State*, byte*)"/>
+    public static nuint lua_stringtonumber(lua_State* L, string s)
+    {
+        var sPtr = s == null ? null : (byte*)Marshal.StringToHGlobalAnsi(s);
+        try
+        {
+            return lua_stringtonumber(L, sPtr);
+        }
+        finally
+        {
+            if (sPtr != null) Marshal.FreeHGlobal((nint)sPtr);
+        }
+    }
+#endif
+    
+#if LUA_5_1_OR_LATER
+    /// <inheritdoc cref="luaL_checkoption(lua_State*, int, byte*, byte**)"/>
+    public static int luaL_checkoption(lua_State* L, int arg, string def, ReadOnlySpan<string> lst)
+    {
+        Span<IntPtr> ptrs = stackalloc IntPtr[lst.Length];
+        for (int i = 0; i < lst.Length; i++)
+        {
+            ptrs[i] = Marshal.StringToHGlobalAnsi(lst[i]);
+        }
+
+        var ptrDef = Marshal.StringToHGlobalAnsi(def);
+        try
+        {
+            fixed (void* pList = ptrs)
+            {
+                return luaL_checkoption(L, arg, (byte*)ptrDef, (byte**)pList);
+            }
+        }
+        finally
+        {
+            foreach (var ptr in ptrs)
+                Marshal.FreeHGlobal(ptr);
+            Marshal.FreeHGlobal(ptrDef);
+        }
+    }
+#endif
+    
+#if LUA_5_2_OR_LATER
+    /// <inheritdoc cref="luaL_getsubtable(lua_State*, int, byte*)"/>
+    public static int luaL_getsubtable(lua_State* L, int idx, ReadOnlySpan<byte> fname)
+    {
+        fixed (byte* fnamePtr = fname)
+        {
+            return luaL_getsubtable(L, idx, fnamePtr);
+        }
+    }
+    
+    /// <inheritdoc cref="luaL_getsubtable(lua_State*, int, byte*)"/>
+    public static int luaL_getsubtable(lua_State* L, int idx, string fname)
+    {
+        var fnamePtr = fname == null ? null : (byte*)Marshal.StringToHGlobalAnsi(fname);
+        try
+        {
+            return luaL_getsubtable(L, idx, fnamePtr);
+        }
+        finally
+        {
+            if (fnamePtr != null) Marshal.FreeHGlobal((nint)fnamePtr);
+        }
+    }
+
+    /// <inheritdoc cref="luaL_loadbufferx(lua_State*, byte*, nuint, byte*, byte*)"/>
+    public static int luaL_loadbufferx(lua_State* L, ReadOnlySpan<byte> buff, size_t sz, ReadOnlySpan<byte> name, ReadOnlySpan<byte> mode)
+    {
+        fixed (byte* buffPtr = buff)
+        fixed (byte* namePtr = name)
+        fixed (byte* modePtr = mode)
+        {
+            return luaL_loadbufferx(L, buffPtr, sz, namePtr, modePtr);
+        }
+    }
+
+    /// <inheritdoc cref="luaL_loadbufferx(lua_State*, byte*, nuint, byte*, byte*)"/>
+    public static int luaL_loadbufferx(lua_State* L, ReadOnlySpan<byte> buff, size_t sz, string name, string mode)
+    {
+        var namePtr = name == null ? null : (byte*)Marshal.StringToHGlobalAnsi(name);
+        var modePtr = mode == null ? null : (byte*)Marshal.StringToHGlobalAnsi(mode);
+        try
+        {
+            fixed (byte* buffPtr = buff)
+                return luaL_loadbufferx(L, buffPtr, sz, namePtr, modePtr);
+        }
+        finally
+        {
+            if (namePtr != null) Marshal.FreeHGlobal((nint)namePtr);
+            if (modePtr != null) Marshal.FreeHGlobal((nint)modePtr);
+        }
+    }
+
+    /// <inheritdoc cref="luaL_loadbufferx(lua_State*, byte*, nuint, byte*, byte*)"/>
+    public static int luaL_loadbufferx(lua_State* L, string buff, size_t sz, string name, string mode)
+    {
+        var buffPtr = buff == null ? null : (byte*)Marshal.StringToHGlobalAnsi(buff);
+        var namePtr = name == null ? null : (byte*)Marshal.StringToHGlobalAnsi(name);
+        var modePtr = mode == null ? null : (byte*)Marshal.StringToHGlobalAnsi(mode);
+        try
+        {
+            return luaL_loadbufferx(L, buffPtr, sz, namePtr, modePtr);
+        }
+        finally
+        {
+            if (buffPtr != null) Marshal.FreeHGlobal((nint)buffPtr);
+            if (namePtr != null) Marshal.FreeHGlobal((nint)namePtr);
+            if (modePtr != null) Marshal.FreeHGlobal((nint)modePtr);
+        }
+    }
+#endif
+    
+#if LUA_5_2_OR_LATER
+    /// <inheritdoc cref="luaL_requiref(lua_State*, byte*, lua_CFunction, int)"/>
+    public static void luaL_requiref(lua_State* L, ReadOnlySpan<byte> modname, lua_CFunction openf, int glb)
+    {
+        fixed (byte* modnamePtr = modname)
+        {
+            luaL_requiref(L, modnamePtr, openf, glb);
+        }
+    }
+    
+    /// <inheritdoc cref="luaL_requiref(lua_State*, byte*, lua_CFunction, int)"/>
+    public static void luaL_requiref(lua_State* L, string modname, lua_CFunction openf, int glb)
+    {
+        var modnamePtr = modname == null ? null : (byte*)Marshal.StringToHGlobalAnsi(modname);
+        try
+        {
+            luaL_requiref(L, modnamePtr, openf, glb);
+        }
+        finally
+        {
+            if (modnamePtr != null) Marshal.FreeHGlobal((nint)modnamePtr);
+        }
+    }
+#endif
+    
+#if LUA_5_4_OR_LATER
+    public static void lua_warning(lua_State* L, ReadOnlySpan<byte> msg, int tocont)
+    {
+        fixed (byte* msgPtr = msg)
+        {
+            lua_warning(L, msgPtr, tocont);
+        }
+    }
+    
+    public static void lua_warning(lua_State* L, string msg, int tocont)
+    {
+        var msgPtr = msg == null ? null : (byte*)Marshal.StringToHGlobalAnsi(msg);
+        try
+        {
+            lua_warning(L, msgPtr, tocont);
+        }
+        finally
+        {
+            if (msgPtr != null) Marshal.FreeHGlobal((nint)msgPtr);
+        }
+    }
 #endif
 }

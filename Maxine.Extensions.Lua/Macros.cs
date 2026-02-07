@@ -356,9 +356,48 @@ public static unsafe partial class Lua55
     /// </code>
     public static void lua_setglobal(lua_State* L, string s)
     {
+#if !LUA_5_2_OR_LATER
         lua_setfield(L, LUA_GLOBALSINDEX, s);
+#else
+        var ptr = (byte*)Marshal.StringToHGlobalAnsi(s);
+        try
+        {
+            lua_setglobal(L, ptr);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal((IntPtr)ptr);
+        }
+#endif
     }
 
+#if LUA_5_3_OR_LATER
+    /// <summary>
+    /// [-0, +1, e]<br/>
+    /// <br/>
+    /// Pushes onto the stack the value of the global name. It is defined as a macro:<br/>
+    /// <br/>
+    /// </summary>
+    /// <code>
+    /// void lua_getglobal (lua_State *L, const char *name);
+    /// </code>
+    public static int lua_getglobal(lua_State* L, string s)
+    {
+#if !LUA_5_2_OR_LATER
+        return lua_getfield(L, LUA_GLOBALSINDEX, s);
+#else
+        var ptr = (byte*)Marshal.StringToHGlobalAnsi(s);
+        try
+        {
+            return lua_getglobal(L, ptr);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal((IntPtr)ptr);
+        }
+#endif
+    }
+#else
     /// <summary>
     /// [-0, +1, e]<br/>
     /// <br/>
@@ -370,8 +409,21 @@ public static unsafe partial class Lua55
     /// </code>
     public static void lua_getglobal(lua_State* L, string s)
     {
+#if !LUA_5_2_OR_LATER
         lua_getfield(L, LUA_GLOBALSINDEX, s);
+#else
+        var ptr = (byte*)Marshal.StringToHGlobalAnsi(s);
+        try
+        {
+            lua_getglobal(L, ptr);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal((IntPtr)ptr);
+        }
+#endif
     }
+#endif
 
     public static lua_State* lua_open()
     {
@@ -511,7 +563,14 @@ public static unsafe partial class Lua55
     /// </code>
     public static void lua_getglobal(lua_State* L, ReadOnlySpan<byte> name)
     {
+#if !LUA_5_2_OR_LATER
         lua_getfield(L, LUA_GLOBALSINDEX, name);
+#else
+        fixed (byte* ptr = name)
+        {
+            lua_getglobal(L, ptr);
+        }
+#endif
     }
 
     /// <summary>
@@ -525,7 +584,14 @@ public static unsafe partial class Lua55
     /// </code>
     public static void lua_setglobal(lua_State* L, ReadOnlySpan<byte> name)
     {
+#if !LUA_5_2_OR_LATER
         lua_setfield(L, LUA_GLOBALSINDEX, name);
+#else
+        fixed (byte* ptr = name)
+        {
+            lua_setglobal(L, ptr);
+        }
+#endif
     }
 #endif
 
@@ -987,7 +1053,11 @@ public static unsafe partial class Lua55
     /// </code>
     public static void lua_pushglobaltable(lua_State* L)
     {
+#if !LUA_5_2_OR_LATER
         lua_pushvalue(L, LUA_GLOBALSINDEX);
+#else
+        lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
+#endif
     }
     
     #endregion
@@ -1055,5 +1125,17 @@ public static unsafe partial class Lua55
         return lua_tounsignedx(L, i, null);
     }
 #endif
+#endif
+    
+#if LUA_5_5_OR_LATER
+    public static int lua_resetthread(lua_State* L)
+    {
+        return lua_closethread(L, null);
+    }
+
+    public static void luaL_openlibs(lua_State* L)
+    {
+        luaL_openselectedlibs(L, ~0, 0);
+    }
 #endif
 }

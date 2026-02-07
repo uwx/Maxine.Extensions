@@ -5,15 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DefineConstants>
-            LUA_5_5,
-            LUA_5_0_OR_LATER,
-            LUA_5_1_OR_LATER,
-            LUA_5_2_OR_LATER,
-            LUA_5_3_OR_LATER,
-            LUA_5_4_OR_LATER,
-            LUA_5_5_OR_LATER
-        </DefineConstants>
+        <DefineConstants>LUA_5_5,LUA_5_0_OR_LATER,LUA_5_1_OR_LATER,LUA_5_2_OR_LATER,LUA_5_3_OR_LATER,LUA_5_4_OR_LATER,LUA_5_5_OR_LATER</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -44,6 +36,10 @@
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="runtimes\linux-x64\native\" />
     </ItemGroup>
 
 </Project>

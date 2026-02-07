@@ -104,6 +104,7 @@ public static unsafe partial class Lua55
 #endif
 
 {
+#if LUAJIT
     public static ReadOnlySpan<byte> LUAJIT_VERSION => "LuaJIT 2.1.0-beta3"u8;
     public const int LUAJIT_VERSION_NUM = 20100;
     public static ReadOnlySpan<byte> LUAJIT_VERSION_SYM => "luaJIT_version_2_1_0_beta3"u8;
@@ -117,6 +118,7 @@ public static unsafe partial class Lua55
     public const int LUAJIT_MODE_OFF = 0x0000;
     public const int LUAJIT_MODE_ON = 0x0100;
     public const int LUAJIT_MODE_FLUSH = 0x0200;
+#endif
 
     public const int LUA_NOREF = -2;
     public const int LUA_REFNIL = -1;
@@ -145,8 +147,13 @@ public static unsafe partial class Lua55
 	
 	public const string LUA_QS = "'%s'";
 	
+#if !LUA_5_2_OR_LATER
 	public const int LUAI_MAXSTACK = 65500;
 	public const int LUAI_MAXCSTACK = 8000;
+#else
+	public const int LUAI_MAXSTACK = 1000000;
+#endif
+
 	public const int LUAI_GCPAUSE = 200;
 	public const int LUAI_GCMUL = 200;
 	public const int LUA_MAXCAPTURES = 32;
@@ -165,14 +172,33 @@ public static unsafe partial class Lua55
 	
 	public const int LUA_MULTRET = -1;
 	
+#if !LUA_5_2_OR_LATER
 	public const int LUA_REGISTRYINDEX = -10000;
+#else
+#if LUA_5_5_OR_LATER
+	public const int LUA_REGISTRYINDEX = (-(int.MaxValue/2 + 1000));
+#else
+	public const int LUA_REGISTRYINDEX = -1001000;
+#endif
+	public const int LUA_RIDX_MAINTHREAD = 1;
+	public const int LUA_RIDX_GLOBALS = 2;
+	public const int LUA_RIDX_LAST = LUA_RIDX_GLOBALS;
+#endif
+	
+#if !LUA_5_2_OR_LATER
 	public const int LUA_ENVIRONINDEX = -10001;
 	public const int LUA_GLOBALSINDEX = -10002;
-	
+
 	public static int lua_upvalueindex(int i)
 	{
 		return LUA_GLOBALSINDEX - i;
 	}
+#else
+	public static int lua_upvalueindex(int i)
+	{
+		return LUA_REGISTRYINDEX - i;
+	}
+#endif
 	
 	public const int LUA_OK = 0;
 	public const int LUA_YIELD = 1;
