@@ -147,6 +147,57 @@ static lua_Number numarith (lua_State *L, int op, lua_Number v1,
   }
 }
 
+static lua_fix64 tofix64(const TValue* v, bool& success) {
+  if (ttisinteger(v))
+  {
+    success = true;
+    return {ivalue(v)};
+  }
+  else
+  {
+    lua_Number n1;
+    if (tonumberns(v, n1))
+    {
+      success = true;
+      return {n1};
+    }
+    else
+    {
+      success = false;
+      return {0};
+    }
+  }
+}
+
+static int fix64arith(lua_State* L, int op, lua_fix64 v1, lua_fix64 v2, TValue* res) {
+  lua_fix64 fixres;
+  switch (op) {
+    case LUA_OPADD: fixres = luai_numadd(L, v1, v2); break;
+    case LUA_OPSUB: fixres = luai_numsub(L, v1, v2); break;
+    case LUA_OPMUL: fixres = luai_nummul(L, v1, v2); break;
+    case LUA_OPDIV: fixres = luai_numdiv(L, v1, v2); break;
+    case LUA_OPPOW: fixres = lua_fix64::pow(v1, v2); break;
+    case LUA_OPIDIV: fixres = lua_fix64::floor(luai_numdiv(L, v1, v2)); break;
+    case LUA_OPUNM: fixres = luai_numunm(L, v1); break;
+    case LUA_OPMOD: fixres = v1 % v2; break;
+    default: lua_assert(0); return 0;
+  }
+  setfix64value(res, fixres);
+}
+
+static int fix64arith_lh(lua_State* L, int op, lua_fix64 v1, const TValue* v2, TValue* res) {
+  bool success;
+  lua_fix64 v2f = tofix64(v2, success);
+  if (!success) return 0;
+  return fix64arith(L, op, v1, v2f, res);
+}
+
+static int fix64arith_rh(lua_State* L, int op, const TValue* v1, lua_fix64 v2, TValue* res) {
+  bool success;
+  lua_fix64 v1f = tofix64(v1, success);
+  if (!success) return 0;
+  return fix64arith(L, op, v1f, v2, res);
+}
 
 int luaO_rawarith (lua_State *L, int op, const TValue *p1, const TValue *p2,
                    TValue *res) {
@@ -174,6 +225,12 @@ int luaO_rawarith (lua_State *L, int op, const TValue *p1, const TValue *p2,
       if (ttisinteger(p1) && ttisinteger(p2)) {
         setivalue(res, intarith(L, op, ivalue(p1), ivalue(p2)));
         return 1;
+      }
+      else if (ttisfix64(p1)) {
+        return fix64arith_lh(L, op, fix64value(p1), p2, res);
+      }
+      else if (ttisfix64(p2)) {
+        return fix64arith_rh(L, op, p1, fix64value(p1), res);
       }
       else if (tonumberns(p1, n1) && tonumberns(p2, n2)) {
         setfltvalue(res, numarith(L, op, n1, n2));

@@ -12,6 +12,7 @@
 #include <stdarg.h>
 
 
+#include "fix64.h"
 #include "llimits.h"
 #include "lua.h"
 
@@ -52,6 +53,7 @@ typedef union Value {
   lua_CFunction f; /* light C functions */
   lua_Integer i;   /* integer numbers */
   lua_Number n;    /* float numbers */
+  lua_fix64 x;      /* fix64 numbers */
   /* not used, but may avoid warnings for uninitialized value */
   lu_byte ub;
 } Value;
@@ -335,18 +337,22 @@ typedef struct GCObject {
 /* Variant tags for numbers */
 #define LUA_VNUMINT	makevariant(LUA_TNUMBER, 0)  /* integer numbers */
 #define LUA_VNUMFLT	makevariant(LUA_TNUMBER, 1)  /* float numbers */
+#define LUA_VNUMFIX makevariant(LUA_TNUMBER, 2)  /* fix64 numbers */
 
 #define ttisnumber(o)		checktype((o), LUA_TNUMBER)
 #define ttisfloat(o)		checktag((o), LUA_VNUMFLT)
 #define ttisinteger(o)		checktag((o), LUA_VNUMINT)
+#define ttisfix64(o)        checktag((o), LUA_VNUMFIX)
 
 #define nvalue(o)	check_exp(ttisnumber(o), \
-	(ttisinteger(o) ? cast_num(ivalue(o)) : fltvalue(o)))
+	(ttisinteger(o) ? cast_num(ivalue(o)) : ttisfix64(o) ? fix64value(o).to_float() : fltvalue(o)))
 #define fltvalue(o)	check_exp(ttisfloat(o), val_(o).n)
 #define ivalue(o)	check_exp(ttisinteger(o), val_(o).i)
+#define fix64value(o)   check_exp(ttisfix64(o), val_(o).x)
 
 #define fltvalueraw(v)	((v).n)
 #define ivalueraw(v)	((v).i)
+#define fix64valueraw(v)   ((v).x)
 
 #define setfltvalue(obj,x) \
   { TValue *io=(obj); val_(io).n=(x); settt_(io, LUA_VNUMFLT); }
@@ -359,6 +365,12 @@ typedef struct GCObject {
 
 #define chgivalue(obj,x) \
   { TValue *io=(obj); lua_assert(ttisinteger(io)); val_(io).i=(x); }
+
+#define setfix64value(obj,y) \
+  { TValue *io=(obj); val_(io).x=(y); settt_(io, LUA_VNUMFIX); }
+
+#define chgfix64value(obj,y) \
+  { TValue *io=(obj); lua_assert(ttisfix64(io)); val_(io).x=(y); }
 
 /* }================================================================== */
 

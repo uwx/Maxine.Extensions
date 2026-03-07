@@ -195,6 +195,10 @@ static Node *mainpositionTV (const Table *t, const TValue *key) {
       lua_Number n = fltvalue(key);
       return hashmod(t, l_hashfloat(n));
     }
+    case LUA_VNUMFIX: {
+      auto n = fix64value(key);
+      return hashint(t, n.value);
+    }
     case LUA_VSHRSTR: {
       TString *ts = tsvalue(key);
       return hashstr(t, ts);
@@ -270,6 +274,8 @@ static int equalkey (const TValue *k1, const Node *n2, int deadok) {
         return (ivalue(k1) == keyival(n2));
       case LUA_VNUMFLT:
         return luai_numeq(fltvalue(k1), fltvalueraw(keyval(n2)));
+      case LUA_VNUMFIX:
+        return fix64value(k1) == fix64valueraw(keyval(n2));
       case LUA_VLIGHTUSERDATA:
         return pvalue(k1) == pvalueraw(keyval(n2));
       case LUA_VLCF:

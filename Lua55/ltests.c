@@ -335,6 +335,8 @@ void lua_printvalue (TValue *v) {
       printf("%s", buff);
       break;
     }
+    case LUA_VNUMFIX:
+      throw("Not implemented: fix64 value");
     case LUA_VSHRSTR:
       printf("'%s'", getstr(tsvalue(v))); break;
     case LUA_VLNGSTR:

@@ -585,17 +585,38 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
     return 0;
   else if (ttypetag(t1) != ttypetag(t2)) {
     switch (ttypetag(t1)) {
-      case LUA_VNUMINT: {  /* integer == float? */
-        /* integer and float can only be equal if float has an integer
-           value equal to the integer */
-        lua_Integer i2;
-        return (luaV_flttointeger(fltvalue(t2), &i2, F2Ieq) &&
-                ivalue(t1) == i2);
+      case LUA_VNUMINT: {  /* integer == ? */
+        switch (ttypetag(t2)) {
+          case LUA_VNUMFLT:  /* integer == float? */
+            /* integer and float can only be equal if float has an integer
+               value equal to the integer */
+            lua_Integer i2;
+            return (luaV_flttointeger(fltvalue(t2), &i2, F2Ieq) &&
+                    ivalue(t1) == i2);
+          case LUA_VNUMFIX:  /* integer == fix64 integer? */
+            return (fix64value(t2) == ivalue(t1));
+          default: break;  /* other types cannot be equal to an integer */
+        }
       }
-      case LUA_VNUMFLT: {  /* float == integer? */
-        lua_Integer i1;  /* see comment in previous case */
-        return (luaV_flttointeger(fltvalue(t1), &i1, F2Ieq) &&
-                i1 == ivalue(t2));
+      case LUA_VNUMFLT: {  /* float == ? */
+        switch (ttypetag(t2)) {
+          case LUA_VNUMINT:  /* float == integer? */
+            lua_Integer i1;  /* see comment in previous case */
+            return luaV_flttointeger(fltvalue(t1), &i1, F2Ieq) &&
+                   i1 == ivalue(t2);
+          case LUA_VNUMFIX:  /* float == fix64 integer? */
+            return (fix64value(t2) == fltvalue(t1));
+          default: break;  /* other types cannot be equal to a float */
+        }
+      }
+      case LUA_VNUMFIX: {  /* fix64 integer == ? */
+        switch (ttypetag(t2)) {
+          case LUA_VNUMINT:  /* fix64 integer == integer? */
+            return (fix64value(t1) == ivalue(t2));
+          case LUA_VNUMFLT:  /* fix64 integer == float? */
+            return (fix64value(t1) == fltvalue(t2));
+          default: break;  /* other types cannot be equal to a fix64 integer */
+        }
       }
       case LUA_VSHRSTR: case LUA_VLNGSTR: {
         /* compare two strings with different variants: they can be
@@ -617,6 +638,8 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
         return (ivalue(t1) == ivalue(t2));
       case LUA_VNUMFLT:
         return (fltvalue(t1) == fltvalue(t2));
+      case LUA_VNUMFIX:
+        return (fix64value(t1) == fix64value(t2));
       case LUA_VLIGHTUSERDATA: return pvalue(t1) == pvalue(t2);
       case LUA_VSHRSTR:
         return eqshrstr(tsvalue(t1), tsvalue(t2));
@@ -1679,6 +1702,8 @@ void luaV_execute (lua_State *L, CallInfo *ci) {
           cond = (ivalue(s2v(ra)) == im);
         else if (ttisfloat(s2v(ra)))
           cond = luai_numeq(fltvalue(s2v(ra)), cast_num(im));
+        else if (ttisfix64(s2v(ra)))
+          cond = (fix64value(s2v(ra)) == im);
         else
           cond = 0;  /* other types cannot be equal to a number */
         docondjump();

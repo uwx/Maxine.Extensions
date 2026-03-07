@@ -55,6 +55,7 @@
     <ClCompile Include="lzio.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fix64.h" />
     <ClInclude Include="lapi.h" />
     <ClInclude Include="lauxlib.h" />
     <ClInclude Include="lcode.h" />
