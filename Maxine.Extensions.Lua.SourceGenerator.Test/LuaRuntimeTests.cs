@@ -1,5 +1,5 @@
-using LuaJIT;
-using static LuaJIT.Methods;
+using Maxine.Extensions.LuaJIT;
+using static Maxine.Extensions.LuaJIT.LuaJIT;
 using NFMWorld.LuaSourceGenerator.Test.SampleTypes;
 using NFMWorld.LuaSourceGenerator.Test.Bindings;
 
@@ -12,7 +12,7 @@ namespace NFMWorld.LuaSourceGenerator.Test;
 [TestClass]
 public partial class LuaRuntimeTests
 {
-    private lua_State _L;
+    private lua_State* _L;
 
     [TestInitialize]
     public void Setup()

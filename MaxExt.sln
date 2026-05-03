@@ -70,7 +70,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maxine.Extensions.Lua.Sourc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maxine.Extensions.Lua.SourceGenerator.TestFixtures", "Maxine.Extensions.Lua.SourceGenerator.TestFixtures\Maxine.Extensions.Lua.SourceGenerator.TestFixtures.csproj", "{1D45230B-32E6-4442-9E38-D2DFFFBAE988}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maxine.Extensions.Lua.SourceGenerator.Runtime.Test", "Maxine.Extensions.Lua.SourceGenerator.Runtime.Test\Maxine.Extensions.Lua.SourceGenerator.Runtime.Test.csproj", "{54A21F4F-5302-44EA-A48B-31B91B94173A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maxine.Extensions.Lua.SourceGenerator.Test", "Maxine.Extensions.Lua.SourceGenerator.Test\Maxine.Extensions.Lua.SourceGenerator.Test.csproj", "{54A21F4F-5302-44EA-A48B-31B91B94173A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

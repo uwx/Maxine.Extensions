@@ -22,8 +22,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Maxine.Extensions.LuaJIT\Maxine.Extensions.LuaJIT.csproj" />
       <ProjectReference Include="..\NFMWorld.Library\NFMWorld.Library.csproj" />
-      <ProjectReference Include="..\Maxine.Extensions.Lua.SourceGenerator.Runtime.TestFixtures\Maxine.Extensions.Lua.SourceGenerator.Runtime.TestFixtures.csproj" />
+      <ProjectReference Include="..\Maxine.Extensions.Lua.SourceGenerator.TestFixtures\Maxine.Extensions.Lua.SourceGenerator.TestFixtures.csproj" />
       <ProjectReference Include="..\Maxine.Extensions.Lua.SourceGenerator\Maxine.Extensions.Lua.SourceGenerator.csproj" />
     </ItemGroup>
 
