@@ -1,0 +1,125 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <AssemblyName>NLuaTest</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="6.0.4"/>
+        <PackageReference Include="NUnit" Version="3.14.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="KeraLua\LuaTests\core\bisect.lua" Link="LuaTests\core\bisect.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\cf.lua" Link="LuaTests\core\cf.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\factorial.lua" Link="LuaTests\core\factorial.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\fib.lua" Link="LuaTests\core\fib.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\fibfor.lua" Link="LuaTests\core\fibfor.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\life.lua" Link="LuaTests\core\life.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\printf.lua" Link="LuaTests\core\printf.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\sieve.lua" Link="LuaTests\core\sieve.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\core\sort.lua" Link="LuaTests\core\sort.lua">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\scripts\foo.lua">
+            <Link>foo.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\scripts\main.lua">
+            <Link>main.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="KeraLua\LuaTests\scripts\module1.lua">
+            <Link>module1.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+
+        <None Include="NLua\scripts\core\bisect.lua">
+            <Link>scripts\core\bisect.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\cf.lua">
+            <Link>scripts\core\cf.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\factorial.lua">
+            <Link>scripts\core\factorial.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\fib.lua">
+            <Link>scripts\core\fib.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\fibfor.lua">
+            <Link>scripts\core\fibfor.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\life.lua">
+            <Link>scripts\core\life.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\printf.lua">
+            <Link>scripts\core\printf.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\sieve.lua">
+            <Link>scripts\core\sieve.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\core\sort.lua">
+            <Link>scripts\core\sort.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\test.lua">
+            <Link>scripts\test.lua</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\test_32.luac">
+            <Link>scripts\test_32.luac</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="NLua\scripts\test_64.luac">
+            <Link>scripts\test_64.luac</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="lua550.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="NUnit.Framework"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="NLua\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Maxine.Extensions.Lua55.NLua\Maxine.Extensions.Lua55.NLua.csproj" />
+    </ItemGroup>
+
+</Project>

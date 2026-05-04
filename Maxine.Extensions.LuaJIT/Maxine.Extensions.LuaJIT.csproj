@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DefineConstants>LUA_5_1,LUAJIT,LUA_5_0_OR_LATER,LUA_5_1_OR_LATER</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="runtimes/win-x64/native/*" Pack="true" PackagePath="runtimes/win-x64/native" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="runtimes/linux-x64/native/*" Pack="true" PackagePath="runtimes/linux-x64/native" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\Maxine.Extensions.Lua\Constants.cs">
+            <Link>Constants.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\GlobalUsings.cs">
+            <Link>GlobalUsings.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\LuaValue.cs">
+            <Link>LuaValue.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\Macros.cs">
+            <Link>Macros.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NativeTypeNameAttribute.cs">
+            <Link>NativeTypeNameAttribute.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\Wrappers.cs">
+            <Link>Wrappers.cs</Link>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+    </ItemGroup>
+
+</Project>
