@@ -42,3 +42,11 @@ Thumbs.db
 ~$*
 *.tmp
 *.bak
+
+*.lscache
+
+/Maxine.Extensions.Lua.Generator/libClangSharp.dll
+/Maxine.Extensions.Lua.Generator/libclang.dll
+
+/Debug
+/x64

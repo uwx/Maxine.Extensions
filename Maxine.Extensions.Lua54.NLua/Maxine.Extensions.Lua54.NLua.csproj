@@ -1,0 +1,121 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Maxine.Extensions.Lua54.KeraLua\Maxine.Extensions.Lua54.KeraLua.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\CheckType.cs">
+            <Link>NLua\CheckType.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Event\DebugHookEventArgs.cs">
+            <Link>NLua\Event\DebugHookEventArgs.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Event\HookExceptionEventArgs.cs">
+            <Link>NLua\Event\HookExceptionEventArgs.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Exceptions\LuaException.cs">
+            <Link>NLua\Exceptions\LuaException.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Exceptions\LuaScriptException.cs">
+            <Link>NLua\Exceptions\LuaScriptException.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Extensions\LuaExtensions.cs">
+            <Link>NLua\Extensions\LuaExtensions.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Extensions\StringExtensions.cs">
+            <Link>NLua\Extensions\StringExtensions.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Extensions\TypeExtensions.cs">
+            <Link>NLua\Extensions\TypeExtensions.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\GenerateEventAssembly\ClassGenerator.cs">
+            <Link>NLua\GenerateEventAssembly\ClassGenerator.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\GenerateEventAssembly\CodeGeneration.cs">
+            <Link>NLua\GenerateEventAssembly\CodeGeneration.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\GenerateEventAssembly\DelegateGenerator.cs">
+            <Link>NLua\GenerateEventAssembly\DelegateGenerator.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\GenerateEventAssembly\ILuaGeneratedType.cs">
+            <Link>NLua\GenerateEventAssembly\ILuaGeneratedType.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\GenerateEventAssembly\LuaClassType.cs">
+            <Link>NLua\GenerateEventAssembly\LuaClassType.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Lua.cs">
+            <Link>NLua\Lua.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaBase.cs">
+            <Link>NLua\LuaBase.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaFunction.cs">
+            <Link>NLua\LuaFunction.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaGlobals.cs">
+            <Link>NLua\LuaGlobals.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaHideAttribute.cs">
+            <Link>NLua\LuaHideAttribute.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaMemberAttribute.cs">
+            <Link>NLua\LuaMemberAttribute.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaRegistrationHelper.cs">
+            <Link>NLua\LuaRegistrationHelper.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaTable.cs">
+            <Link>NLua\LuaTable.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaThread.cs">
+            <Link>NLua\LuaThread.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\LuaUserData.cs">
+            <Link>NLua\LuaUserData.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Metatables.cs">
+            <Link>NLua\Metatables.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\EventHandlerContainer.cs">
+            <Link>NLua\Method\EventHandlerContainer.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\LuaClassHelper.cs">
+            <Link>NLua\Method\LuaClassHelper.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\LuaDelegate.cs">
+            <Link>NLua\Method\LuaDelegate.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\LuaEventHandler.cs">
+            <Link>NLua\Method\LuaEventHandler.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\LuaMethodWrapper.cs">
+            <Link>NLua\Method\LuaMethodWrapper.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\MethodArgs.cs">
+            <Link>NLua\Method\MethodArgs.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\MethodCache.cs">
+            <Link>NLua\Method\MethodCache.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\Method\RegisterEventHandler.cs">
+            <Link>NLua\Method\RegisterEventHandler.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\ObjectTranslator.cs">
+            <Link>NLua\ObjectTranslator.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\ObjectTranslatorPool.cs">
+            <Link>NLua\ObjectTranslatorPool.cs</Link>
+        </Compile>
+        <Compile Include="..\Maxine.Extensions.Lua\NLua\ProxyType.cs">
+            <Link>NLua\ProxyType.cs</Link>
+        </Compile>
+    </ItemGroup>
+
+</Project>
