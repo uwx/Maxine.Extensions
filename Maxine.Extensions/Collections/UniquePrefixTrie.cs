@@ -2,14 +2,14 @@
 
 namespace Maxine.Extensions.Collections;
 
-public class UniquePrefixTrie
+public static class UniquePrefixTrie
 {
-    public static IEnumerable<StringSegment> UniquePrefix(string[] a)
+    public static IEnumerable<StringSegment> UniquePrefix(string[] a, IComparer<string?>? comparison = null)
     {
         var size = a.Length;
 
         /* sort the array of strings */
-        Array.Sort(a, StringComparer.Ordinal);
+        Array.Sort(a, comparison ?? StringComparer.Ordinal);
 
         /* compare the first string with its only right neighbor */
         var j = 0;
