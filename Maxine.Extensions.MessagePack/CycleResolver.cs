@@ -79,9 +79,41 @@ public class CycleResolver<TResolver> : IFormatterResolver where TResolver : IFo
 				}
 			}
 
-			if (typeof(T) == typeof(string))
+			// Types that have no nested objects, so no need to clone.
+			if (typeof(T) == typeof(string) ||
+			    typeof(T) == typeof(byte) ||
+			    typeof(T) == typeof(sbyte) ||
+			    typeof(T) == typeof(short) ||
+			    typeof(T) == typeof(ushort) ||
+			    typeof(T) == typeof(int) ||
+			    typeof(T) == typeof(uint) ||
+			    typeof(T) == typeof(long) ||
+			    typeof(T) == typeof(ulong) ||
+			    typeof(T) == typeof(float) ||
+			    typeof(T) == typeof(double) ||
+			    typeof(T) == typeof(Int128) ||
+			    typeof(T) == typeof(UInt128) ||
+			    typeof(T) == typeof(char) ||
+			    typeof(T) == typeof(bool) ||
+			    typeof(T) == typeof(decimal) || (typeof(T).IsArray && typeof(T).GetElementType() is var tElementType && (
+				    tElementType == typeof(string) ||
+				    tElementType == typeof(byte) ||
+				    tElementType == typeof(sbyte) ||
+				    tElementType == typeof(short) ||
+				    tElementType == typeof(ushort) ||
+				    tElementType == typeof(int) ||
+				    tElementType == typeof(uint) ||
+				    tElementType == typeof(long) ||
+				    tElementType == typeof(ulong) ||
+				    tElementType == typeof(float) ||
+				    tElementType == typeof(double) ||
+				    tElementType == typeof(Int128) ||
+				    tElementType == typeof(UInt128) ||
+				    tElementType == typeof(char) ||
+				    tElementType == typeof(bool) ||
+				    tElementType == typeof(decimal)
+			)))
 			{
-				// Strings have no nested objects, so no need to clone.
 				var value = _owner._inner.GetFormatterWithVerify<T>().Deserialize(ref reader, options);
 				_owner._deserializedObjects.Add(value!);
 				return value!;
@@ -125,11 +157,11 @@ public class CycleResolver<TResolver> : IFormatterResolver where TResolver : IFo
 			}
 
 			{
-				var newObj = (T)RuntimeHelpers.GetUninitializedObject(typeof(T));
+				var newObj = RuntimeHelpers.GetUninitializedObject(typeof(T));
 				_owner._deserializedObjects.Add(newObj);
 				var value = _owner._inner.GetFormatterWithVerify<T>().Deserialize(ref reader, options);
 				CloneInPlace(value!, newObj!);
-				return newObj;
+				return (T)newObj;
 			}
 		}
 
