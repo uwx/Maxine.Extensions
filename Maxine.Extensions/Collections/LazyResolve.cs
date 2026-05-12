@@ -5,9 +5,10 @@ namespace Maxine.Extensions.Collections;
 
 [DebuggerTypeProxy(typeof(LazyResolveDebugView<>))]
 [DebuggerDisplay("Value={Value}")]
-public class LazyResolve<T> where T : notnull
+public class LazyResolve<T>(IServiceProvider services)
+    where T : notnull
 {
-    private IServiceProvider? _services;
+    private IServiceProvider? _services = services;
     
     internal T? ValueOrDefault;
     public T Value => ValueOrDefault ?? Get();
@@ -18,23 +19,12 @@ public class LazyResolve<T> where T : notnull
         _services = null;
         return service;
     }
-
-    public LazyResolve(IServiceProvider services)
-    {
-        _services = services;
-    }
 }
 
-file class LazyResolveDebugView<T> where T : notnull
+file class LazyResolveDebugView<T>(LazyResolve<T> lazy)
+    where T : notnull
 {
-    private readonly LazyResolve<T> _lazy;
-
-    public LazyResolveDebugView(LazyResolve<T> lazy)
-    {
-        _lazy = lazy;
-    }
-
-    public T? Value => _lazy.ValueOrDefault;
+    public T? Value => lazy.ValueOrDefault;
 }
 
 // [DebuggerTypeProxy(typeof(LazyResolveDebugView))]
