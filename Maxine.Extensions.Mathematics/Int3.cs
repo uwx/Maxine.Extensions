@@ -30,6 +30,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 
 namespace Maxine.Extensions.Mathematics;
 
@@ -72,16 +73,19 @@ public struct Int3 : IEquatable<Int3>, ISpanFormattable
     /// <summary>
     /// The X component of the vector.
     /// </summary>
+    [JsonPropertyName("x")]
     public int X;
 
     /// <summary>
     /// The Y component of the vector.
     /// </summary>
+    [JsonPropertyName("y")]
     public int Y;
 
     /// <summary>
     /// The Z component of the vector.
     /// </summary>
+    [JsonPropertyName("z")]
     public int Z;
 
     /// <summary>
