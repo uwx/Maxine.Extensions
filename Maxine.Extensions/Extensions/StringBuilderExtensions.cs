@@ -44,5 +44,39 @@ public static class StringBuilderExtensions
         {
             return builder.Append(bytes, Encoding.UTF8);
         }
+        
+        public StringBuilder TrimEnd()
+        {
+            ArgumentNullException.ThrowIfNull(builder);
+            if (builder.Length == 0) return builder;
+
+            int i = builder.Length - 1;
+
+            for (; i >= 0; i--)
+                if (!char.IsWhiteSpace(builder[i]))
+                    break;
+
+            if (i < builder.Length - 1)
+                builder.Length = i + 1;
+
+            return builder;
+        }
+
+        public StringBuilder TrimStart()
+        {
+            ArgumentNullException.ThrowIfNull(builder);
+            if (builder.Length == 0) return builder;
+
+            int i = 0;
+
+            for (; i < builder.Length; i++)
+                if (!char.IsWhiteSpace(builder[i]))
+                    break;
+
+            if (i > 0)
+                builder.Remove(0, i);
+
+            return builder;
+        }
     }
 }
