@@ -74,5 +74,18 @@ public static class KeyedCollectionExtensions
             collection.Insert(index, value);
             return oldValue;
         }
+
+        public bool TryAdd(TItem value)
+        {
+            ArgumentNullException.ThrowIfNull(collection);
+
+            if (collection.Contains(value))
+            {
+                return false;
+            }
+
+            collection.Add(value);
+            return true;
+        }
     }
 }
