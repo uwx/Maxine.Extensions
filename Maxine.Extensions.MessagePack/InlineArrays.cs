@@ -2,11 +2,12 @@
 using MessagePack;
 using MessagePack.Formatters;
 using JetBrains.Annotations;
+using Maxine.Extensions.Collections;
 
 namespace Maxine.Extensions.MessagePack;
 
 [PublicAPI]
-public sealed class InlineArray2Formatter<T>(sbyte typeCode = -2) : IMessagePackFormatter<InlineArray2<T>>
+public sealed class InlineArray2Formatter<T>(sbyte typeCode = -2) : IMessagePackFormatter<InlineArray2<T>>, IMessagePackFormatter<InlineArray2Ex<T>>
 {
 	public static readonly InlineArray2Formatter<T> Instance = new();
 
@@ -55,10 +56,54 @@ public sealed class InlineArray2Formatter<T>(sbyte typeCode = -2) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray2Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(2);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+    }
+
+    InlineArray2Ex<T> IMessagePackFormatter<InlineArray2Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray2Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray3Formatter<T>(sbyte typeCode = -3) : IMessagePackFormatter<InlineArray3<T>>
+public sealed class InlineArray3Formatter<T>(sbyte typeCode = -3) : IMessagePackFormatter<InlineArray3<T>>, IMessagePackFormatter<InlineArray3Ex<T>>
 {
 	public static readonly InlineArray3Formatter<T> Instance = new();
 
@@ -111,10 +156,58 @@ public sealed class InlineArray3Formatter<T>(sbyte typeCode = -3) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray3Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(3);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+    }
+
+    InlineArray3Ex<T> IMessagePackFormatter<InlineArray3Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray3Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray4Formatter<T>(sbyte typeCode = -4) : IMessagePackFormatter<InlineArray4<T>>
+public sealed class InlineArray4Formatter<T>(sbyte typeCode = -4) : IMessagePackFormatter<InlineArray4<T>>, IMessagePackFormatter<InlineArray4Ex<T>>
 {
 	public static readonly InlineArray4Formatter<T> Instance = new();
 
@@ -171,10 +264,62 @@ public sealed class InlineArray4Formatter<T>(sbyte typeCode = -4) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray4Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(4);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+    }
+
+    InlineArray4Ex<T> IMessagePackFormatter<InlineArray4Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray4Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray5Formatter<T>(sbyte typeCode = -5) : IMessagePackFormatter<InlineArray5<T>>
+public sealed class InlineArray5Formatter<T>(sbyte typeCode = -5) : IMessagePackFormatter<InlineArray5<T>>, IMessagePackFormatter<InlineArray5Ex<T>>
 {
 	public static readonly InlineArray5Formatter<T> Instance = new();
 
@@ -235,10 +380,66 @@ public sealed class InlineArray5Formatter<T>(sbyte typeCode = -5) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray5Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(5);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+    }
+
+    InlineArray5Ex<T> IMessagePackFormatter<InlineArray5Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray5Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray6Formatter<T>(sbyte typeCode = -6) : IMessagePackFormatter<InlineArray6<T>>
+public sealed class InlineArray6Formatter<T>(sbyte typeCode = -6) : IMessagePackFormatter<InlineArray6<T>>, IMessagePackFormatter<InlineArray6Ex<T>>
 {
 	public static readonly InlineArray6Formatter<T> Instance = new();
 
@@ -303,10 +504,70 @@ public sealed class InlineArray6Formatter<T>(sbyte typeCode = -6) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray6Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(6);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+    }
+
+    InlineArray6Ex<T> IMessagePackFormatter<InlineArray6Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray6Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray7Formatter<T>(sbyte typeCode = -7) : IMessagePackFormatter<InlineArray7<T>>
+public sealed class InlineArray7Formatter<T>(sbyte typeCode = -7) : IMessagePackFormatter<InlineArray7<T>>, IMessagePackFormatter<InlineArray7Ex<T>>
 {
 	public static readonly InlineArray7Formatter<T> Instance = new();
 
@@ -375,10 +636,74 @@ public sealed class InlineArray7Formatter<T>(sbyte typeCode = -7) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray7Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(7);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+    }
+
+    InlineArray7Ex<T> IMessagePackFormatter<InlineArray7Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray7Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray8Formatter<T>(sbyte typeCode = -8) : IMessagePackFormatter<InlineArray8<T>>
+public sealed class InlineArray8Formatter<T>(sbyte typeCode = -8) : IMessagePackFormatter<InlineArray8<T>>, IMessagePackFormatter<InlineArray8Ex<T>>
 {
 	public static readonly InlineArray8Formatter<T> Instance = new();
 
@@ -451,10 +776,78 @@ public sealed class InlineArray8Formatter<T>(sbyte typeCode = -8) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray8Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(8);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+    }
+
+    InlineArray8Ex<T> IMessagePackFormatter<InlineArray8Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray8Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray9Formatter<T>(sbyte typeCode = -9) : IMessagePackFormatter<InlineArray9<T>>
+public sealed class InlineArray9Formatter<T>(sbyte typeCode = -9) : IMessagePackFormatter<InlineArray9<T>>, IMessagePackFormatter<InlineArray9Ex<T>>
 {
 	public static readonly InlineArray9Formatter<T> Instance = new();
 
@@ -531,10 +924,82 @@ public sealed class InlineArray9Formatter<T>(sbyte typeCode = -9) : IMessagePack
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray9Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(9);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+    }
+
+    InlineArray9Ex<T> IMessagePackFormatter<InlineArray9Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray9Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray10Formatter<T>(sbyte typeCode = -10) : IMessagePackFormatter<InlineArray10<T>>
+public sealed class InlineArray10Formatter<T>(sbyte typeCode = -10) : IMessagePackFormatter<InlineArray10<T>>, IMessagePackFormatter<InlineArray10Ex<T>>
 {
 	public static readonly InlineArray10Formatter<T> Instance = new();
 
@@ -615,10 +1080,86 @@ public sealed class InlineArray10Formatter<T>(sbyte typeCode = -10) : IMessagePa
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray10Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(10);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+        formatter.Serialize(ref writer, value[9], options);
+    }
+
+    InlineArray10Ex<T> IMessagePackFormatter<InlineArray10Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray10Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				case 9:
+					result[9] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray11Formatter<T>(sbyte typeCode = -11) : IMessagePackFormatter<InlineArray11<T>>
+public sealed class InlineArray11Formatter<T>(sbyte typeCode = -11) : IMessagePackFormatter<InlineArray11<T>>, IMessagePackFormatter<InlineArray11Ex<T>>
 {
 	public static readonly InlineArray11Formatter<T> Instance = new();
 
@@ -703,10 +1244,90 @@ public sealed class InlineArray11Formatter<T>(sbyte typeCode = -11) : IMessagePa
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray11Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(11);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+        formatter.Serialize(ref writer, value[9], options);
+        formatter.Serialize(ref writer, value[10], options);
+    }
+
+    InlineArray11Ex<T> IMessagePackFormatter<InlineArray11Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray11Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				case 9:
+					result[9] = formatter.Deserialize(ref reader, options);
+					break;
+				case 10:
+					result[10] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray12Formatter<T>(sbyte typeCode = -12) : IMessagePackFormatter<InlineArray12<T>>
+public sealed class InlineArray12Formatter<T>(sbyte typeCode = -12) : IMessagePackFormatter<InlineArray12<T>>, IMessagePackFormatter<InlineArray12Ex<T>>
 {
 	public static readonly InlineArray12Formatter<T> Instance = new();
 
@@ -795,10 +1416,94 @@ public sealed class InlineArray12Formatter<T>(sbyte typeCode = -12) : IMessagePa
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray12Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(12);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+        formatter.Serialize(ref writer, value[9], options);
+        formatter.Serialize(ref writer, value[10], options);
+        formatter.Serialize(ref writer, value[11], options);
+    }
+
+    InlineArray12Ex<T> IMessagePackFormatter<InlineArray12Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray12Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				case 9:
+					result[9] = formatter.Deserialize(ref reader, options);
+					break;
+				case 10:
+					result[10] = formatter.Deserialize(ref reader, options);
+					break;
+				case 11:
+					result[11] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray13Formatter<T>(sbyte typeCode = -13) : IMessagePackFormatter<InlineArray13<T>>
+public sealed class InlineArray13Formatter<T>(sbyte typeCode = -13) : IMessagePackFormatter<InlineArray13<T>>, IMessagePackFormatter<InlineArray13Ex<T>>
 {
 	public static readonly InlineArray13Formatter<T> Instance = new();
 
@@ -891,10 +1596,98 @@ public sealed class InlineArray13Formatter<T>(sbyte typeCode = -13) : IMessagePa
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray13Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(13);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+        formatter.Serialize(ref writer, value[9], options);
+        formatter.Serialize(ref writer, value[10], options);
+        formatter.Serialize(ref writer, value[11], options);
+        formatter.Serialize(ref writer, value[12], options);
+    }
+
+    InlineArray13Ex<T> IMessagePackFormatter<InlineArray13Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray13Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				case 9:
+					result[9] = formatter.Deserialize(ref reader, options);
+					break;
+				case 10:
+					result[10] = formatter.Deserialize(ref reader, options);
+					break;
+				case 11:
+					result[11] = formatter.Deserialize(ref reader, options);
+					break;
+				case 12:
+					result[12] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray14Formatter<T>(sbyte typeCode = -14) : IMessagePackFormatter<InlineArray14<T>>
+public sealed class InlineArray14Formatter<T>(sbyte typeCode = -14) : IMessagePackFormatter<InlineArray14<T>>, IMessagePackFormatter<InlineArray14Ex<T>>
 {
 	public static readonly InlineArray14Formatter<T> Instance = new();
 
@@ -991,10 +1784,102 @@ public sealed class InlineArray14Formatter<T>(sbyte typeCode = -14) : IMessagePa
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray14Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(14);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+        formatter.Serialize(ref writer, value[9], options);
+        formatter.Serialize(ref writer, value[10], options);
+        formatter.Serialize(ref writer, value[11], options);
+        formatter.Serialize(ref writer, value[12], options);
+        formatter.Serialize(ref writer, value[13], options);
+    }
+
+    InlineArray14Ex<T> IMessagePackFormatter<InlineArray14Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray14Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				case 9:
+					result[9] = formatter.Deserialize(ref reader, options);
+					break;
+				case 10:
+					result[10] = formatter.Deserialize(ref reader, options);
+					break;
+				case 11:
+					result[11] = formatter.Deserialize(ref reader, options);
+					break;
+				case 12:
+					result[12] = formatter.Deserialize(ref reader, options);
+					break;
+				case 13:
+					result[13] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray15Formatter<T>(sbyte typeCode = -15) : IMessagePackFormatter<InlineArray15<T>>
+public sealed class InlineArray15Formatter<T>(sbyte typeCode = -15) : IMessagePackFormatter<InlineArray15<T>>, IMessagePackFormatter<InlineArray15Ex<T>>
 {
 	public static readonly InlineArray15Formatter<T> Instance = new();
 
@@ -1095,10 +1980,106 @@ public sealed class InlineArray15Formatter<T>(sbyte typeCode = -15) : IMessagePa
 		reader.Depth--;
 		return result;
     }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray15Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(15);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+        formatter.Serialize(ref writer, value[9], options);
+        formatter.Serialize(ref writer, value[10], options);
+        formatter.Serialize(ref writer, value[11], options);
+        formatter.Serialize(ref writer, value[12], options);
+        formatter.Serialize(ref writer, value[13], options);
+        formatter.Serialize(ref writer, value[14], options);
+    }
+
+    InlineArray15Ex<T> IMessagePackFormatter<InlineArray15Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray15Ex<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				case 9:
+					result[9] = formatter.Deserialize(ref reader, options);
+					break;
+				case 10:
+					result[10] = formatter.Deserialize(ref reader, options);
+					break;
+				case 11:
+					result[11] = formatter.Deserialize(ref reader, options);
+					break;
+				case 12:
+					result[12] = formatter.Deserialize(ref reader, options);
+					break;
+				case 13:
+					result[13] = formatter.Deserialize(ref reader, options);
+					break;
+				case 14:
+					result[14] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
 }
 
 [PublicAPI]
-public sealed class InlineArray16Formatter<T>(sbyte typeCode = -16) : IMessagePackFormatter<InlineArray16<T>>
+public sealed class InlineArray16Formatter<T>(sbyte typeCode = -16) : IMessagePackFormatter<InlineArray16<T>>, IMessagePackFormatter<InlineArray16Ex<T>>
 {
 	public static readonly InlineArray16Formatter<T> Instance = new();
 
@@ -1140,6 +2121,106 @@ public sealed class InlineArray16Formatter<T>(sbyte typeCode = -16) : IMessagePa
 		var formatterResolver = options.Resolver;
 		var length = reader.ReadArrayHeader();
 		var result = new InlineArray16<T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+				case 0:
+					result[0] = formatter.Deserialize(ref reader, options);
+					break;
+				case 1:
+					result[1] = formatter.Deserialize(ref reader, options);
+					break;
+				case 2:
+					result[2] = formatter.Deserialize(ref reader, options);
+					break;
+				case 3:
+					result[3] = formatter.Deserialize(ref reader, options);
+					break;
+				case 4:
+					result[4] = formatter.Deserialize(ref reader, options);
+					break;
+				case 5:
+					result[5] = formatter.Deserialize(ref reader, options);
+					break;
+				case 6:
+					result[6] = formatter.Deserialize(ref reader, options);
+					break;
+				case 7:
+					result[7] = formatter.Deserialize(ref reader, options);
+					break;
+				case 8:
+					result[8] = formatter.Deserialize(ref reader, options);
+					break;
+				case 9:
+					result[9] = formatter.Deserialize(ref reader, options);
+					break;
+				case 10:
+					result[10] = formatter.Deserialize(ref reader, options);
+					break;
+				case 11:
+					result[11] = formatter.Deserialize(ref reader, options);
+					break;
+				case 12:
+					result[12] = formatter.Deserialize(ref reader, options);
+					break;
+				case 13:
+					result[13] = formatter.Deserialize(ref reader, options);
+					break;
+				case 14:
+					result[14] = formatter.Deserialize(ref reader, options);
+					break;
+				case 15:
+					result[15] = formatter.Deserialize(ref reader, options);
+					break;
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
+
+    public void Serialize(ref MessagePackWriter writer, InlineArray16Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(16);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+        formatter.Serialize(ref writer, value[0], options);
+        formatter.Serialize(ref writer, value[1], options);
+        formatter.Serialize(ref writer, value[2], options);
+        formatter.Serialize(ref writer, value[3], options);
+        formatter.Serialize(ref writer, value[4], options);
+        formatter.Serialize(ref writer, value[5], options);
+        formatter.Serialize(ref writer, value[6], options);
+        formatter.Serialize(ref writer, value[7], options);
+        formatter.Serialize(ref writer, value[8], options);
+        formatter.Serialize(ref writer, value[9], options);
+        formatter.Serialize(ref writer, value[10], options);
+        formatter.Serialize(ref writer, value[11], options);
+        formatter.Serialize(ref writer, value[12], options);
+        formatter.Serialize(ref writer, value[13], options);
+        formatter.Serialize(ref writer, value[14], options);
+        formatter.Serialize(ref writer, value[15], options);
+    }
+
+    InlineArray16Ex<T> IMessagePackFormatter<InlineArray16Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new InlineArray16Ex<T>();
 		var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
 		for (int i = 0; i < length; i++)

@@ -1,0 +1,127 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+
+#nullable enable
+using System.Runtime.CompilerServices;
+using System.Text;
+
+namespace Maxine.Extensions.Collections;
+
+/// <typeparam name="T" />
+<#
+    for (var i = 2; i <= 16; i++)
+    {
+#>
+[InlineArray(<#= i #>)]
+public struct InlineArray<#= i #>Ex<T> : IEquatable<InlineArray<#= i #>Ex<T>>, ISpanFormattable
+{
+#nullable disable
+    private T t;
+#nullable enable
+
+    public static implicit operator InlineArray<#= i #><T>(in InlineArray<#= i #>Ex<T> array)
+        => Unsafe.As<InlineArray<#= i #>Ex<T>, InlineArray<#= i #><T>>(ref Unsafe.AsRef(in array));
+
+    public static implicit operator InlineArray<#= i #>Ex<T>(in InlineArray<#= i #><T> array)
+        => Unsafe.As<InlineArray<#= i #><T>, InlineArray<#= i #>Ex<T>>(ref Unsafe.AsRef(in array));
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        sb.Append('[');
+        for (var i = 0; i < <#= i #>; i++)
+        {
+            if (i > 0)
+                sb.Append(", ");
+            sb.Append(this[i]);
+        }
+        sb.Append(']');
+        return sb.ToString();
+    }
+
+    public override int GetHashCode()
+    {
+<#
+        if (i <= 8)
+        {
+#>
+        return HashCode.Combine(<#= string.Join(", ", Enumerable.Range(0, i).Select(n => $"this[{n}]")) #>);
+<#
+        }
+        else
+        {
+#>
+        var hash = new HashCode();
+        for (var i = 0; i < <#= i #>; i++)
+            hash.Add(this[i]);
+        return hash.ToHashCode();
+<#
+        }
+#>
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not InlineArray<#= i #>Ex<T> other)
+            return false;
+        for (var i = 0; i < <#= i #>; i++)
+        {
+            if (!EqualityComparer<T>.Default.Equals(this[i], other[i]))
+                return false;
+        }
+        return true;
+    }
+
+    public bool Equals(InlineArray<#= i #>Ex<T> other)
+    {
+        for (var i = 0; i < <#= i #>; i++)
+        {
+            if (!EqualityComparer<T>.Default.Equals(this[i], other[i]))
+                return false;
+        }
+        return true;
+    }
+
+    public string ToString(string? format, IFormatProvider? formatProvider)
+    {
+        var sb = new ValueStringBuilder();
+        var handler = new ValueStringBuilder.ValueAppendInterpolatedStringHandler(-1, -1, sb, formatProvider);
+        sb.Append('[');
+        for (var i = 0; i < <#= i #>; i++)
+        {
+            if (i > 0)
+                sb.Append(", ");
+
+            handler.AppendFormatted(this[i]);
+        }
+        sb.Append(']');
+        return sb.ToString();
+    }
+
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format,
+        IFormatProvider? provider)
+    {
+        var handler = new MemoryExtensions.TryWriteInterpolatedStringHandler(6, 4, destination, provider, out var shouldAppend);
+        if (shouldAppend)
+        {
+            var formatString = new string(format);
+            for (var i = 0; i < <#= i #>; i++)
+            {
+                if (i > 0)
+                    handler.AppendLiteral(", ");
+                handler.AppendFormatted(this[i], formatString);
+            }
+
+            return destination.TryWrite(provider, ref handler, out charsWritten);
+        }
+
+        charsWritten = 0;
+        return false;
+    }
+}
+
+<#
+    }
+#>

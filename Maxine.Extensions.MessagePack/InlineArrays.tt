@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using MessagePack;
 using MessagePack.Formatters;
 using JetBrains.Annotations;
+using Maxine.Extensions.Collections;
 
 namespace Maxine.Extensions.MessagePack;
 
@@ -13,7 +14,7 @@ namespace Maxine.Extensions.MessagePack;
         var typeName = $"InlineArray{i}";
 #>
 [PublicAPI]
-public sealed class <#= typeName #>Formatter<T>(sbyte typeCode = <#= typeCode #>) : IMessagePackFormatter<<#= typeName #><T>>
+public sealed class <#= typeName #>Formatter<T>(sbyte typeCode = <#= typeCode #>) : IMessagePackFormatter<<#= typeName #><T>>, IMessagePackFormatter<<#= typeName #>Ex<T>>
 {
 	public static readonly <#= typeName #>Formatter<T> Instance = new();
 
@@ -47,6 +48,60 @@ public sealed class <#= typeName #>Formatter<T>(sbyte typeCode = <#= typeCode #>
 		var formatterResolver = options.Resolver;
 		var length = reader.ReadArrayHeader();
 		var result = new <#= typeName #><T>();
+		var formatter = formatterResolver.GetFormatterWithVerify<T>();
+
+		for (int i = 0; i < length; i++)
+		{
+			switch (i)
+			{
+<#
+        for (var j = 0; j < i; j++)
+        {
+#>
+				case <#= j #>:
+					result[<#= j #>] = formatter.Deserialize(ref reader, options);
+					break;
+<#
+        }
+#>
+				default:
+					reader.Skip();
+					break;
+			}
+		}
+
+		reader.Depth--;
+		return result;
+    }
+
+    public void Serialize(ref MessagePackWriter writer, <#= typeName #>Ex<T> value, MessagePackSerializerOptions options)
+    {
+        writer.WriteArrayHeader(<#= i #>);
+        var resolver = options.Resolver;
+		var formatter = resolver.GetFormatterWithVerify<T>();
+
+<#
+        for (var j = 0; j < i; j++)
+        {
+#>
+        formatter.Serialize(ref writer, value[<#= j #>], options);
+<#
+        }
+#>
+    }
+
+    <#= typeName #>Ex<T> IMessagePackFormatter<<#= typeName #>Ex<T>>.Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    {
+        if (reader.TryReadNil())
+        {
+            throw new MessagePackSerializationException("Nil is not supported for InlineArray.");
+        }
+
+
+		options.Security.DepthStep(ref reader);
+		var formatterResolver = options.Resolver;
+		var length = reader.ReadArrayHeader();
+		var result = new <#= typeName #>Ex<T>();
 		var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
 		for (int i = 0; i < length; i++)
