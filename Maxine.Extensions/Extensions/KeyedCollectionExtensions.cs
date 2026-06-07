@@ -1,8 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Maxine.Extensions.Collections;
 
 namespace Maxine.Extensions;
+
+file static class Accessor<TKey, TItem> where TKey : notnull
+{
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "GetKeyForItem")]
+    public static extern TKey GetKeyForItem(KeyedCollection<TKey, TItem> collection, TItem item);
+}
 
 public static class KeyedCollectionExtensions
 {
@@ -74,12 +81,12 @@ public static class KeyedCollectionExtensions
             collection.Insert(index, value);
             return oldValue;
         }
-
+        
         public bool TryAdd(TItem value)
         {
             ArgumentNullException.ThrowIfNull(collection);
 
-            if (collection.Contains(value))
+            if (collection.Contains(Accessor<TKey, TItem>.GetKeyForItem(collection, value)))
             {
                 return false;
             }
