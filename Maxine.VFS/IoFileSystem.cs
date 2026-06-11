@@ -11,7 +11,7 @@ public sealed class IoFileSystem : BaseFileSystem
     public override bool FileExists(string path) => File.Exists(path);
     public override bool DirectoryExists(string path) => Directory.Exists(path);
 
-    public override Stream OpenFile(string path, FileMode mode = FileMode.OpenOrCreate, FileAccess access = FileAccess.ReadWrite) => File.Open(path, mode, access);
+    public override Stream OpenFile(string path, FileMode mode = FileMode.OpenOrCreate, FileAccess access = FileAccess.ReadWrite) => File.Open(path, mode, access, access == FileAccess.Read ? FileShare.Read : FileShare.None);
 
     public override void CreateDirectory(string path) => Directory.CreateDirectory(path);
 
