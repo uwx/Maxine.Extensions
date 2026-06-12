@@ -16,7 +16,7 @@ public static class ProjectUtils
         }
         
         var directory = new DirectoryInfo(currentPath ?? Directory.GetCurrentDirectory());
-        while (directory != null && !directory.EnumerateFiles("*.sln").Any())
+        while (directory != null && !directory.EnumerateFiles("*.sln").Any() && !directory.EnumerateFiles("*.slnx").Any())
         {
             directory = directory.Parent;
         }
