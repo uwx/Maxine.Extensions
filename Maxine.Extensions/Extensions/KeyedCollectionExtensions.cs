@@ -77,7 +77,11 @@ public static class KeyedCollectionExtensions
             ArgumentNullException.ThrowIfNull(collection);
             
             var oldValue = collection[index];
-            collection.RemoveAt(index);
+            // Remove by key first to handle any pre-existing duplicates safely.
+            // RemoveAt+Insert can throw "key already exists" if the key is still
+            // present in the dictionary (e.g. from a duplicate item at another index).
+            var key = Accessor<TKey, TItem>.GetKeyForItem(collection, value);
+            collection.Remove(key);
             collection.Insert(index, value);
             return oldValue;
         }
