@@ -72,11 +72,22 @@ public static class KeyedCollectionExtensions
             }
         }
         
+        /// <summary>
+        /// Access item by positional index. When <typeparamref name="TKey"/> is <c>int</c>,
+        /// <c>collection[index]</c> resolves to the key-based lookup — use this method
+        /// to unambiguously access by position.
+        /// </summary>
+        public TItem ByIndex(int index)
+        {
+            ArgumentNullException.ThrowIfNull(collection);
+            return ((IList<TItem>)collection)[index];
+        }
+
         public TItem Swap(int index, TItem value)
         {
             ArgumentNullException.ThrowIfNull(collection);
             
-            var oldValue = collection[index];
+            var oldValue = ((IList<TItem>)collection)[index];
             // Remove by key first to handle any pre-existing duplicates safely.
             // RemoveAt+Insert can throw "key already exists" if the key is still
             // present in the dictionary (e.g. from a duplicate item at another index).
