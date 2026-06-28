@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 
 namespace Maxine.VFS;
 
@@ -28,7 +29,7 @@ public class MountingFileSystem : BaseFileSystem
     private void RebuildFileSystem()
     {
         _actualFileSystem = _newFileTarget != null
-            ? new WritableFallbackFileSystem(_newFileTarget, _fileSystems.Length > 0 ? _fileSystems.AsSpan() : [new NullFileSystem()])
+            ? new WritableFallbackFileSystem(_newFileTarget, _fileSystems.Length > 0 ? ImmutableCollectionsMarshal.AsArray(_fileSystems)! : [new NullFileSystem()])
             : new NullFileSystem();
     }
 
