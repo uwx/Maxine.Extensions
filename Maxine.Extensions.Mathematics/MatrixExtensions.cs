@@ -579,47 +579,47 @@ public static class MatrixExtensions
             }
         }
 
-        /// <summary>
-        /// Decomposes a rotation matrix with the specified X, Y and Z euler angles in radians.
-        /// Matrix.RotationX(rotation.X) * Matrix.RotationY(rotation.Y) * Matrix.RotationZ(rotation.Z) should represent the same rotation.
-        /// </summary>
-        /// <param name="rotation">The vector containing the 3 rotations angles to be applied in order.</param>
-        public void DecomposeXYZ(out Vector3 rotation)
-        {
-            // Adapted from 'Euler Angle Formulas' by David Eberly - https://www.geometrictools.com/Documentation/EulerAngles.pdf
-            // 2.6 Factor as Rz Ry Rx
-            // License under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
-            //
-            // Note the Stride's matrix row/column ordering is swapped, indices starts at one,
-            // and the if-statement ordering is written to minimize the number of operations to get to
-            // the common case, and made to handle the +/- 1 cases better due to low precision in floats.
-            // The above documentation implies the *extrinsic* rotation order is X-Y-Z,
-            // so the *intrinsic* rotation is Z-Y-X which is the formula to use here
-            if (MathUtil.IsOne(Math.Abs(matrix.M13)))
-            {
-                if (matrix.M13 >= 0)
-                {
-                    // Edge case where M13 == +1
-                    rotation.Y = -MathUtil.PiOverTwo;
-                    rotation.Z = MathF.Atan2(-matrix.M32, matrix.M22);
-                    rotation.X = 0;
-                }
-                else
-                {
-                    // Edge case where M13 == -1
-                    rotation.Y = MathUtil.PiOverTwo;
-                    rotation.Z = -MathF.Atan2(-matrix.M32, matrix.M22);
-                    rotation.X = 0;
-                }
-            }
-            else
-            {
-                // Common case
-                rotation.Y = MathF.Asin(-matrix.M13);
-                rotation.Z = MathF.Atan2(matrix.M12, matrix.M11);
-                rotation.X = MathF.Atan2(matrix.M23, matrix.M33);
-            }
-        }
+        // /// <summary>
+        // /// Decomposes a rotation matrix with the specified X, Y and Z euler angles in radians.
+        // /// Matrix.RotationX(rotation.X) * Matrix.RotationY(rotation.Y) * Matrix.RotationZ(rotation.Z) should represent the same rotation.
+        // /// </summary>
+        // /// <param name="rotation">The vector containing the 3 rotations angles to be applied in order.</param>
+        // public void DecomposeXYZ(out Vector3 rotation)
+        // {
+        //     // Adapted from 'Euler Angle Formulas' by David Eberly - https://www.geometrictools.com/Documentation/EulerAngles.pdf
+        //     // 2.6 Factor as Rz Ry Rx
+        //     // License under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+        //     //
+        //     // Note the Stride's matrix row/column ordering is swapped, indices starts at one,
+        //     // and the if-statement ordering is written to minimize the number of operations to get to
+        //     // the common case, and made to handle the +/- 1 cases better due to low precision in floats.
+        //     // The above documentation implies the *extrinsic* rotation order is X-Y-Z,
+        //     // so the *intrinsic* rotation is Z-Y-X which is the formula to use here
+        //     if (MathUtil.IsOne(Math.Abs(matrix.M13)))
+        //     {
+        //         if (matrix.M13 >= 0)
+        //         {
+        //             // Edge case where M13 == +1
+        //             rotation.Y = -MathUtil.PiOverTwo;
+        //             rotation.Z = MathF.Atan2(-matrix.M32, matrix.M22);
+        //             rotation.X = 0;
+        //         }
+        //         else
+        //         {
+        //             // Edge case where M13 == -1
+        //             rotation.Y = MathUtil.PiOverTwo;
+        //             rotation.Z = -MathF.Atan2(-matrix.M32, matrix.M22);
+        //             rotation.X = 0;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         // Common case
+        //         rotation.Y = MathF.Asin(-matrix.M13);
+        //         rotation.Z = MathF.Atan2(matrix.M12, matrix.M11);
+        //         rotation.X = MathF.Atan2(matrix.M23, matrix.M33);
+        //     }
+        // }
 
         /// <summary>
         /// Decomposes a matrix into a scale, rotation, and translation.
@@ -1349,9 +1349,16 @@ public static class MatrixExtensions2
         /// Inverts the matrix.
         /// If the matrix cannot be inverted (eg. Determinant was zero), then the matrix will be set equivalent to <see cref="Zero"/>.
         /// </summary>
-        public void Invert()
+        /// <remarks>
+        /// This method delegates to <see cref="Matrix.Invert(Matrix4x4, out Matrix4x4)"/> from System.Numerics.
+        /// Named InvertSelf to avoid ambiguity with FNA's Invert(Matrix) extension which returns a new matrix.
+        /// </remarks>
+        public void InvertSelf()
         {
-            Invert(ref matrix, out matrix);
+            if (!Matrix.Invert(matrix, out matrix))
+            {
+                matrix = default;
+            }
         }
         
         /// <summary>
@@ -1360,13 +1367,13 @@ public static class MatrixExtensions2
         /// </summary>
         /// <param name="value">The matrix whose inverse is to be calculated.</param>
         /// <param name="result">When the method completes, contains the inverse of the specified matrix.</param>
-        public static void Invert(ref readonly Matrix value, out Matrix result)
+        public static void InvertSelf(ref readonly Matrix value, out Matrix result)
         {
             // Invert works the same in row and column major, no need to transpose
             Unsafe.SkipInit(out result);
             if (!Matrix.Invert(value, out result))
             {
-                result = Matrix.Zero;
+                result = default;
             }
         }
     }

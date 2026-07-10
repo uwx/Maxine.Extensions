@@ -394,7 +394,7 @@ public static class PlaneExtensions
             float z = plane.Normal.Z;
             float d = plane.D;
 
-            Matrix.Invert(in transformation, out var inverse);
+            Matrix.Invert(transformation, out var inverse);
 
             result.Normal.X = (((x * inverse.M11) + (y * inverse.M12)) + (z * inverse.M13)) + (d * inverse.M14);
             result.Normal.Y = (((x * inverse.M21) + (y * inverse.M22)) + (z * inverse.M23)) + (d * inverse.M24);
@@ -416,7 +416,7 @@ public static class PlaneExtensions
             float z = plane.Normal.Z;
             float d = plane.D;
 
-            transformation.Invert();
+            transformation = Matrix.Invert(transformation);
             result.Normal.X = (((x * transformation.M11) + (y * transformation.M12)) + (z * transformation.M13)) + (d * transformation.M14);
             result.Normal.Y = (((x * transformation.M21) + (y * transformation.M22)) + (z * transformation.M23)) + (d * transformation.M24);
             result.Normal.Z = (((x * transformation.M31) + (y * transformation.M32)) + (z * transformation.M33)) + (d * transformation.M34);
@@ -437,7 +437,7 @@ public static class PlaneExtensions
                 throw new ArgumentNullException(nameof(planes));
 
             Matrix inverse;
-            Matrix.Invert(in transformation, out inverse);
+            Matrix.Invert(transformation, out inverse);
 
             for (int i = 0; i < planes.Length; ++i)
             {

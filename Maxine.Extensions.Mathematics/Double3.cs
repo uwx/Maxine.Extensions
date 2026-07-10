@@ -1304,29 +1304,29 @@ public struct Double3 : IEquatable<Double3>, ISpanFormattable
         }
     }
 
-    /// <summary>
-    /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion.
-    /// </summary>
-    /// <param name="quaternion">The input rotation as quaternion</param>
-    /// <returns>The equivation yaw/pitch/roll rotation</returns>
-    public static Double3 RotationYawPitchRoll(Quaternion quaternion)
-    {
-        Vector3 yawPitchRoll;
-        Quaternion.CreateFromYawPitchRoll(ref quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
-        return yawPitchRoll;
-    }
-
-    /// <summary>
-    /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion.
-    /// </summary>
-    /// <param name="quaternion">The input rotation as quaternion</param>
-    /// <param name="yawPitchRoll">The equivation yaw/pitch/roll rotation</param>
-    public static void RotationYawPitchRoll(ref readonly Quaternion quaternion, out Double3 yawPitchRoll)
-    {
-        Vector3 yawPitchRollV;
-        Quaternion.CreateFromYawPitchRoll(in quaternion, out yawPitchRollV.X, out yawPitchRollV.Y, out yawPitchRollV.Z);
-        yawPitchRoll = yawPitchRollV;
-    }
+    // /// <summary>
+    // /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion.
+    // /// </summary>
+    // /// <param name="quaternion">The input rotation as quaternion</param>
+    // /// <returns>The equivation yaw/pitch/roll rotation</returns>
+    // public static Double3 RotationYawPitchRoll(Quaternion quaternion)
+    // {
+    //     Vector3 yawPitchRoll;
+    //     Quaternion.StrideYawPitchRoll(ref quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
+    //     return yawPitchRoll;
+    // }
+    //
+    // /// <summary>
+    // /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion.
+    // /// </summary>
+    // /// <param name="quaternion">The input rotation as quaternion</param>
+    // /// <param name="yawPitchRoll">The equivation yaw/pitch/roll rotation</param>
+    // public static void RotationYawPitchRoll(ref readonly Quaternion quaternion, out Double3 yawPitchRoll)
+    // {
+    //     Vector3 yawPitchRollV;
+    //     Quaternion.StrideYawPitchRoll(in quaternion, out yawPitchRollV.X, out yawPitchRollV.Y, out yawPitchRollV.Z);
+    //     yawPitchRoll = yawPitchRollV;
+    // }
 
     /// <summary>
     /// Adds two vectors.

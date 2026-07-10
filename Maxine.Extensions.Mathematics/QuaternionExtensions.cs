@@ -469,95 +469,101 @@ public static class QuaternionExtensions
             }
         }
 
-        /// <summary>
-        /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaternion.
-        /// </summary>
-        /// <param name="rotation">The input quaternion</param>
-        /// <param name="yaw">The yaw component in radians.</param>
-        /// <param name="pitch">The pitch component in radians.</param>
-        /// <param name="roll">The roll component in radians.</param>
-        public static void CreateFromYawPitchRoll(ref readonly Quaternion rotation, out float yaw, out float pitch, out float roll)
-        {
-            // Equivalent to:
-            //  Matrix rotationMatrix;
-            //  Matrix.Rotation(ref cachedRotation, out rotationMatrix);
-            //  rotationMatrix.Decompose(out float yaw, out float pitch, out float roll);
-
-            var xx = rotation.X * rotation.X;
-            var yy = rotation.Y * rotation.Y;
-            var zz = rotation.Z * rotation.Z;
-            var xy = rotation.X * rotation.Y;
-            var zw = rotation.Z * rotation.W;
-            var zx = rotation.Z * rotation.X;
-            var yw = rotation.Y * rotation.W;
-            var yz = rotation.Y * rotation.Z;
-            var xw = rotation.X * rotation.W;
-
-            var M11 = 1.0f - (2.0f * (yy + zz));
-            var M12 = 2.0f * (xy + zw);
-            //var M13 = 2.0f * (zx - yw);
-            var M21 = 2.0f * (xy - zw);
-            var M22 = 1.0f - (2.0f * (zz + xx));
-            //var M23 = 2.0f * (yz + xw);
-            var M31 = 2.0f * (zx + yw);
-            var M32 = 2.0f * (yz - xw);
-            var M33 = 1.0f - (2.0f * (yy + xx));
-
-            /*** Refer to Matrix.Decompose(out float yaw, out float pitch, out float roll) for code and license ***/
-            if (MathUtil.IsOne(Math.Abs(M32)))
-            {
-                if (M32 >= 0)
-                {
-                    // Edge case where M32 == +1
-                    pitch = -MathUtil.PiOverTwo;
-                    yaw = MathF.Atan2(-M21, M11);
-                    roll = 0;
-                }
-                else
-                {
-                    // Edge case where M32 == -1
-                    pitch = MathUtil.PiOverTwo;
-                    yaw = -MathF.Atan2(-M21, M11);
-                    roll = 0;
-                }
-            }
-            else
-            {
-                // Common case
-                pitch = MathF.Asin(-M32);
-                yaw = MathF.Atan2(M31, M33);
-                roll = MathF.Atan2(M12, M22);
-            }
-        }
-
-        /// <summary>
-        /// Creates a quaternion given a yaw, pitch, and roll value (angles in radians).
-        /// </summary>
-        /// <param name="yaw">The yaw of rotation in radians.</param>
-        /// <param name="pitch">The pitch of rotation in radians.</param>
-        /// <param name="roll">The roll of rotation in radians.</param>
-        /// <param name="result">When the method completes, contains the newly created quaternion.</param>
-        public static void CreateFromYawPitchRoll(float yaw, float pitch, float roll, out Quaternion result)
-        {
-            var halfRoll = roll * 0.5f;
-            var halfPitch = pitch * 0.5f;
-            var halfYaw = yaw * 0.5f;
-
-            var sinRoll = MathF.Sin(halfRoll);
-            var cosRoll = MathF.Cos(halfRoll);
-            var sinPitch = MathF.Sin(halfPitch);
-            var cosPitch = MathF.Cos(halfPitch);
-            var sinYaw = MathF.Sin(halfYaw);
-            var cosYaw = MathF.Cos(halfYaw);
-
-            var cosYawPitch = cosYaw * cosPitch;
-            var sinYawPitch = sinYaw * sinPitch;
-
-            result.X = (cosYaw * sinPitch * cosRoll) + (sinYaw * cosPitch * sinRoll);
-            result.Y = (sinYaw * cosPitch * cosRoll) - (cosYaw * sinPitch * sinRoll);
-            result.Z = (cosYawPitch * sinRoll) - (sinYawPitch * cosRoll);
-            result.W = (cosYawPitch * cosRoll) + (sinYawPitch * sinRoll);
-        }
+        // /// <summary>
+        // /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaternion.
+        // /// </summary>
+        // /// <param name="rotation">The input quaternion</param>
+        // /// <param name="yaw">The yaw component in radians.</param>
+        // /// <param name="pitch">The pitch component in radians.</param>
+        // /// <param name="roll">The roll component in radians.</param>
+        // public static void StrideYawPitchRoll(ref readonly Quaternion rotation, out float yaw, out float pitch, out float roll)
+        // {
+        //     // Equivalent to:
+        //     //  Matrix rotationMatrix;
+        //     //  Matrix.Rotation(ref cachedRotation, out rotationMatrix);
+        //     //  rotationMatrix.Decompose(out float yaw, out float pitch, out float roll);
+        //
+        //     var xx = rotation.X * rotation.X;
+        //     var yy = rotation.Y * rotation.Y;
+        //     var zz = rotation.Z * rotation.Z;
+        //     var xy = rotation.X * rotation.Y;
+        //     var zw = rotation.Z * rotation.W;
+        //     var zx = rotation.Z * rotation.X;
+        //     var yw = rotation.Y * rotation.W;
+        //     var yz = rotation.Y * rotation.Z;
+        //     var xw = rotation.X * rotation.W;
+        //
+        //     var M11 = 1.0f - (2.0f * (yy + zz));
+        //     var M12 = 2.0f * (xy + zw);
+        //     //var M13 = 2.0f * (zx - yw);
+        //     var M21 = 2.0f * (xy - zw);
+        //     var M22 = 1.0f - (2.0f * (zz + xx));
+        //     //var M23 = 2.0f * (yz + xw);
+        //     var M31 = 2.0f * (zx + yw);
+        //     var M32 = 2.0f * (yz - xw);
+        //     var M33 = 1.0f - (2.0f * (yy + xx));
+        //
+        //     /*** Refer to Matrix.Decompose(out float yaw, out float pitch, out float roll) for code and license ***/
+        //     if (MathUtil.IsOne(Math.Abs(M32)))
+        //     {
+        //         if (M32 >= 0)
+        //         {
+        //             // Edge case where M32 == +1
+        //             pitch = -MathUtil.PiOverTwo;
+        //             yaw = MathF.Atan2(-M21, M11);
+        //             roll = 0;
+        //         }
+        //         else
+        //         {
+        //             // Edge case where M32 == -1
+        //             pitch = MathUtil.PiOverTwo;
+        //             yaw = -MathF.Atan2(-M21, M11);
+        //             roll = 0;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         // Common case
+        //         pitch = MathF.Asin(-M32);
+        //         yaw = MathF.Atan2(M31, M33);
+        //         roll = MathF.Atan2(M12, M22);
+        //     }
+        // }
+        //
+        // /// <summary>
+        // /// Creates a quaternion given a yaw, pitch, and roll value (angles in radians).
+        // /// </summary>
+        // /// <param name="yaw">The yaw of rotation in radians.</param>
+        // /// <param name="pitch">The pitch of rotation in radians.</param>
+        // /// <param name="roll">The roll of rotation in radians.</param>
+        // /// <param name="result">When the method completes, contains the newly created quaternion.</param>
+        // public static void CreateStrideFromYawPitchRoll(float yaw, float pitch, float roll, out Quaternion result)
+        // {
+        //     var halfRoll = roll * 0.5f;
+        //     var halfPitch = pitch * 0.5f;
+        //     var halfYaw = yaw * 0.5f;
+        //
+        //     var sinRoll = MathF.Sin(halfRoll);
+        //     var cosRoll = MathF.Cos(halfRoll);
+        //     var sinPitch = MathF.Sin(halfPitch);
+        //     var cosPitch = MathF.Cos(halfPitch);
+        //     var sinYaw = MathF.Sin(halfYaw);
+        //     var cosYaw = MathF.Cos(halfYaw);
+        //
+        //     var cosYawPitch = cosYaw * cosPitch;
+        //     var sinYawPitch = sinYaw * sinPitch;
+        //
+        //     result.X = (cosYaw * sinPitch * cosRoll) + (sinYaw * cosPitch * sinRoll);
+        //     result.Y = (sinYaw * cosPitch * cosRoll) - (cosYaw * sinPitch * sinRoll);
+        //     result.Z = (cosYawPitch * sinRoll) - (sinYawPitch * cosRoll);
+        //     result.W = (cosYawPitch * cosRoll) + (sinYawPitch * sinRoll);
+        // }
+        //
+        // public static Quaternion CreateStrideFromYawPitchRoll(float yaw, float pitch, float roll)
+        // {
+        //     CreateStrideFromYawPitchRoll(yaw, pitch, roll, out var result);
+        //     return result;
+        // }
 
         /// <summary>
         /// Rotate <paramref name="current"/> towards <paramref name="target"/> by <paramref name="angle"/>.
@@ -579,7 +585,7 @@ public static class QuaternionExtensions
         public void Rotate(ref Vector3 vector)
         {
             var pureQuaternion = new Quaternion(vector, 0);
-            pureQuaternion = Quaternion.Conjugate(quat) * pureQuaternion * quat;
+            pureQuaternion = quat * pureQuaternion * Quaternion.Conjugate(quat);
 
             vector.X = pureQuaternion.X;
             vector.Y = pureQuaternion.Y;

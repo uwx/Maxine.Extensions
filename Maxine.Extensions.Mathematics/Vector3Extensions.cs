@@ -247,7 +247,7 @@ public static class Vector3Extensions
         public static void Unproject(ref readonly Vector3 vector, float x, float y, float width, float height, float minZ, float maxZ, ref readonly Matrix worldViewProjection, out Vector3 result)
         {
             Vector3 v = new Vector3();
-            Matrix.Invert(in worldViewProjection, out var matrix);
+            Matrix.Invert(worldViewProjection, out var matrix);
 
             v.X = (((vector.X - x) / width) * 2.0f) - 1.0f;
             v.Y = -((((vector.Y - y) / height) * 2.0f) - 1.0f);
@@ -536,27 +536,27 @@ public static class Vector3Extensions
             return target + local;
         }
 
-        /// <summary>
-        /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion.
-        /// </summary>
-        /// <param name="quaternion">The input rotation as quaternion</param>
-        /// <returns>The equivation yaw/pitch/roll rotation</returns>
-        public static Vector3 RotationYawPitchRoll(Quaternion quaternion)
-        {
-            Vector3 yawPitchRoll;
-            Quaternion.CreateFromYawPitchRoll(ref quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
-            return yawPitchRoll;
-        }
-
-        /// <summary>
-        /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion. 
-        /// </summary>
-        /// <param name="quaternion">The input rotation as quaternion</param>
-        /// <param name="yawPitchRoll">The equivation yaw/pitch/roll rotation</param>
-        public static void RotationYawPitchRoll(ref readonly Quaternion quaternion, out Vector3 yawPitchRoll)
-        {
-            Quaternion.CreateFromYawPitchRoll(in quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
-        }
+        // /// <summary>
+        // /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion.
+        // /// </summary>
+        // /// <param name="quaternion">The input rotation as quaternion</param>
+        // /// <returns>The equivation yaw/pitch/roll rotation</returns>
+        // public static Vector3 RotationYawPitchRoll(Quaternion quaternion)
+        // {
+        //     Vector3 yawPitchRoll;
+        //     Quaternion.StrideYawPitchRoll(ref quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
+        //     return yawPitchRoll;
+        // }
+        //
+        // /// <summary>
+        // /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaterion. 
+        // /// </summary>
+        // /// <param name="quaternion">The input rotation as quaternion</param>
+        // /// <param name="yawPitchRoll">The equivation yaw/pitch/roll rotation</param>
+        // public static void RotationYawPitchRoll(ref readonly Quaternion quaternion, out Vector3 yawPitchRoll)
+        // {
+        //     Quaternion.StrideYawPitchRoll(in quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
+        // }
 
         /// <summary>
         /// Adds a vector with the given value.
