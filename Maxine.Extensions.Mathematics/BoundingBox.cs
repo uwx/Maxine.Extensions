@@ -29,6 +29,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics;
 
@@ -236,8 +237,8 @@ public struct BoundingBox : IEquatable<BoundingBox>, ISpanFormattable, IIntersec
 
         for (int i = 0; i < points.Length; ++i)
         {
-            Vector3.Min(ref min, ref points[i], out min);
-            Vector3.Max(ref max, ref points[i], out max);
+            Vector3.Min(in min, in points[i], out min);
+            Vector3.Max(in max, in points[i], out max);
         }
 
         result = new BoundingBox(min, max);
@@ -258,8 +259,8 @@ public struct BoundingBox : IEquatable<BoundingBox>, ISpanFormattable, IIntersec
 
         for (int i = 0; i < points.Length; ++i)
         {
-            Vector3.Min(ref min, ref points[i], out min);
-            Vector3.Max(ref max, ref points[i], out max);
+            Vector3.Min(in min, in points[i], out min);
+            Vector3.Max(in max, in points[i], out max);
         }
 
         return new BoundingBox(min, max);

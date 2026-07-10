@@ -25,7 +25,7 @@ public class TestPlane
         var p1 = new Vector3(0, 0, 0);
         var p2 = new Vector3(1, 0, 0);
         var p3 = new Vector3(0, 0, 1);
-        var plane3 = new Plane(p1, p2, p3);
+        var plane3 = Plane.CreateFromVertices(p1, p2, p3);
         Assert.Equal(0, plane3.Normal.X, 3);
         Assert.Equal(-1, plane3.Normal.Y, 3);
         Assert.Equal(0, plane3.Normal.Z, 3);
@@ -128,7 +128,7 @@ public class TestPlane
     public void TestPlaneTransformMatrix()
     {
         var plane = new Plane(0, 1, 0, 0); // XZ plane
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         var transformed = Plane.Transform(plane, matrix);
 
         // After 90° rotation around Z, Y-up becomes X-left
@@ -358,7 +358,7 @@ public class TestPlane
             new Plane(1, 0, 0, 0)
         };
 
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         Plane.Transform(planes, ref matrix);
 
         // Verify planes were transformed

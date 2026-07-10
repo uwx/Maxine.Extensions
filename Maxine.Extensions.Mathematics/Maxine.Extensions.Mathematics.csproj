@@ -5,4 +5,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\FNA.Math\FNA.Math.csproj" />
+  </ItemGroup>
 </Project>

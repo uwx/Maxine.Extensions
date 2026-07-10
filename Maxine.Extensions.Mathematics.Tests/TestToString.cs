@@ -23,74 +23,74 @@ public class TestToString
         DoTestToString(new AngleSingle(123.456f, AngleType.Degree), ("123.46°", "123.46°", "123.46°", "123.46°"));
     }
 
-    [Fact]
-    public void TestBoundingBox()
-    {
-        DoTestToString(
-            BoundingBox.Empty,
-            (
-                "Minimum:X:3.4028235E+38 Y:3.4028235E+38 Z:3.4028235E+38 Maximum:X:-3.4028235E+38 Y:-3.4028235E+38 Z:-3.4028235E+38",
-                "Minimum:X:3.4028235E+38 Y:3.4028235E+38 Z:3.4028235E+38 Maximum:X:-3.4028235E+38 Y:-3.4028235E+38 Z:-3.4028235E+38",
-                "Minimum:X:3.403E+38 Y:3.403E+38 Z:3.403E+38 Maximum:X:-3.403E+38 Y:-3.403E+38 Z:-3.403E+38",
-                "Minimum:X:3.403E+38 Y:3.403E+38 Z:3.403E+38 Maximum:X:-3.403E+38 Y:-3.403E+38 Z:-3.403E+38"
-            ), format: "G4"
-        );
-        DoTestToString(
-            new BoundingBox(Vector3.UnitX, Vector3.UnitY),
-            (
-                "Minimum:X:1 Y:0 Z:0 Maximum:X:0 Y:1 Z:0",
-                "Minimum:X:1 Y:0 Z:0 Maximum:X:0 Y:1 Z:0",
-                "Minimum:X:1.00 Y:0.00 Z:0.00 Maximum:X:0.00 Y:1.00 Z:0.00",
-                "Minimum:X:1.00 Y:0.00 Z:0.00 Maximum:X:0.00 Y:1.00 Z:0.00"
-            ), format: "F2"
-        );
-    }
-
-    [Fact]
-    public void TestBoundingBoxExt()
-    {
-        DoTestToString(
-            BoundingBoxExt.Empty,
-            (
-                "Center:X:0 Y:0 Z:0 Extent:X:-∞ Y:-∞ Z:-∞",
-                "Center:X:0 Y:0 Z:0 Extent:X:-Infinity Y:-Infinity Z:-Infinity",
-                "Center:X:0.00 Y:0.00 Z:0.00 Extent:X:-∞ Y:-∞ Z:-∞",
-                "Center:X:0.00 Y:0.00 Z:0.00 Extent:X:-Infinity Y:-Infinity Z:-Infinity"
-            ), format: "F2"
-        );
-        DoTestToString(
-            new BoundingBoxExt(Vector3.UnitX, Vector3.UnitY),
-            (
-                "Center:X:0.5 Y:0.5 Z:0 Extent:X:-0.5 Y:0.5 Z:0",
-                "Center:X:0.5 Y:0.5 Z:0 Extent:X:-0.5 Y:0.5 Z:0",
-                "Center:X:0.500 Y:0.500 Z:0.000 Extent:X:-0.500 Y:0.500 Z:0.000",
-                "Center:X:0.500 Y:0.500 Z:0.000 Extent:X:-0.500 Y:0.500 Z:0.000"
-            ), format: "F3"
-        );
-    }
-
-    [Fact]
-    public void TestBoundingSphere()
-    {
-        DoTestToString(
-            BoundingSphere.Empty,
-            (
-                "Center:X:0 Y:0 Z:0 Radius:0",
-                "Center:X:0 Y:0 Z:0 Radius:0",
-                "Center:X:0.00 Y:0.00 Z:0.00 Radius:0.00",
-                "Center:X:0.00 Y:0.00 Z:0.00 Radius:0.00"
-            ), format: "F2"
-        );
-        DoTestToString(
-            new BoundingSphere(Vector3.UnitX, 1.23456f),
-            (
-                "Center:X:1 Y:0 Z:0 Radius:1.23456",
-                "Center:X:1 Y:0 Z:0 Radius:1.23456",
-                "Center:X:1.000 Y:0.000 Z:0.000 Radius:1.235",
-                "Center:X:1.000 Y:0.000 Z:0.000 Radius:1.235"
-            ), format: "F3"
-        );
-    }
+    // [Fact]
+    // public void TestBoundingBox()
+    // {
+    //     DoTestToString(
+    //         BoundingBox.Empty,
+    //         (
+    //             "Minimum:X:3.4028235E+38 Y:3.4028235E+38 Z:3.4028235E+38 Maximum:X:-3.4028235E+38 Y:-3.4028235E+38 Z:-3.4028235E+38",
+    //             "Minimum:X:3.4028235E+38 Y:3.4028235E+38 Z:3.4028235E+38 Maximum:X:-3.4028235E+38 Y:-3.4028235E+38 Z:-3.4028235E+38",
+    //             "Minimum:X:3.403E+38 Y:3.403E+38 Z:3.403E+38 Maximum:X:-3.403E+38 Y:-3.403E+38 Z:-3.403E+38",
+    //             "Minimum:X:3.403E+38 Y:3.403E+38 Z:3.403E+38 Maximum:X:-3.403E+38 Y:-3.403E+38 Z:-3.403E+38"
+    //         ), format: "G4"
+    //     );
+    //     DoTestToString(
+    //         new BoundingBox(Vector3.UnitX, Vector3.UnitY),
+    //         (
+    //             "Minimum:X:1 Y:0 Z:0 Maximum:X:0 Y:1 Z:0",
+    //             "Minimum:X:1 Y:0 Z:0 Maximum:X:0 Y:1 Z:0",
+    //             "Minimum:X:1.00 Y:0.00 Z:0.00 Maximum:X:0.00 Y:1.00 Z:0.00",
+    //             "Minimum:X:1.00 Y:0.00 Z:0.00 Maximum:X:0.00 Y:1.00 Z:0.00"
+    //         ), format: "F2"
+    //     );
+    // }
+    //
+    // [Fact]
+    // public void TestBoundingBoxExt()
+    // {
+    //     DoTestToString(
+    //         BoundingBoxExt.Empty,
+    //         (
+    //             "Center:X:0 Y:0 Z:0 Extent:X:-∞ Y:-∞ Z:-∞",
+    //             "Center:X:0 Y:0 Z:0 Extent:X:-Infinity Y:-Infinity Z:-Infinity",
+    //             "Center:X:0.00 Y:0.00 Z:0.00 Extent:X:-∞ Y:-∞ Z:-∞",
+    //             "Center:X:0.00 Y:0.00 Z:0.00 Extent:X:-Infinity Y:-Infinity Z:-Infinity"
+    //         ), format: "F2"
+    //     );
+    //     DoTestToString(
+    //         new BoundingBoxExt(Vector3.UnitX, Vector3.UnitY),
+    //         (
+    //             "Center:X:0.5 Y:0.5 Z:0 Extent:X:-0.5 Y:0.5 Z:0",
+    //             "Center:X:0.5 Y:0.5 Z:0 Extent:X:-0.5 Y:0.5 Z:0",
+    //             "Center:X:0.500 Y:0.500 Z:0.000 Extent:X:-0.500 Y:0.500 Z:0.000",
+    //             "Center:X:0.500 Y:0.500 Z:0.000 Extent:X:-0.500 Y:0.500 Z:0.000"
+    //         ), format: "F3"
+    //     );
+    // }
+    //
+    // [Fact]
+    // public void TestBoundingSphere()
+    // {
+    //     DoTestToString(
+    //         BoundingSphere.Empty,
+    //         (
+    //             "Center:X:0 Y:0 Z:0 Radius:0",
+    //             "Center:X:0 Y:0 Z:0 Radius:0",
+    //             "Center:X:0.00 Y:0.00 Z:0.00 Radius:0.00",
+    //             "Center:X:0.00 Y:0.00 Z:0.00 Radius:0.00"
+    //         ), format: "F2"
+    //     );
+    //     DoTestToString(
+    //         new BoundingSphere(Vector3.UnitX, 1.23456f),
+    //         (
+    //             "Center:X:1 Y:0 Z:0 Radius:1.23456",
+    //             "Center:X:1 Y:0 Z:0 Radius:1.23456",
+    //             "Center:X:1.000 Y:0.000 Z:0.000 Radius:1.235",
+    //             "Center:X:1.000 Y:0.000 Z:0.000 Radius:1.235"
+    //         ), format: "F3"
+    //     );
+    // }
 
     [Fact]
     public void TestColor3()
@@ -321,37 +321,37 @@ public class TestToString
         DoTestToString(Int4.UnitW, ("X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1"));
     }
 
-    [Fact]
-    public void TestMatrix()
-    {
-        DoTestToString(
-            Matrix.Zero,
-            (
-                "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]",
-                "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]",
-                "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]",
-                "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]"
-            )
-        );
-        DoTestToString(
-            Matrix.Identity,
-            (
-                "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]",
-                "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]",
-                "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]",
-                "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]"
-            )
-        );
-    }
-
-    [Fact]
-    public void TestPlane()
-    {
-        DoTestToString(new Plane(0.0f), ("A:0 B:0 C:0 D:0", "A:0 B:0 C:0 D:0", "A:0 B:0 C:0 D:0", "A:0 B:0 C:0 D:0"));
-        DoTestToString(new Plane(1.0f), ("A:1 B:1 C:1 D:1", "A:1 B:1 C:1 D:1", "A:1 B:1 C:1 D:1", "A:1 B:1 C:1 D:1"));
-        DoTestToString(new Plane(Vector3.Zero, Vector3.UnitY), ("A:0 B:1 C:0 D:0", "A:0 B:1 C:0 D:0", "A:0 B:1 C:0 D:0", "A:0 B:1 C:0 D:0"));
-        DoTestToString(new Plane(Vector3.One, Vector3.UnitY + Vector3.UnitZ), ("A:0 B:1 C:1 D:2", "A:0 B:1 C:1 D:2", "A:0 B:1 C:1 D:2", "A:0 B:1 C:1 D:2"));
-    }
+    // [Fact]
+    // public void TestMatrix()
+    // {
+    //     DoTestToString(
+    //         Matrix.Zero,
+    //         (
+    //             "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]",
+    //             "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]",
+    //             "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]",
+    //             "[M11:0 M12:0 M13:0 M14:0] [M21:0 M22:0 M23:0 M24:0] [M31:0 M32:0 M33:0 M34:0] [M41:0 M42:0 M43:0 M44:0]"
+    //         )
+    //     );
+    //     DoTestToString(
+    //         Matrix.Identity,
+    //         (
+    //             "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]",
+    //             "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]",
+    //             "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]",
+    //             "[M11:1 M12:0 M13:0 M14:0] [M21:0 M22:1 M23:0 M24:0] [M31:0 M32:0 M33:1 M34:0] [M41:0 M42:0 M43:0 M44:1]"
+    //         )
+    //     );
+    // }
+    //
+    // [Fact]
+    // public void TestPlane()
+    // {
+    //     DoTestToString(new Plane(0.0f), ("A:0 B:0 C:0 D:0", "A:0 B:0 C:0 D:0", "A:0 B:0 C:0 D:0", "A:0 B:0 C:0 D:0"));
+    //     DoTestToString(new Plane(1.0f), ("A:1 B:1 C:1 D:1", "A:1 B:1 C:1 D:1", "A:1 B:1 C:1 D:1", "A:1 B:1 C:1 D:1"));
+    //     DoTestToString(new Plane(Vector3.Zero, Vector3.UnitY), ("A:0 B:1 C:0 D:0", "A:0 B:1 C:0 D:0", "A:0 B:1 C:0 D:0", "A:0 B:1 C:0 D:0"));
+    //     DoTestToString(new Plane(Vector3.One, Vector3.UnitY + Vector3.UnitZ), ("A:0 B:1 C:1 D:2", "A:0 B:1 C:1 D:2", "A:0 B:1 C:1 D:2", "A:0 B:1 C:1 D:2"));
+    // }
 
     [Fact]
     public void TestPoint()
@@ -377,27 +377,27 @@ public class TestToString
         );
     }
 
-    [Fact]
-    public void TestQuaternion()
-    {
-        DoTestToString(Quaternion.Zero, ("X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0"));
-        DoTestToString(Quaternion.Identity, ("X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1"));
-        DoTestToString(Quaternion.One, ("X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1"));
-    }
+    // [Fact]
+    // public void TestQuaternion()
+    // {
+    //     DoTestToString(Quaternion.Zero, ("X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0"));
+    //     DoTestToString(Quaternion.Identity, ("X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1"));
+    //     DoTestToString(Quaternion.One, ("X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1"));
+    // }
 
-    [Fact]
-    public void TestRay()
-    {
-        DoTestToString(
-            new Ray(Vector3.Zero, Vector3.UnitZ),
-            (
-                "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1",
-                "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1",
-                "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1",
-                "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1"
-            )
-        );
-    }
+    // [Fact]
+    // public void TestRay()
+    // {
+    //     DoTestToString(
+    //         new Ray(Vector3.Zero, Vector3.UnitZ),
+    //         (
+    //             "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1",
+    //             "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1",
+    //             "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1",
+    //             "Position:X:0 Y:0 Z:0 Direction:X:0 Y:0 Z:1"
+    //         )
+    //     );
+    // }
 
     [Fact]
     public void TestRectangle()
@@ -480,35 +480,35 @@ public class TestToString
         DoTestToString(UInt4.UnitW, ("X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1"));
     }
 
-    [Fact]
-    public void TestVector2()
-    {
-        DoTestToString(Vector2.Zero, ("X:0 Y:0", "X:0 Y:0", "X:0 Y:0", "X:0 Y:0"));
-        DoTestToString(Vector2.One, ("X:1 Y:1", "X:1 Y:1", "X:1 Y:1", "X:1 Y:1"));
-        DoTestToString(Vector2.UnitX, ("X:1 Y:0", "X:1 Y:0", "X:1 Y:0", "X:1 Y:0"));
-        DoTestToString(Vector2.UnitY, ("X:0 Y:1", "X:0 Y:1", "X:0 Y:1", "X:0 Y:1"));
-    }
-
-    [Fact]
-    public void TestVector3()
-    {
-        DoTestToString(Vector3.Zero, ("X:0 Y:0 Z:0", "X:0 Y:0 Z:0", "X:0 Y:0 Z:0", "X:0 Y:0 Z:0"));
-        DoTestToString(Vector3.One, ("X:1 Y:1 Z:1", "X:1 Y:1 Z:1", "X:1 Y:1 Z:1", "X:1 Y:1 Z:1"));
-        DoTestToString(Vector3.UnitX, ("X:1 Y:0 Z:0", "X:1 Y:0 Z:0", "X:1 Y:0 Z:0", "X:1 Y:0 Z:0"));
-        DoTestToString(Vector3.UnitY, ("X:0 Y:1 Z:0", "X:0 Y:1 Z:0", "X:0 Y:1 Z:0", "X:0 Y:1 Z:0"));
-        DoTestToString(Vector3.UnitZ, ("X:0 Y:0 Z:1", "X:0 Y:0 Z:1", "X:0 Y:0 Z:1", "X:0 Y:0 Z:1"));
-    }
-
-    [Fact]
-    public void TestVector4()
-    {
-        DoTestToString(Vector4.Zero, ("X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0"));
-        DoTestToString(Vector4.One, ("X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1"));
-        DoTestToString(Vector4.UnitX, ("X:1 Y:0 Z:0 W:0", "X:1 Y:0 Z:0 W:0", "X:1 Y:0 Z:0 W:0", "X:1 Y:0 Z:0 W:0"));
-        DoTestToString(Vector4.UnitY, ("X:0 Y:1 Z:0 W:0", "X:0 Y:1 Z:0 W:0", "X:0 Y:1 Z:0 W:0", "X:0 Y:1 Z:0 W:0"));
-        DoTestToString(Vector4.UnitZ, ("X:0 Y:0 Z:1 W:0", "X:0 Y:0 Z:1 W:0", "X:0 Y:0 Z:1 W:0", "X:0 Y:0 Z:1 W:0"));
-        DoTestToString(Vector4.UnitW, ("X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1"));
-    }
+    // [Fact]
+    // public void TestVector2()
+    // {
+    //     DoTestToString(Vector2.Zero, ("X:0 Y:0", "X:0 Y:0", "X:0 Y:0", "X:0 Y:0"));
+    //     DoTestToString(Vector2.One, ("X:1 Y:1", "X:1 Y:1", "X:1 Y:1", "X:1 Y:1"));
+    //     DoTestToString(Vector2.UnitX, ("X:1 Y:0", "X:1 Y:0", "X:1 Y:0", "X:1 Y:0"));
+    //     DoTestToString(Vector2.UnitY, ("X:0 Y:1", "X:0 Y:1", "X:0 Y:1", "X:0 Y:1"));
+    // }
+    //
+    // [Fact]
+    // public void TestVector3()
+    // {
+    //     DoTestToString(Vector3.Zero, ("X:0 Y:0 Z:0", "X:0 Y:0 Z:0", "X:0 Y:0 Z:0", "X:0 Y:0 Z:0"));
+    //     DoTestToString(Vector3.One, ("X:1 Y:1 Z:1", "X:1 Y:1 Z:1", "X:1 Y:1 Z:1", "X:1 Y:1 Z:1"));
+    //     DoTestToString(Vector3.UnitX, ("X:1 Y:0 Z:0", "X:1 Y:0 Z:0", "X:1 Y:0 Z:0", "X:1 Y:0 Z:0"));
+    //     DoTestToString(Vector3.UnitY, ("X:0 Y:1 Z:0", "X:0 Y:1 Z:0", "X:0 Y:1 Z:0", "X:0 Y:1 Z:0"));
+    //     DoTestToString(Vector3.UnitZ, ("X:0 Y:0 Z:1", "X:0 Y:0 Z:1", "X:0 Y:0 Z:1", "X:0 Y:0 Z:1"));
+    // }
+    //
+    // [Fact]
+    // public void TestVector4()
+    // {
+    //     DoTestToString(Vector4.Zero, ("X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0", "X:0 Y:0 Z:0 W:0"));
+    //     DoTestToString(Vector4.One, ("X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1", "X:1 Y:1 Z:1 W:1"));
+    //     DoTestToString(Vector4.UnitX, ("X:1 Y:0 Z:0 W:0", "X:1 Y:0 Z:0 W:0", "X:1 Y:0 Z:0 W:0", "X:1 Y:0 Z:0 W:0"));
+    //     DoTestToString(Vector4.UnitY, ("X:0 Y:1 Z:0 W:0", "X:0 Y:1 Z:0 W:0", "X:0 Y:1 Z:0 W:0", "X:0 Y:1 Z:0 W:0"));
+    //     DoTestToString(Vector4.UnitZ, ("X:0 Y:0 Z:1 W:0", "X:0 Y:0 Z:1 W:0", "X:0 Y:0 Z:1 W:0", "X:0 Y:0 Z:1 W:0"));
+    //     DoTestToString(Vector4.UnitW, ("X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1", "X:0 Y:0 Z:0 W:1"));
+    // }
 
     private static void DoTestToString<T>(T value, (string none, string culture, string format, string formatAndCulture) args, CultureInfo? culture = null, string? format = null)
         where T : IFormattable

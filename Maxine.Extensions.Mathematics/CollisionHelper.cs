@@ -27,6 +27,8 @@
 * THE SOFTWARE.
 */
 
+using Microsoft.Xna.Framework;
+
 namespace Maxine.Extensions.Mathematics;
 
 /*
@@ -734,7 +736,7 @@ public static class CollisionHelper
         var rectanglePosition = new Vector3(rectangleWorldMatrix.M41, rectangleWorldMatrix.M42, rectangleWorldMatrix.M43);
 
         var normalRowStart = normalAxis << 2;
-        var plane = new Plane(rectanglePosition, new Vector3(rectangleWorldMatrix[normalRowStart], rectangleWorldMatrix[normalRowStart + 1], rectangleWorldMatrix[normalRowStart + 2]));
+        var plane = Plane.FromPointAndNormal(rectanglePosition, new Vector3(rectangleWorldMatrix.Component(normalRowStart), rectangleWorldMatrix.Component(normalRowStart + 1), rectangleWorldMatrix.Component(normalRowStart + 2)));
 
         // early exist the planes were parallels 
         if (!plane.Intersects(in ray, out intersectionPoint))
@@ -746,8 +748,8 @@ public static class CollisionHelper
         // optimization for the simple but very frequent case where the element is not rotated
         if (rectangleWorldMatrix is { M12: 0, M13: 0, M21: 0, M23: 0, M31: 0, M32: 0 })
         {
-            var halfSize1 = MathF.Abs(rectangleWorldMatrix[(testAxis1 << 2) + testAxis1] * rectangleSize[testAxis1] / 2f);
-            var halfSize2 = MathF.Abs(rectangleWorldMatrix[(testAxis2 << 2) + testAxis2] * rectangleSize[testAxis2] / 2f);
+            var halfSize1 = MathF.Abs(rectangleWorldMatrix.Component((testAxis1 << 2) + testAxis1) * rectangleSize[testAxis1] / 2f);
+            var halfSize2 = MathF.Abs(rectangleWorldMatrix.Component((testAxis2 << 2) + testAxis2) * rectangleSize[testAxis2] / 2f);
 
             return -halfSize1 <= intersectionInRectangle[testAxis1] && intersectionInRectangle[testAxis1] <= halfSize1 &&
                          -halfSize2 <= intersectionInRectangle[testAxis2] && intersectionInRectangle[testAxis2] <= halfSize2;
@@ -765,8 +767,8 @@ public static class CollisionHelper
             var normalSign = MathF.Sign(plane.Normal[normalTestIndex]);
 
             // the base vector
-            var base1 = rectangleSize[testAxis1] * new Vector3(rectangleWorldMatrix[testAxis1 << 2], rectangleWorldMatrix[(testAxis1 << 2) + 1], rectangleWorldMatrix[(testAxis1 << 2) + 2]) / 2;
-            var base2 = rectangleSize[testAxis2] * new Vector3(rectangleWorldMatrix[testAxis2 << 2], rectangleWorldMatrix[(testAxis2 << 2) + 1], rectangleWorldMatrix[(testAxis2 << 2) + 2]) / 2;
+            var base1 = rectangleSize[testAxis1] * new Vector3(rectangleWorldMatrix.Component(testAxis1 << 2), rectangleWorldMatrix.Component((testAxis1 << 2) + 1), rectangleWorldMatrix.Component((testAxis1 << 2) + 2)) / 2;
+            var base2 = rectangleSize[testAxis2] * new Vector3(rectangleWorldMatrix.Component(testAxis2 << 2), rectangleWorldMatrix.Component((testAxis2 << 2) + 1), rectangleWorldMatrix.Component((testAxis2 << 2) + 2)) / 2;
 
             // build the first triangle and perform the test
             var v1 = -base1 - base2 - intersectionInRectangle;

@@ -457,7 +457,7 @@ public class TestDouble3
     public void TestDouble3Unproject()
     {
         var vector = new Double3(400, 300, 0.5);
-        var projection = Matrix.PerspectiveFovLH(MathUtil.PiOverFour, 800f / 600f, 0.1f, 1000f);
+        var projection = Matrix.CreatePerspectiveFieldOfViewLeftHanded(MathUtil.PiOverFour, 800f / 600f, 0.1f, 1000f);
         var result = Double3.Unproject(vector, 0, 0, 800, 600, 0.1, 1000, projection);
         // Just check that the method executes without exception
         Assert.True(true);
@@ -467,7 +467,7 @@ public class TestDouble3
     public void TestDouble3UnprojectWithOutParameter()
     {
         var vector = new Double3(400, 300, 0.5);
-        var projection = Matrix.PerspectiveFovLH(MathUtil.PiOverFour, 800f / 600f, 0.1f, 1000f);
+        var projection = Matrix.CreatePerspectiveFieldOfViewLeftHanded(MathUtil.PiOverFour, 800f / 600f, 0.1f, 1000f);
         Double3.Unproject(ref vector, 0, 0, 800, 600, 0.1, 1000, ref projection, out var result);
         // Just check that the method executes without exception
         Assert.True(true);
@@ -578,7 +578,7 @@ public class TestDouble3
     public void TestDouble3TransformWithOutDouble4()
     {
         var vector = new Double3(1.0, 0.0, 0.0);
-        var matrix = Matrix.Translation(1.0f, 2.0f, 3.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 3.0f);
         Double3.Transform(ref vector, ref matrix, out Double4 result);
         Assert.Equal(2.0, result.X, 5);
         Assert.Equal(2.0, result.Y, 5);
@@ -591,7 +591,7 @@ public class TestDouble3
     {
         var source = new[] { new Double3(1.0, 0.0, 0.0), new Double3(0.0, 1.0, 0.0) };
         var destination = new Double4[2];
-        var matrix = Matrix.Translation(1.0f, 2.0f, 3.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 3.0f);
 
         Double3.Transform(source, ref matrix, destination);
 
@@ -604,7 +604,7 @@ public class TestDouble3
     public void TestDouble3TransformCoordinate()
     {
         var vector = new Double3(1.0, 0.0, 0.0);
-        var matrix = Matrix.Translation(1.0f, 2.0f, 3.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 3.0f);
         var result = Double3.TransformCoordinate(vector, matrix);
         Assert.Equal(2.0, result.X, 5);
         Assert.Equal(2.0, result.Y, 5);
@@ -615,7 +615,7 @@ public class TestDouble3
     public void TestDouble3TransformCoordinateWithOutParameter()
     {
         var vector = new Double3(1.0, 0.0, 0.0);
-        var matrix = Matrix.Translation(1.0f, 2.0f, 3.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 3.0f);
         Double3.TransformCoordinate(ref vector, ref matrix, out var result);
         Assert.Equal(2.0, result.X, 5);
         Assert.Equal(2.0, result.Y, 5);
@@ -627,7 +627,7 @@ public class TestDouble3
     {
         var source = new[] { new Double3(1.0, 0.0, 0.0), new Double3(0.0, 1.0, 0.0) };
         var destination = new Double3[2];
-        var matrix = Matrix.Translation(1.0f, 2.0f, 3.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 3.0f);
 
         Double3.TransformCoordinate(source, ref matrix, destination);
 
@@ -642,7 +642,7 @@ public class TestDouble3
     public void TestDouble3TransformNormal()
     {
         var normal = new Double3(1.0, 0.0, 0.0);
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         var result = Double3.TransformNormal(normal, matrix);
         Assert.Equal(0.0, result.X, 5);
         Assert.Equal(1.0, result.Y, 5);
@@ -653,7 +653,7 @@ public class TestDouble3
     public void TestDouble3TransformNormalWithOutParameter()
     {
         var normal = new Double3(1.0, 0.0, 0.0);
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         Double3.TransformNormal(ref normal, ref matrix, out var result);
         Assert.Equal(0.0, result.X, 5);
         Assert.Equal(1.0, result.Y, 5);
@@ -665,7 +665,7 @@ public class TestDouble3
     {
         var source = new[] { new Double3(1.0, 0.0, 0.0), new Double3(0.0, 1.0, 0.0) };
         var destination = new Double3[2];
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
 
         Double3.TransformNormal(source, ref matrix, destination);
 
@@ -679,7 +679,7 @@ public class TestDouble3
     [Fact]
     public void TestDouble3RotationYawPitchRoll()
     {
-        var quat = Quaternion.RotationYawPitchRoll(MathUtil.PiOverTwo, 0, 0);
+        var quat = Quaternion.CreateFromYawPitchRoll(MathUtil.PiOverTwo, 0, 0);
         var ypr = Double3.RotationYawPitchRoll(quat);
         Assert.InRange(ypr.X, MathUtil.PiOverTwo - 0.01, MathUtil.PiOverTwo + 0.01);
     }
@@ -687,7 +687,7 @@ public class TestDouble3
     [Fact]
     public void TestDouble3RotationYawPitchRollWithOutParameter()
     {
-        var quat = Quaternion.RotationYawPitchRoll(MathUtil.PiOverTwo, 0, 0);
+        var quat = Quaternion.CreateFromYawPitchRoll(MathUtil.PiOverTwo, 0, 0);
         Double3.RotationYawPitchRoll(ref quat, out var ypr);
         Assert.InRange(ypr.X, MathUtil.PiOverTwo - 0.01, MathUtil.PiOverTwo + 0.01);
     }

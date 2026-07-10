@@ -163,18 +163,6 @@ public struct Double3 : IEquatable<Double3>, ISpanFormattable
     }
 
     /// <summary>
-    /// Casts from System.Numerics to Stride.Maths vectors
-    /// </summary>
-    /// <param name="v">Value to cast</param>
-    public static implicit operator Double3(System.Numerics.Vector3 v) => new(v.X, v.Y, v.Z);
-
-    /// <summary>
-    /// Casts from Stride.Maths to System.Numerics vectors
-    /// </summary>
-    /// <param name="v">Value to cast</param>
-    public static explicit operator System.Numerics.Vector3(Double3 v) => new((float)v.X, (float)v.Y, (float)v.Z);
-
-    /// <summary>
     /// Calculates the length of the vector.
     /// </summary>
     /// <returns>The length of the vector.</returns>
@@ -881,7 +869,7 @@ public struct Double3 : IEquatable<Double3>, ISpanFormattable
     public static void Unproject(ref readonly Double3 vector, double x, double y, double width, double height, double minZ, double maxZ, ref readonly Matrix worldViewProjection, out Double3 result)
     {
         Double3 v = new Double3();
-        Matrix.Invert(in worldViewProjection, out var matrix);
+        Matrix.Invert(worldViewProjection, out var matrix);
 
         v.X = ((vector.X - x) / width * 2.0f) - 1.0;
         v.Y = -(((vector.Y - y) / height * 2.0f) - 1.0);
@@ -1324,7 +1312,7 @@ public struct Double3 : IEquatable<Double3>, ISpanFormattable
     public static Double3 RotationYawPitchRoll(Quaternion quaternion)
     {
         Vector3 yawPitchRoll;
-        Quaternion.RotationYawPitchRoll(ref quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
+        Quaternion.CreateFromYawPitchRoll(ref quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
         return yawPitchRoll;
     }
 
@@ -1336,7 +1324,7 @@ public struct Double3 : IEquatable<Double3>, ISpanFormattable
     public static void RotationYawPitchRoll(ref readonly Quaternion quaternion, out Double3 yawPitchRoll)
     {
         Vector3 yawPitchRollV;
-        Quaternion.RotationYawPitchRoll(in quaternion, out yawPitchRollV.X, out yawPitchRollV.Y, out yawPitchRollV.Z);
+        Quaternion.CreateFromYawPitchRoll(in quaternion, out yawPitchRollV.X, out yawPitchRollV.Y, out yawPitchRollV.Z);
         yawPitchRoll = yawPitchRollV;
     }
 

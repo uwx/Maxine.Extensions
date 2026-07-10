@@ -4,6 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics;
 
@@ -84,7 +85,7 @@ public struct BoundingBoxExt : IEquatable<BoundingBoxExt>, ISpanFormattable
         var center = Center;
         var extent = Extent;
 
-        Vector3.TransformCoordinate(ref center, ref world, out Center);
+        Vector3.Transform(ref center, ref world, out Center);
 
         // Update world matrix into absolute form
         unsafe

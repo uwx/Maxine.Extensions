@@ -176,13 +176,7 @@ public struct Int4 : IEquatable<Int4>, ISpanFormattable
     /// Casts from System.Numerics to Stride.Maths vectors
     /// </summary>
     /// <param name="v">Value to cast</param>
-    public static explicit operator Int4(System.Numerics.Vector4 v) => new((int)v.X, (int)v.Y, (int)v.Z, (int)v.W);
-
-    /// <summary>
-    /// Casts from Stride.Maths to System.Numerics vectors
-    /// </summary>
-    /// <param name="v">Value to cast</param>
-    public static explicit operator System.Numerics.Vector4(Int4 v) => new(v.X, v.Y, v.Z, v.W);
+    public static explicit operator Int4(Vector4 v) => new((int)v.X, (int)v.Y, (int)v.Z, (int)v.W);
 
     /// <summary>
     /// Calculates the length of the vector.

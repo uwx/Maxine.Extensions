@@ -29,6 +29,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics;
 
@@ -295,7 +296,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <param name="result">The transformed bounding sphere.</param>
     public static void Transform(ref readonly BoundingSphere value, ref readonly Matrix transform, out BoundingSphere result)
     {
-        Vector3.TransformCoordinate(in value.Center, in transform, out result.Center);
+        Vector3.Transform(in value.Center, in transform, out result.Center);
 
         var majorAxisLengthSquared = MathF.Max(
             (transform.M11 * transform.M11) + (transform.M12 * transform.M12) + (transform.M13 * transform.M13), MathF.Max(

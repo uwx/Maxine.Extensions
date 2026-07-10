@@ -2,6 +2,8 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using Xunit;
 
+using Microsoft.Xna.Framework;
+
 namespace Maxine.Extensions.Mathematics.Tests;
 
 public class TestMatrix
@@ -19,12 +21,12 @@ public class TestMatrix
         var pitchRadians = MathUtil.DegreesToRadians(pitchDegrees);
         var rollRadians = MathUtil.DegreesToRadians(rollDegrees);
 
-        var rotQuat = Quaternion.RotationYawPitchRoll(yawRadians, pitchRadians, rollRadians);
-        var rotMatrix = Matrix.RotationQuaternion(rotQuat);
+        var rotQuat = Quaternion.CreateFromYawPitchRoll(yawRadians, pitchRadians, rollRadians);
+        var rotMatrix = Matrix.CreateFromQuaternion(rotQuat);
         rotMatrix.Decompose(out float decomposedYaw, out float decomposedPitch, out float decomposedRoll);
 
         var expectedQuat = rotQuat;
-        var decompedQuat = Quaternion.RotationYawPitchRoll(decomposedYaw, decomposedPitch, decomposedRoll);
+        var decompedQuat = Quaternion.CreateFromYawPitchRoll(decomposedYaw, decomposedPitch, decomposedRoll);
         Assert.True(expectedQuat == decompedQuat || expectedQuat == -decompedQuat, $"Quat not equals: Expected: {expectedQuat} - Actual: {decompedQuat}");
     }
 
@@ -35,11 +37,11 @@ public class TestMatrix
         var pitchRadians = MathUtil.DegreesToRadians(pitchDegrees);
         var rollRadians = MathUtil.DegreesToRadians(rollDegrees);
 
-        var rotMatrix = Matrix.RotationYawPitchRoll(yawRadians, pitchRadians, rollRadians);
+        var rotMatrix = Matrix.CreateFromYawPitchRoll(yawRadians, pitchRadians, rollRadians);
         rotMatrix.Decompose(out float decomposedYaw, out float decomposedPitch, out float decomposedRoll);
 
-        var expectedQuat = Quaternion.RotationYawPitchRoll(yawRadians, pitchRadians, rollRadians);
-        var decompedQuat = Quaternion.RotationYawPitchRoll(decomposedYaw, decomposedPitch, decomposedRoll);
+        var expectedQuat = Quaternion.CreateFromYawPitchRoll(yawRadians, pitchRadians, rollRadians);
+        var decompedQuat = Quaternion.CreateFromYawPitchRoll(decomposedYaw, decomposedPitch, decomposedRoll);
         Assert.True(expectedQuat == decompedQuat || expectedQuat == -decompedQuat, $"Quat not equals: Expected: {expectedQuat} - Actual: {decompedQuat}");
     }
 
@@ -51,11 +53,11 @@ public class TestMatrix
         var rollRadians = MathUtil.DegreesToRadians(rollDegrees);
 
         // Yaw-Pitch-Roll is the intrinsic rotation order, so extrinsic is the reverse (ie. Z-X-Y)
-        var rotMatrix = Matrix.RotationZ(rollRadians) * Matrix.RotationX(pitchRadians) * Matrix.RotationY(yawRadians);
+        var rotMatrix = Matrix.CreateRotationZ(rollRadians) * Matrix.CreateRotationX(pitchRadians) * Matrix.CreateRotationY(yawRadians);
         rotMatrix.Decompose(out float decomposedYaw, out float decomposedPitch, out float decomposedRoll);
 
-        var expectedQuat = Quaternion.RotationYawPitchRoll(yawRadians, pitchRadians, rollRadians);
-        var decompedQuat = Quaternion.RotationYawPitchRoll(decomposedYaw, decomposedPitch, decomposedRoll);
+        var expectedQuat = Quaternion.CreateFromYawPitchRoll(yawRadians, pitchRadians, rollRadians);
+        var decompedQuat = Quaternion.CreateFromYawPitchRoll(decomposedYaw, decomposedPitch, decomposedRoll);
         Assert.True(expectedQuat == decompedQuat || expectedQuat == -decompedQuat, $"Quat not equals: Expected: {expectedQuat} - Actual: {decompedQuat}");
     }
 
@@ -66,10 +68,10 @@ public class TestMatrix
         var pitchRadians = MathUtil.DegreesToRadians(pitchDegrees);
         var rollRadians = MathUtil.DegreesToRadians(rollDegrees);
 
-        var rotMatrix = Matrix.RotationX(pitchRadians) * Matrix.RotationY(yawRadians) * Matrix.RotationZ(rollRadians);
+        var rotMatrix = Matrix.CreateRotationX(pitchRadians) * Matrix.CreateRotationY(yawRadians) * Matrix.CreateRotationZ(rollRadians);
         rotMatrix.DecomposeXYZ(out Vector3 eulerAngles);
 
-        var decompedRotMatrix = Matrix.RotationX(eulerAngles.X) * Matrix.RotationY(eulerAngles.Y) * Matrix.RotationZ(eulerAngles.Z);
+        var decompedRotMatrix = Matrix.CreateRotationX(eulerAngles.X) * Matrix.CreateRotationY(eulerAngles.Y) * Matrix.CreateRotationZ(eulerAngles.Z);
         var decompedQuat = Quaternion.RotationMatrix(decompedRotMatrix);
 
         var expectedQuat = Quaternion.RotationX(pitchRadians) * Quaternion.RotationY(yawRadians) * Quaternion.RotationZ(rollRadians);
@@ -250,9 +252,9 @@ public class TestMatrix
     [InlineData(45, 45, 45)]
     public void TestRotationMatrixDecomposition(float x, float y, float z)
     {
-        var rotationMatrix = Matrix.RotationX(MathUtil.DegreesToRadians(x)) *
-                           Matrix.RotationY(MathUtil.DegreesToRadians(y)) *
-                           Matrix.RotationZ(MathUtil.DegreesToRadians(z));
+        var rotationMatrix = Matrix.CreateRotationX(MathUtil.DegreesToRadians(x)) *
+                           Matrix.CreateRotationY(MathUtil.DegreesToRadians(y)) *
+                           Matrix.CreateRotationZ(MathUtil.DegreesToRadians(z));
 
         rotationMatrix.Decompose(out Vector3 scale, out Quaternion rotation, out Vector3 translation);
 
@@ -267,7 +269,7 @@ public class TestMatrix
         Assert.Equal(0f, translation.Z, 3);
 
         // Reconstruct matrix from decomposed parts and compare
-        var reconstructed = Matrix.Transformation(Vector3.Zero, Quaternion.Identity, scale, Vector3.Zero, rotation, translation);
+        var reconstructed = Matrix.CreateTransformation(Vector3.Zero, Quaternion.Identity, scale, Vector3.Zero, rotation, translation);
 
         Assert.Equal(rotationMatrix.M11, reconstructed.M11, 3);
         Assert.Equal(rotationMatrix.M12, reconstructed.M12, 3);
@@ -284,14 +286,14 @@ public class TestMatrix
     public void TestMatrixTransformation()
     {
         var scale = new Vector3(2, 3, 4);
-        var rotation = Quaternion.RotationYawPitchRoll(
+        var rotation = Quaternion.CreateFromYawPitchRoll(
             MathUtil.DegreesToRadians(30),
             MathUtil.DegreesToRadians(45),
             MathUtil.DegreesToRadians(60)
         );
         var translation = new Vector3(1, 2, 3);
 
-        var transform = Matrix.Transformation(
+        var transform = Matrix.CreateTransformation(
             Vector3.Zero,    // scaling center
             Quaternion.Identity,  // scaling rotation
             scale,          // scale
@@ -328,7 +330,7 @@ public class TestMatrix
     public void TestMatrixScaling()
     {
         var scale = new Vector3(2, 3, 4);
-        var scaleMatrix = Matrix.Scaling(scale);
+        var scaleMatrix = Matrix.CreateScale(scale);
 
         // Test scaling of a point
         var point = new Vector3(1, 1, 1);
@@ -343,7 +345,7 @@ public class TestMatrix
     public void TestMatrixConstruction()
     {
         // Test value constructor
-        var m1 = new Matrix(2.0f);
+        var m1 = Matrix.FromAllComponents(2.0f);
         Assert.Equal(2.0f, m1.M11);
         Assert.Equal(2.0f, m1.M22);
         Assert.Equal(2.0f, m1.M33);
@@ -362,7 +364,7 @@ public class TestMatrix
 
         // Test array constructor
         float[] values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-        var m3 = new Matrix(values);
+        var m3 = Matrix.CreateFromValues(values);
         Assert.Equal(1f, m3.M11);
         Assert.Equal(16f, m3.M44);
     }
@@ -393,7 +395,7 @@ public class TestMatrix
     public void TestMatrixTranslation()
     {
         var translation = new Vector3(10, 20, 30);
-        var matrix = Matrix.Translation(translation);
+        var matrix = Matrix.CreateTranslation(translation);
 
         Assert.Equal(10f, matrix.M41);
         Assert.Equal(20f, matrix.M42);
@@ -417,7 +419,7 @@ public class TestMatrix
         var light = new Vector4(0, 10, 0, 1); // Light above
         var plane = new Plane(Vector3.UnitY, 0); // Ground plane
 
-        var matrix = Matrix.Shadow(light, plane);
+        var matrix = Matrix.CreateShadow(light, plane);
 
         // Shadow matrix should project points onto the plane
         var point = new Vector3(1, 5, 1);
@@ -434,7 +436,7 @@ public class TestMatrix
         float pitch = MathUtil.PiOverFour / 2;
         float roll = MathUtil.PiOverFour / 3;
 
-        var matrix = Matrix.RotationYawPitchRoll(yaw, pitch, roll);
+        var matrix = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
 
         // Should create a valid rotation matrix
         Assert.NotEqual(0f, matrix.Determinant());
@@ -453,7 +455,7 @@ public class TestMatrix
         float rotation = MathUtil.PiOverFour;
         var translation = new Vector2(10, 10);
 
-        var matrix = Matrix.Transformation2D(scalingCenter, scalingRotation, scaling, rotationCenter, rotation, translation);
+        var matrix = Matrix.CreateTransformation2D(scalingCenter, scalingRotation, scaling, rotationCenter, rotation, translation);
 
         // Should create a valid 2D transformation matrix
         Assert.NotEqual(0f, matrix.Determinant());
@@ -468,12 +470,12 @@ public class TestMatrix
             9, 10, 11, 12,
             13, 14, 15, 16);
 
-        Assert.Equal(1f, matrix[0]);
-        Assert.Equal(2f, matrix[1]);
-        Assert.Equal(16f, matrix[15]);
+        Assert.Equal(1f, matrix.Component(0));
+        Assert.Equal(2f, matrix.Component(1));
+        Assert.Equal(16f, matrix.Component(15));
 
         // Test setter
-        matrix[0] = 100f;
+        matrix.SetComponent(0, 100f);
         Assert.Equal(100f, matrix.M11);
     }
 
@@ -517,7 +519,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var matrix = Matrix.OrthoRH(width, height, znear, zfar);
+        var matrix = Matrix.CreateOrthographic(width, height, znear, zfar);
 
         // RH should have different characteristics than LH
         Assert.Equal(1f, matrix.M44);
@@ -536,7 +538,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var matrix = Matrix.OrthoOffCenterLH(left, right, bottom, top, znear, zfar);
+        var matrix = Matrix.CreateOrthographicOffCenterLeftHanded(left, right, bottom, top, znear, zfar);
 
         Assert.Equal(1f, matrix.M44);
         Assert.NotEqual(0f, matrix.M11);
@@ -551,7 +553,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var matrix = Matrix.PerspectiveLH(width, height, znear, zfar);
+        var matrix = Matrix.CreatePerspectiveLeftHanded(width, height, znear, zfar);
 
         // Perspective matrices have M44 = 0
         Assert.Equal(0f, matrix.M44);
@@ -566,7 +568,7 @@ public class TestMatrix
         var target = new Vector3(0, 0, 0);
         var up = new Vector3(0, 1, 0);
 
-        var matrix = Matrix.LookAtRH(eye, target, up);
+        var matrix = Matrix.CreateLookAt(eye, target, up);
 
         // LookAt matrix should be invertible
         Assert.NotEqual(0f, matrix.Determinant());
@@ -576,7 +578,7 @@ public class TestMatrix
     public void TestMatrixSmoothStep()
     {
         var start = Matrix.Identity;
-        var end = Matrix.Scaling(2f);
+        var end = Matrix.CreateScale(2f);
         float amount = 0.5f;
 
         var result = Matrix.SmoothStep(start, end, amount);
@@ -589,7 +591,7 @@ public class TestMatrix
     public void TestMatrixOrthogonalize()
     {
         // Create a matrix that's slightly non-orthogonal
-        var matrix = Matrix.RotationY(0.1f);
+        var matrix = Matrix.CreateRotationY(0.1f);
         matrix.M12 += 0.01f; // Perturb it slightly
 
         var ortho = Matrix.Orthogonalize(matrix);
@@ -740,10 +742,10 @@ public class TestMatrix
     [Fact]
     public void TestMatrixTranslationEdgeCase()
     {
-        var translation = Matrix.Translation(5.0f, 10.0f, 15.0f);
+        var translation = Matrix.CreateTranslation(5.0f, 10.0f, 15.0f);
         var point = new Vector3(1.0f, 1.0f, 1.0f);
 
-        var transformed = Vector3.TransformCoordinate(point, translation);
+        var transformed = Vector3.Transform(point, translation);
 
         Assert.Equal(6.0f, transformed.X);
         Assert.Equal(11.0f, transformed.Y);
@@ -753,10 +755,10 @@ public class TestMatrix
     [Fact]
     public void TestMatrixScalingEdgeCase()
     {
-        var scaling = Matrix.Scaling(2.0f, 3.0f, 4.0f);
+        var scaling = Matrix.CreateScale(2.0f, 3.0f, 4.0f);
         var point = new Vector3(1.0f, 1.0f, 1.0f);
 
-        var transformed = Vector3.TransformCoordinate(point, scaling);
+        var transformed = Vector3.Transform(point, scaling);
 
         Assert.Equal(2.0f, transformed.X);
         Assert.Equal(3.0f, transformed.Y);
@@ -766,10 +768,10 @@ public class TestMatrix
     [Fact]
     public void TestMatrixUniformScaling()
     {
-        var scaling = Matrix.Scaling(2.0f);
+        var scaling = Matrix.CreateScale(2.0f);
         var point = new Vector3(1.0f, 2.0f, 3.0f);
 
-        var transformed = Vector3.TransformCoordinate(point, scaling);
+        var transformed = Vector3.Transform(point, scaling);
 
         Assert.Equal(2.0f, transformed.X);
         Assert.Equal(4.0f, transformed.Y);
@@ -779,10 +781,10 @@ public class TestMatrix
     [Fact]
     public void TestMatrixRotationX90Degrees()
     {
-        var rotation = Matrix.RotationX(MathUtil.PiOverTwo);
+        var rotation = Matrix.CreateRotationX(MathUtil.PiOverTwo);
         var point = new Vector3(0.0f, 1.0f, 0.0f);
 
-        var transformed = Vector3.TransformCoordinate(point, rotation);
+        var transformed = Vector3.Transform(point, rotation);
 
         Assert.Equal(0.0f, transformed.X, 5);
         Assert.Equal(0.0f, transformed.Y, 5);
@@ -792,10 +794,10 @@ public class TestMatrix
     [Fact]
     public void TestMatrixRotationY90Degrees()
     {
-        var rotation = Matrix.RotationY(MathUtil.PiOverTwo);
+        var rotation = Matrix.CreateRotationY(MathUtil.PiOverTwo);
         var point = new Vector3(1.0f, 0.0f, 0.0f);
 
-        var transformed = Vector3.TransformCoordinate(point, rotation);
+        var transformed = Vector3.Transform(point, rotation);
 
         Assert.Equal(0.0f, transformed.X, 5);
         Assert.Equal(0.0f, transformed.Y, 5);
@@ -805,10 +807,10 @@ public class TestMatrix
     [Fact]
     public void TestMatrixRotationZ90Degrees()
     {
-        var rotation = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var rotation = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         var point = new Vector3(1.0f, 0.0f, 0.0f);
 
-        var transformed = Vector3.TransformCoordinate(point, rotation);
+        var transformed = Vector3.Transform(point, rotation);
 
         Assert.Equal(0.0f, transformed.X, 5);
         Assert.Equal(1.0f, transformed.Y, 5);
@@ -821,7 +823,7 @@ public class TestMatrix
         var identity = Matrix.Identity;
         Assert.True(identity.IsIdentity);
 
-        var notIdentity = Matrix.Translation(1, 0, 0);
+        var notIdentity = Matrix.CreateTranslation(1, 0, 0);
         Assert.False(notIdentity.IsIdentity);
     }
 
@@ -870,7 +872,7 @@ public class TestMatrix
     [Fact]
     public void TestMatrixSubtraction()
     {
-        var m1 = Matrix.Scaling(2.0f);
+        var m1 = Matrix.CreateScale(2.0f);
         var m2 = Matrix.Identity;
 
         var diff = m1 - m2;
@@ -899,7 +901,7 @@ public class TestMatrix
     [Fact]
     public void TestMatrixScalarDivision()
     {
-        var matrix = Matrix.Scaling(4.0f);
+        var matrix = Matrix.CreateScale(4.0f);
         matrix.M44 = 4.0f;
         var divided = matrix / 2.0f;
 
@@ -934,7 +936,7 @@ public class TestMatrix
     [Fact]
     public void TestMatrixDecomposeTranslationOnly()
     {
-        var translation = Matrix.Translation(5.0f, 10.0f, 15.0f);
+        var translation = Matrix.CreateTranslation(5.0f, 10.0f, 15.0f);
 
         translation.Decompose(out Vector3 scale, out Quaternion rotation, out Vector3 trans);
 
@@ -946,7 +948,7 @@ public class TestMatrix
     [Fact]
     public void TestMatrixDecomposeScaleOnly()
     {
-        var scaling = Matrix.Scaling(2.0f, 3.0f, 4.0f);
+        var scaling = Matrix.CreateScale(2.0f, 3.0f, 4.0f);
 
         scaling.Decompose(out Vector3 scale, out Quaternion rotation, out Vector3 trans);
 
@@ -961,7 +963,7 @@ public class TestMatrix
     public void TestMatrixLerp()
     {
         var start = Matrix.Identity;
-        var end = Matrix.Scaling(2.0f);
+        var end = Matrix.CreateScale(2.0f);
 
         var halfway = Matrix.Lerp(start, end, 0.5f);
 
@@ -988,7 +990,7 @@ public class TestMatrix
         var cameraUp = Vector3.UnitY;
         var cameraForward = Vector3.UnitZ;
 
-        var billboard = Matrix.Billboard(objectPos, cameraPos, cameraUp, cameraForward);
+        var billboard = Matrix.CreateBillboard(objectPos, cameraPos, cameraUp, cameraForward);
 
         // Billboard matrix should be invertible
         Assert.NotEqual(0f, billboard.Determinant());
@@ -1004,11 +1006,11 @@ public class TestMatrix
     {
         // Create a ground plane at Y=0
         var plane = new Plane(Vector3.UnitY, 0);
-        var reflection = Matrix.Reflection(plane);
+        var reflection = Matrix.CreateReflection(plane);
 
         // Reflecting a point above the plane should give point below
         var point = new Vector3(1, 5, 1);
-        var reflected = Vector3.TransformCoordinate(point, reflection);
+        var reflected = Vector3.Transform(point, reflection);
 
         Assert.Equal(1.0f, reflected.X, 5);
         Assert.Equal(-5.0f, reflected.Y, 5);
@@ -1023,7 +1025,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var matrix = Matrix.PerspectiveFovLH(fov, aspect, znear, zfar);
+        var matrix = Matrix.CreatePerspectiveFieldOfViewLeftHanded(fov, aspect, znear, zfar);
 
         // Perspective matrices should have M34 = 1 (for LH)
         Assert.Equal(1f, matrix.M34, 5);
@@ -1038,7 +1040,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var matrix = Matrix.PerspectiveFovRH(fov, aspect, znear, zfar);
+        var matrix = Matrix.CreatePerspectiveFieldOfView(fov, aspect, znear, zfar);
 
         // Perspective matrices should have M34 = -1 (for RH)
         Assert.Equal(-1f, matrix.M34, 5);
@@ -1052,7 +1054,7 @@ public class TestMatrix
         var target = Vector3.Zero;
         var up = Vector3.UnitY;
 
-        var lookAt = Matrix.LookAtLH(eye, target, up);
+        var lookAt = Matrix.CreateLookAtLeftHanded(eye, target, up);
 
         // LookAt matrix should be invertible
         Assert.NotEqual(0f, lookAt.Determinant());
@@ -1068,7 +1070,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 100f;
 
-        var ortho = Matrix.OrthoOffCenterRH(left, right, bottom, top, znear, zfar);
+        var ortho = Matrix.CreateOrthographicOffCenter(left, right, bottom, top, znear, zfar);
 
         Assert.Equal(1f, ortho.M44, 5);
         Assert.NotEqual(0f, ortho.M11);
@@ -1084,7 +1086,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var perspective = Matrix.PerspectiveRH(width, height, znear, zfar);
+        var perspective = Matrix.CreatePerspective(width, height, znear, zfar);
 
         Assert.Equal(0f, perspective.M44);
         Assert.NotEqual(0f, perspective.M11);
@@ -1101,7 +1103,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var perspective = Matrix.PerspectiveOffCenterLH(left, right, bottom, top, znear, zfar);
+        var perspective = Matrix.CreatePerspectiveOffCenterLeftHanded(left, right, bottom, top, znear, zfar);
 
         Assert.Equal(0f, perspective.M44);
         Assert.NotEqual(0f, perspective.M11);
@@ -1118,7 +1120,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var perspective = Matrix.PerspectiveOffCenterRH(left, right, bottom, top, znear, zfar);
+        var perspective = Matrix.CreatePerspectiveOffCenter(left, right, bottom, top, znear, zfar);
 
         Assert.Equal(0f, perspective.M44);
         Assert.NotEqual(0f, perspective.M11);
@@ -1133,7 +1135,7 @@ public class TestMatrix
         float znear = 0.1f;
         float zfar = 1000f;
 
-        var ortho = Matrix.OrthoLH(width, height, znear, zfar);
+        var ortho = Matrix.CreateOrthographicLeftHanded(width, height, znear, zfar);
 
         Assert.Equal(1f, ortho.M44);
         Assert.NotEqual(0f, ortho.M11);
@@ -1146,7 +1148,7 @@ public class TestMatrix
         var axis = Vector3.Normalize(new Vector3(1, 1, 0));
         var angle = MathUtil.PiOverFour;
 
-        var rotation = Matrix.RotationAxis(axis, angle);
+        var rotation = Matrix.CreateRotationAxis(axis, angle);
 
         // Should be a valid rotation matrix (determinant ≈ ±1)
         Assert.Equal(1f, Math.Abs(rotation.Determinant()), 3);
@@ -1159,7 +1161,7 @@ public class TestMatrix
         var rotation = Quaternion.RotationY(MathUtil.PiOverFour);
         var translation = new Vector3(10, 20, 30);
 
-        var affine = Matrix.AffineTransformation(scaling, rotation, translation);
+        var affine = Matrix.CreateAffineTransformation(scaling, rotation, translation);
 
         // Should create valid transformation
         Assert.NotEqual(Matrix.Zero, affine);
@@ -1175,7 +1177,7 @@ public class TestMatrix
         float rotation = MathUtil.PiOverFour;
         var translation = new Vector2(100, 50);
 
-        var affine = Matrix.AffineTransformation2D(scaling, rotation, translation);
+        var affine = Matrix.CreateAffineTransformation2D(scaling, rotation, translation);
 
         // Should create valid transformation
         Assert.NotEqual(Matrix.Zero, affine);
@@ -1186,7 +1188,7 @@ public class TestMatrix
     [Fact]
     public void TestMatrixExponent()
     {
-        var matrix = Matrix.Scaling(2.0f);
+        var matrix = Matrix.CreateScale(2.0f);
 
         // Matrix^2 should be Scaling(4.0f)
         var squared = Matrix.Exponent(matrix, 2);
@@ -1199,7 +1201,7 @@ public class TestMatrix
     [Fact]
     public void TestMatrixDivide()
     {
-        var matrix = Matrix.Scaling(10.0f);
+        var matrix = Matrix.CreateScale(10.0f);
         var divisor = 2.0f;
 
         var result = matrix / divisor;
@@ -1274,10 +1276,10 @@ public class TestMatrix
     [Fact]
     public void TestMatrixInvertMethod()
     {
-        var m = Matrix.Translation(5, 10, 15);
+        var m = Matrix.CreateTranslation(5, 10, 15);
         m.Invert();
 
-        var expected = Matrix.Invert(Matrix.Translation(5, 10, 15));
+        var expected = Matrix.Invert(Matrix.CreateTranslation(5, 10, 15));
         Assert.Equal(expected, m);
     }
 
@@ -1301,7 +1303,7 @@ public class TestMatrix
     [Fact]
     public void TestMatrixDecomposeLQ()
     {
-        var m = Matrix.RotationX(MathUtil.PiOverFour) * Matrix.Translation(1, 2, 3);
+        var m = Matrix.CreateRotationX(MathUtil.PiOverFour) * Matrix.CreateTranslation(1, 2, 3);
         m.DecomposeLQ(out Matrix l, out Matrix q);
 
         // L should be lower triangular, Q should be orthogonal
@@ -1323,8 +1325,8 @@ public class TestMatrix
     [Fact]
     public void TestMatrixRotationQuaternion()
     {
-        var q = Quaternion.RotationAxis(Vector3.UnitY, MathUtil.PiOverTwo);
-        var m = Matrix.RotationQuaternion(q);
+        var q = Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathUtil.PiOverTwo);
+        var m = Matrix.CreateFromQuaternion(q);
 
         Assert.True(MathUtil.NearEqual(m.M22, 1f));
         Assert.True(MathUtil.NearEqual(m.M11, 0f));
@@ -1340,7 +1342,7 @@ public class TestMatrix
         var scalingCenter = Vector3.Zero;
         var rotationCenter = Vector3.Zero;
 
-        var m = Matrix.Transformation(scalingCenter, Quaternion.Identity, scale, rotationCenter, rotation, translation);
+        var m = Matrix.CreateTransformation(scalingCenter, Quaternion.Identity, scale, rotationCenter, rotation, translation);
         m.Decompose(out Vector3 outScale, out Quaternion outRotation, out Vector3 outTranslation);
 
         Assert.True(MathUtil.NearEqual(scale.X, outScale.X));
@@ -1355,7 +1357,7 @@ public class TestMatrix
     public void TestMatrixDecomposeXYZ()
     {
         var rotation = new Vector3(0.1f, 0.2f, 0.3f);
-        var m = Matrix.RotationX(rotation.X) * Matrix.RotationY(rotation.Y) * Matrix.RotationZ(rotation.Z);
+        var m = Matrix.CreateRotationX(rotation.X) * Matrix.CreateRotationY(rotation.Y) * Matrix.CreateRotationZ(rotation.Z);
 
         m.DecomposeXYZ(out Vector3 result);
 

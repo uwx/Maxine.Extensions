@@ -355,7 +355,7 @@ public class TestDouble4
     public void TestDouble4Transform()
     {
         var v = new Double4(1.0, 0.0, 0.0, 1.0);
-        var rotation = Quaternion.RotationAxis(Vector3.UnitZ, MathUtil.PiOverTwo);
+        var rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathUtil.PiOverTwo);
         var result = Double4.Transform(v, rotation);
         Assert.Equal(0.0, result.X, 5);
         Assert.Equal(1.0, result.Y, 5);
@@ -447,7 +447,7 @@ public class TestDouble4
     {
         var source = new[] { new Double4(1, 2, 3, 1), new Double4(5, 6, 7, 1) };
         var dest = new Double4[2];
-        var matrix = Matrix.Translation(10, 20, 30);
+        var matrix = Matrix.CreateTranslation(10, 20, 30);
 
         Double4.Transform(source, ref matrix, dest);
 

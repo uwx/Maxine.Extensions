@@ -272,7 +272,7 @@ public class TestDouble2
     public void TestDouble2TransformCoordinate()
     {
         var vector = new Double2(1.0, 0.0);
-        var matrix = Matrix.Translation(1.0f, 2.0f, 0.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 0.0f);
         var result = Double2.TransformCoordinate(vector, matrix);
         Assert.Equal(2.0, result.X, 5);
         Assert.Equal(2.0, result.Y, 5);
@@ -282,7 +282,7 @@ public class TestDouble2
     public void TestDouble2TransformNormal()
     {
         var normal = new Double2(1.0, 0.0);
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         var result = Double2.TransformNormal(normal, matrix);
         Assert.Equal(0.0, result.X, 5);
         Assert.Equal(1.0, result.Y, 5);
@@ -572,7 +572,7 @@ public class TestDouble2
     public void TestDouble2TransformCoordinateWithOutParameter()
     {
         var vector = new Double2(1.0, 0.0);
-        var matrix = Matrix.Translation(1.0f, 2.0f, 0.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 0.0f);
         Double2.TransformCoordinate(ref vector, ref matrix, out var result);
         Assert.Equal(2.0, result.X, 5);
         Assert.Equal(2.0, result.Y, 5);
@@ -582,7 +582,7 @@ public class TestDouble2
     public void TestDouble2TransformNormalWithOutParameter()
     {
         var normal = new Double2(1.0, 0.0);
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         Double2.TransformNormal(ref normal, ref matrix, out var result);
         Assert.Equal(0.0, result.X, 5);
         Assert.Equal(1.0, result.Y, 5);
@@ -644,7 +644,7 @@ public class TestDouble2
     {
         var source = new[] { new Double2(1.0, 0.0), new Double2(0.0, 1.0) };
         var destination = new Double2[2];
-        var matrix = Matrix.Translation(1.0f, 2.0f, 0.0f);
+        var matrix = Matrix.CreateTranslation(1.0f, 2.0f, 0.0f);
 
         Double2.TransformCoordinate(source, ref matrix, destination);
 
@@ -659,7 +659,7 @@ public class TestDouble2
     {
         var source = new[] { new Double2(1.0, 0.0), new Double2(0.0, 1.0) };
         var destination = new Double2[2];
-        var matrix = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var matrix = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
 
         Double2.TransformNormal(source, ref matrix, destination);
 

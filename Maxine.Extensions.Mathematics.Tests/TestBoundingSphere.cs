@@ -57,7 +57,7 @@ public class TestBoundingSphere
     public void TestBoundingSphereTransform()
     {
         var sphere = new BoundingSphere(new Vector3(0, 0, 0), 5);
-        var transform = Matrix.Translation(10, 20, 30);
+        var transform = Matrix.CreateTranslation(10, 20, 30);
         
         BoundingSphere.Transform(ref sphere, ref transform, out var transformed);
         
@@ -69,7 +69,7 @@ public class TestBoundingSphere
     public void TestBoundingSphereTransformScale()
     {
         var sphere = new BoundingSphere(new Vector3(0, 0, 0), 5);
-        var transform = Matrix.Scaling(2, 2, 2);
+        var transform = Matrix.CreateScale(2, 2, 2);
         
         BoundingSphere.Transform(ref sphere, ref transform, out var transformed);
         

@@ -45,7 +45,7 @@ public class TestBoundingBox
     public void TestBoundingBoxTransform()
     {
         var box = new BoundingBox(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
-        var transform = Matrix.Translation(5, 10, 15);
+        var transform = Matrix.CreateTranslation(5, 10, 15);
         
         BoundingBox.Transform(ref box, ref transform, out var transformed);
         
@@ -58,7 +58,7 @@ public class TestBoundingBox
     {
         // Use asymmetric box so rotation changes the bounds
         var box = new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1));
-        var transform = Matrix.RotationZ(MathUtil.PiOverTwo);
+        var transform = Matrix.CreateRotationZ(MathUtil.PiOverTwo);
         
         BoundingBox.Transform(ref box, ref transform, out var transformed);
         

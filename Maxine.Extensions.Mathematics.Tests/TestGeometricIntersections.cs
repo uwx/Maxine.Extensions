@@ -147,13 +147,13 @@ public class TestGeometricIntersections
     public void TestBoundingFrustumIntersection()
     {
         // Create a view frustum looking down Z axis
-        var projection = Matrix.PerspectiveFovRH(
+        var projection = Matrix.CreatePerspectiveFieldOfView(
             MathUtil.PiOverFour, // 45 degrees FOV
             1.0f,                // aspect ratio
             0.1f,                // near plane
             100.0f               // far plane
         );
-        var view = Matrix.LookAtRH(
+        var view = Matrix.CreateLookAt(
             new Vector3(0, 0, -10),  // camera position
             Vector3.Zero,            // looking at origin
             Vector3.UnitY            // up vector
