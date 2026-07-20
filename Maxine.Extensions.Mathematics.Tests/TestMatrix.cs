@@ -186,7 +186,7 @@ public class TestMatrix
             0, 0, 2, 0,
             1, 2, 3, 1);
 
-        Matrix.Invert(ref matrix, out var inverse);
+        Matrix.Invert(in matrix, out var inverse);
         var identity = matrix * inverse;
 
         // Check if the result is approximately identity matrix
@@ -217,7 +217,7 @@ public class TestMatrix
             9, 10, 11, 12,
             13, 14, 15, 16);
 
-        Matrix.Transpose(ref matrix, out var transpose);
+        Matrix.Transpose(in matrix, out var transpose);
 
         // Check diagonal elements remain the same
         Assert.Equal(matrix.M11, transpose.M11);
@@ -240,7 +240,7 @@ public class TestMatrix
         Assert.Equal(matrix.M43, transpose.M34);
 
         // Verify double transpose returns original matrix
-        Matrix.Transpose(ref transpose, out var doubleTranspose);
+        Matrix.Transpose(in transpose, out var doubleTranspose);
         Assert.Equal(matrix, doubleTranspose);
     }
 
@@ -676,7 +676,7 @@ public class TestMatrix
             9, 10, 11, 12,
             13, 14, 15, 16);
 
-        Matrix.Transpose(ref matrix, out var transposed);
+        Matrix.Transpose(in matrix, out var transposed);
 
         Assert.Equal(1f, transposed.M11);
         Assert.Equal(5f, transposed.M12);
@@ -693,7 +693,7 @@ public class TestMatrix
     public void TestMatrixInverseIdentity()
     {
         var identity = Matrix.Identity;
-        Matrix.Invert(ref identity, out var inverse);
+        Matrix.Invert(in identity, out var inverse);
 
         Assert.Equal(identity, inverse);
     }
@@ -708,7 +708,7 @@ public class TestMatrix
             3, 6, 9, 0,
             0, 0, 0, 1);
 
-        Matrix.Invert(ref singular, out var inverse);
+        Matrix.Invert(in singular, out var inverse);
 
         // Inverse of singular matrix - implementation may return specific values
         // Just verify it doesn't crash
@@ -1315,7 +1315,7 @@ public class TestMatrix
     public void TestMatrixNegate()
     {
         var m = new Matrix(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-        Matrix.Negate(ref m, out Matrix result);
+        Matrix.Negate(in m, out Matrix result);
 
         Assert.Equal(-1, result.M11);
         Assert.Equal(-2, result.M12);
