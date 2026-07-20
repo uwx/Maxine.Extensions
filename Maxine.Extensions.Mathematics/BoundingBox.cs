@@ -336,8 +336,8 @@ public struct BoundingBox : IEquatable<BoundingBox>, ISpanFormattable, IIntersec
     public static BoundingBox Merge(BoundingBox value1, BoundingBox value2)
     {
         BoundingBox box;
-        Vector3.Min(ref value1.Minimum, ref value2.Minimum, out box.Minimum);
-        Vector3.Max(ref value1.Maximum, ref value2.Maximum, out box.Maximum);
+        Vector3.Min(in value1.Minimum, in value2.Minimum, out box.Minimum);
+        Vector3.Max(in value1.Maximum, in value2.Maximum, out box.Maximum);
         return box;
     }
 

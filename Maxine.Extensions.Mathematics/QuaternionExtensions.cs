@@ -235,7 +235,7 @@ public static class QuaternionExtensions
         {
             Quaternion.Slerp(in value1, in value4, amount, out var start);
             Quaternion.Slerp(in value2, in value3, amount, out var end);
-            Quaternion.Slerp(ref start, ref end, 2.0f * amount * (1.0f - amount), out result);
+            Quaternion.Slerp(in start, in end, 2.0f * amount * (1.0f - amount), out result);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ public static class QuaternionExtensions
         {
             Quaternion.Slerp(in value1, in value2, amount1 + amount2, out var start);
             Quaternion.Slerp(in value1, in value3, amount1 + amount2, out var end);
-            Quaternion.Slerp(ref start, ref end, amount2 / (amount1 + amount2), out result);
+            Quaternion.Slerp(in start, in end, amount2 / (amount1 + amount2), out result);
         }
 
         /// <summary>

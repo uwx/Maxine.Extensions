@@ -118,7 +118,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <returns>Whether the two objects intersected.</returns>
     public bool Intersects(ref readonly Vector3 vertex1, ref readonly Vector3 vertex2, ref readonly Vector3 vertex3)
     {
-        return CollisionHelper.SphereIntersectsTriangle(ref this, in vertex1, in vertex2, in vertex3);
+        return CollisionHelper.SphereIntersectsTriangle(in this, in vertex1, in vertex2, in vertex3);
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <returns>Whether the two objects intersected.</returns>
     public bool Intersects(ref readonly BoundingSphere sphere)
     {
-        return CollisionHelper.SphereIntersectsSphere(ref this, in sphere);
+        return CollisionHelper.SphereIntersectsSphere(in this, in sphere);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <returns>The type of containment the two objects have.</returns>
     public ContainmentType Contains(ref readonly Vector3 point)
     {
-        return CollisionHelper.SphereContainsPoint(ref this, in point);
+        return CollisionHelper.SphereContainsPoint(in this, in point);
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <returns>The type of containment the two objects have.</returns>
     public ContainmentType Contains(ref readonly Vector3 vertex1, ref readonly Vector3 vertex2, ref readonly Vector3 vertex3)
     {
-        return CollisionHelper.SphereContainsTriangle(ref this, in vertex1, in vertex2, in vertex3);
+        return CollisionHelper.SphereContainsTriangle(in this, in vertex1, in vertex2, in vertex3);
     }
 
     /// <summary>
@@ -170,7 +170,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <returns>The type of containment the two objects have.</returns>
     public ContainmentType Contains(ref readonly BoundingBox box)
     {
-        return CollisionHelper.SphereContainsBox(ref this, in box);
+        return CollisionHelper.SphereContainsBox(in this, in box);
     }
 
     /// <summary>
@@ -180,7 +180,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <returns>The type of containment the two objects have.</returns>
     public ContainmentType Contains(ref readonly BoundingSphere sphere)
     {
-        return CollisionHelper.SphereContainsSphere(ref this, in sphere);
+        return CollisionHelper.SphereContainsSphere(in this, in sphere);
     }
 
     /// <summary>

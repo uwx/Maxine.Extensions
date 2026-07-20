@@ -77,7 +77,7 @@ public static class PlaneExtensions
             {
                 Normal = normal
             };
-            Vector3.Dot(ref normal, ref point, out plane.D);
+            Vector3.Dot(in normal, in point, out plane.D);
             return plane;
         }
         
@@ -204,7 +204,7 @@ public static class PlaneExtensions
 
             // compute: point - distance * plane.Normal
             Vector3.Multiply(in plane.Normal, distance, out result);
-            Vector3.Subtract(in point, ref result, out result);
+            Vector3.Subtract(in point, in result, out result);
         }
 
         /// <summary>

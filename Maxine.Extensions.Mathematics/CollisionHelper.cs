@@ -169,7 +169,7 @@ public static class CollisionHelper
         //Reference: Page 130
 
         Vector3.Max(in point, in box.Minimum, out var temp);
-        Vector3.Min(ref temp, in box.Maximum, out result);
+        Vector3.Min(in temp, in box.Maximum, out result);
     }
 
     /// <summary>
@@ -1012,7 +1012,7 @@ public static class CollisionHelper
 
         //If direction is the zero vector, the planes are parallel and possibly
         //coincident. It is not an intersection. The dot product will tell us.
-        Vector3.Dot(ref direction, ref direction, out var denominator);
+        Vector3.Dot(in direction, in direction, out var denominator);
 
         return MathF.Abs(denominator) >= MathUtil.ZeroTolerance;
     }
@@ -1039,7 +1039,7 @@ public static class CollisionHelper
 
         //If direction is the zero vector, the planes are parallel and possibly
         //coincident. It is not an intersection. The dot product will tell us.
-        Vector3.Dot(ref direction, ref direction, out var denominator);
+        Vector3.Dot(in direction, in direction, out var denominator);
 
         //We assume the planes are normalized, therefore the denominator
         //only serves as a parallel and coincident check. Otherwise we need
@@ -1051,7 +1051,7 @@ public static class CollisionHelper
         }
 
         Vector3 temp = (plane1.D * plane2.Normal) - (plane2.D * plane1.Normal);
-        Vector3.Cross(ref temp, ref direction, out var point);
+        Vector3.Cross(in temp, in direction, out var point);
 
         line.Position = point;
         line.Direction = direction;
@@ -1107,7 +1107,7 @@ public static class CollisionHelper
         min.Y = (plane.Normal.Y >= 0.0f) ? box.Maximum.Y : box.Minimum.Y;
         min.Z = (plane.Normal.Z >= 0.0f) ? box.Maximum.Z : box.Minimum.Z;
 
-        Vector3.Dot(in plane.Normal, ref max, out var distance);
+        Vector3.Dot(in plane.Normal, in max, out var distance);
 
         if (distance + plane.D > 0.0f)
             return PlaneIntersectionType.Front;
@@ -1220,7 +1220,7 @@ public static class CollisionHelper
         ClosestPointPointTriangle(in sphere.Center, in vertex1, in vertex2, in vertex3, out var point);
         Vector3 v = point - sphere.Center;
 
-        Vector3.Dot(ref v, ref v, out var dot);
+        Vector3.Dot(in v, in v, out var dot);
 
         return dot <= sphere.Radius * sphere.Radius;
     }

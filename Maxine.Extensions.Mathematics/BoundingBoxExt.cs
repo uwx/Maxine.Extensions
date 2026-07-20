@@ -100,7 +100,7 @@ public struct BoundingBoxExt : IEquatable<BoundingBoxExt>, ISpanFormattable
             }
         }
 
-        Vector3.TransformNormal(ref extent, ref world, out Extent);
+        Vector3.TransformNormal(in extent, in world, out Extent);
     }
 
     /// <summary>
