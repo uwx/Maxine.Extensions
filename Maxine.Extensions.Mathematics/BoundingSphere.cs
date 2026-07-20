@@ -220,7 +220,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
         var nextPoint = startPoint;
         for (int i = 0; i < vertexCount; ++i)
         {
-            Vector3.Add(ref *(Vector3*)nextPoint, ref center, out center);
+            Vector3.Add(in *(Vector3*)nextPoint, in center, out center);
             nextPoint += vertexStride;
         }
 
@@ -234,7 +234,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
         {
             //We are doing a relative distance comparasin to find the maximum distance
             //from the center of our sphere.
-            Vector3.DistanceSquared(ref center, ref *(Vector3*)nextPoint, out var distance);
+            Vector3.DistanceSquared(in center, in *(Vector3*)nextPoint, out var distance);
 
             if (distance > radius)
                 radius = distance;

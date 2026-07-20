@@ -41,7 +41,7 @@ public abstract class SphericalHarmonics<TDataType>
     /// <summary>
     /// Get the coefficients defining the spherical harmonics (the spherical coordinates x{l,m} multiplying the spherical base Y{l,m}).
     /// </summary>
-    public TDataType[] Coefficients { get; internal set; }
+    public TDataType[]? Coefficients { get; internal set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SphericalHarmonics{TDataType}"/> class (null, for serialization).
@@ -109,7 +109,7 @@ public abstract class SphericalHarmonics<TDataType>
 /// </summary>
 public class SphericalHarmonics : SphericalHarmonics<Color3>
 {
-    private readonly float[] baseValues;
+    private readonly float[]? baseValues;
 
     private const float Pi4 = 4 * MathUtil.Pi;
     private const float Pi16 = 16 * MathUtil.Pi;
