@@ -3,8 +3,14 @@ using Maxine.Extensions.Collections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
+using ZLogger;
 
 namespace RayTech.RayLog.MEL;
+
+public interface IRayLogAdditionalInfo
+{
+    (object? Context, string? MemberName, string? FilePath, int LineNumber) GetAdditionalInfo();
+}
 
 public class RayLogConsoleFormatter : ConsoleFormatter
 {
@@ -22,7 +28,19 @@ public class RayLogConsoleFormatter : ConsoleFormatter
         {
             return;
         }
-        RayLogConsole.Write(textWriter, logEntry.LogLevel, logEntry.Category, message, exception);
+
+        string? memberName = null;
+        string? filePath = null;
+        int? lineNumber = null;
+        if (logEntry.State is IZLoggerAdditionalInfo zlAdditionalInfo)
+        {
+            (_, memberName, filePath, lineNumber) = zlAdditionalInfo.GetAdditionalInfo();
+        }
+        if (logEntry.State is IRayLogAdditionalInfo rlAdditionalInfo)
+        {
+            (_, memberName, filePath, lineNumber) = rlAdditionalInfo.GetAdditionalInfo();
+        }
+        RayLogConsole.Write(textWriter, logEntry.LogLevel, logEntry.Category, message, exception, memberName, filePath, lineNumber);
     }
 }
 
@@ -44,7 +62,8 @@ public static class RayLogConsole
         Write(logLevel >= LogLevel.Error ? Console.Error : Console.Out, logLevel, "DirectLogging." + category, message, exception);
     }
 
-    public static void Write(TextWriter textWriter, LogLevel logLevel, string category, string message, Exception? exception = null)
+    public static void Write(TextWriter textWriter, LogLevel logLevel, string category, string message,
+        Exception? exception = null, string? memberName = null, string? filePath = null, int? lineNumber = null)
     {
         var logLevelColors = ConsoleUtils.EmitAnsiColorCodes ? LogLevelColors[logLevel] : new ConsoleColors();
         var logLevelString = GetLogLevelString(logLevel);
@@ -57,6 +76,11 @@ public static class RayLogConsole
         textWriter.Write(' ');
         textWriter.WriteColoredMessage(category, foreground: textColor);
         textWriter.Write(' ');
+        if (memberName is not null || filePath is not null || lineNumber is not null)
+        {
+            textWriter.WriteColoredMessage(FormatScope(memberName, filePath, lineNumber), foreground: textColor);
+            textWriter.Write(' ');
+        }
 
         // TODO: scope information?
 
@@ -70,6 +94,13 @@ public static class RayLogConsole
         }
 
         textWriter.Write(Environment.NewLine);
+    }
+
+    private static string FormatScope(string? memberName, string? filePath, int? lineNumber)
+    {
+        var fileName = Path.GetFileNameWithoutExtension(filePath.AsSpan());
+
+        return $"{fileName}:{memberName}:{lineNumber}";
     }
 
     private static readonly string NewLinePadding = $"    {Environment.NewLine}";

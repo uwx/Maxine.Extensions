@@ -22,6 +22,7 @@
       <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-preview.5.26302.115" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-preview.5.26302.115" />
+      <PackageReference Include="ZLogger" Version="2.5.10" />
     </ItemGroup>
 
     <ItemGroup>
