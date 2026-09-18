@@ -29,7 +29,6 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics;
 
@@ -220,7 +219,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
         var nextPoint = startPoint;
         for (int i = 0; i < vertexCount; ++i)
         {
-            Vector3.Add(in *(Vector3*)nextPoint, in center, out center);
+            center = Vector3.Add(*(Vector3*)nextPoint, center);
             nextPoint += vertexStride;
         }
 
@@ -234,7 +233,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
         {
             //We are doing a relative distance comparasin to find the maximum distance
             //from the center of our sphere.
-            Vector3.DistanceSquared(in center, in *(Vector3*)nextPoint, out var distance);
+            var distance = Vector3.DistanceSquared(center, *(Vector3*)nextPoint);
 
             if (distance > radius)
                 radius = distance;
@@ -267,7 +266,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, ISpanFormattable, IIn
     /// <param name="result">When the method completes, the newly constructed bounding sphere.</param>
     public static void FromBox(ref readonly BoundingBox box, out BoundingSphere result)
     {
-        Vector3.Lerp(in box.Minimum, in box.Maximum, 0.5f, out result.Center);
+        result.Center = Vector3.Lerp(box.Minimum, box.Maximum, 0.5f);
 
         float x = box.Minimum.X - box.Maximum.X;
         float y = box.Minimum.Y - box.Maximum.Y;

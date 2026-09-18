@@ -123,6 +123,150 @@ public static class Vector4Extensions
         }
 
         /// <summary>
+        /// Converts to a <see cref="Vector2"/>, dropping Z and W.
+        /// </summary>
+        /// <remarks>
+        /// C# does not allow conversion operators to be declared in an extension block for a type
+        /// this project does not own (System.Numerics.Vector2/3/4), so this is a named method
+        /// rather than an <c>explicit operator</c> as in Stride's original API.
+        /// </remarks>
+        public Vector2 ToVector2() => new(vec4.X, vec4.Y);
+
+        /// <summary>
+        /// Converts to a <see cref="Vector3"/>, dropping W.
+        /// </summary>
+        public Vector3 ToVector3() => new(vec4.X, vec4.Y, vec4.Z);
+
+        /// <summary>
+        /// Adds two vectors.
+        /// </summary>
+        public static void Add(ref readonly Vector4 left, ref readonly Vector4 right, out Vector4 result)
+        {
+            result = Vector4.Add(left, right);
+        }
+
+        /// <summary>
+        /// Subtracts two vectors.
+        /// </summary>
+        public static void Subtract(ref readonly Vector4 left, ref readonly Vector4 right, out Vector4 result)
+        {
+            result = Vector4.Subtract(left, right);
+        }
+
+        /// <summary>
+        /// Reverses the direction of a given vector.
+        /// </summary>
+        public static void Negate(ref readonly Vector4 value, out Vector4 result)
+        {
+            result = Vector4.Negate(value);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="Vector4"/> containing the 4D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 4D triangle.
+        /// </summary>
+        public static void Barycentric(ref readonly Vector4 value1, ref readonly Vector4 value2, ref readonly Vector4 value3, float amount1, float amount2, out Vector4 result)
+        {
+            result = new Vector4(
+                (value1.X + (amount1 * (value2.X - value1.X))) + (amount2 * (value3.X - value1.X)),
+                (value1.Y + (amount1 * (value2.Y - value1.Y))) + (amount2 * (value3.Y - value1.Y)),
+                (value1.Z + (amount1 * (value2.Z - value1.Z))) + (amount2 * (value3.Z - value1.Z)),
+                (value1.W + (amount1 * (value2.W - value1.W))) + (amount2 * (value3.W - value1.W)));
+        }
+
+        /// <summary>
+        /// Returns a <see cref="Vector4"/> containing the 4D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 4D triangle.
+        /// </summary>
+        public static Vector4 Barycentric(Vector4 value1, Vector4 value2, Vector4 value3, float amount1, float amount2)
+        {
+            Barycentric(ref value1, ref value2, ref value3, amount1, amount2, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a cubic interpolation between two vectors.
+        /// </summary>
+        public static void SmoothStep(ref readonly Vector4 start, ref readonly Vector4 end, float amount, out Vector4 result)
+        {
+            amount = (amount > 1.0f) ? 1.0f : ((amount < 0.0f) ? 0.0f : amount);
+            amount = (amount * amount) * (3.0f - (2.0f * amount));
+
+            result.X = start.X + ((end.X - start.X) * amount);
+            result.Y = start.Y + ((end.Y - start.Y) * amount);
+            result.Z = start.Z + ((end.Z - start.Z) * amount);
+            result.W = start.W + ((end.W - start.W) * amount);
+        }
+
+        /// <summary>
+        /// Performs a cubic interpolation between two vectors.
+        /// </summary>
+        public static Vector4 SmoothStep(Vector4 start, Vector4 end, float amount)
+        {
+            SmoothStep(ref start, ref end, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a Hermite spline interpolation.
+        /// </summary>
+        public static void Hermite(ref readonly Vector4 value1, ref readonly Vector4 tangent1, ref readonly Vector4 value2, ref readonly Vector4 tangent2, float amount, out Vector4 result)
+        {
+            float squared = amount * amount;
+            float cubed = amount * squared;
+            float part1 = ((2.0f * cubed) - (3.0f * squared)) + 1.0f;
+            float part2 = (-2.0f * cubed) + (3.0f * squared);
+            float part3 = (cubed - (2.0f * squared)) + amount;
+            float part4 = cubed - squared;
+
+            result.X = (((value1.X * part1) + (value2.X * part2)) + (tangent1.X * part3)) + (tangent2.X * part4);
+            result.Y = (((value1.Y * part1) + (value2.Y * part2)) + (tangent1.Y * part3)) + (tangent2.Y * part4);
+            result.Z = (((value1.Z * part1) + (value2.Z * part2)) + (tangent1.Z * part3)) + (tangent2.Z * part4);
+            result.W = (((value1.W * part1) + (value2.W * part2)) + (tangent1.W * part3)) + (tangent2.W * part4);
+        }
+
+        /// <summary>
+        /// Performs a Hermite spline interpolation.
+        /// </summary>
+        public static Vector4 Hermite(Vector4 value1, Vector4 tangent1, Vector4 value2, Vector4 tangent2, float amount)
+        {
+            Hermite(ref value1, ref tangent1, ref value2, ref tangent2, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a Catmull-Rom interpolation using the specified positions.
+        /// </summary>
+        public static void CatmullRom(ref readonly Vector4 value1, ref readonly Vector4 value2, ref readonly Vector4 value3, ref readonly Vector4 value4, float amount, out Vector4 result)
+        {
+            float squared = amount * amount;
+            float cubed = amount * squared;
+
+            result.X = 0.5f * ((((2.0f * value2.X) + ((-value1.X + value3.X) * amount)) +
+                (((((2.0f * value1.X) - (5.0f * value2.X)) + (4.0f * value3.X)) - value4.X) * squared)) +
+                ((((-value1.X + (3.0f * value2.X)) - (3.0f * value3.X)) + value4.X) * cubed));
+
+            result.Y = 0.5f * ((((2.0f * value2.Y) + ((-value1.Y + value3.Y) * amount)) +
+                (((((2.0f * value1.Y) - (5.0f * value2.Y)) + (4.0f * value3.Y)) - value4.Y) * squared)) +
+                ((((-value1.Y + (3.0f * value2.Y)) - (3.0f * value3.Y)) + value4.Y) * cubed));
+
+            result.Z = 0.5f * ((((2.0f * value2.Z) + ((-value1.Z + value3.Z) * amount)) +
+                (((((2.0f * value1.Z) - (5.0f * value2.Z)) + (4.0f * value3.Z)) - value4.Z) * squared)) +
+                ((((-value1.Z + (3.0f * value2.Z)) - (3.0f * value3.Z)) + value4.Z) * cubed));
+
+            result.W = 0.5f * ((((2.0f * value2.W) + ((-value1.W + value3.W) * amount)) +
+                (((((2.0f * value1.W) - (5.0f * value2.W)) + (4.0f * value3.W)) - value4.W) * squared)) +
+                ((((-value1.W + (3.0f * value2.W)) - (3.0f * value3.W)) + value4.W) * cubed));
+        }
+
+        /// <summary>
+        /// Performs a Catmull-Rom interpolation using the specified positions.
+        /// </summary>
+        public static Vector4 CatmullRom(Vector4 value1, Vector4 value2, Vector4 value3, Vector4 value4, float amount)
+        {
+            CatmullRom(ref value1, ref value2, ref value3, ref value4, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
         /// Moves the first vector4 to the second one in a straight line.
         /// </summary>
         /// <param name="from">The first point.</param>

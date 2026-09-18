@@ -2,7 +2,6 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using Xunit;
-using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics.Tests;
 
@@ -329,7 +328,7 @@ public class TestVector3
     {
         var v = new Vector3(1.0f, 1.0f, 1.0f);
         var matrix = Matrix.CreateTranslation(5.0f, 10.0f, 15.0f);
-        var result = Vector3.Transform(v, matrix);
+        var result = Vector3.TransformCoordinate(v, matrix);
         Assert.Equal(6.0f, result.X, 3);
         Assert.Equal(11.0f, result.Y, 3);
         Assert.Equal(16.0f, result.Z, 3);
@@ -361,12 +360,12 @@ public class TestVector3
         Assert.Equal(v, backToStride);
 
         // Vector2
-        Vector2 v2 = new Vector2(v.X, v.Y);
+        Vector2 v2 = v.ToVector2();
         Assert.Equal(3.5f, v2.X);
         Assert.Equal(4.2f, v2.Y);
 
         // Vector4
-        Vector4 v4 = new Vector4(v, 0.0f);
+        Vector4 v4 = v.ToVector4();
         Assert.Equal(3.5f, v4.X);
         Assert.Equal(4.2f, v4.Y);
         Assert.Equal(5.1f, v4.Z);
@@ -394,18 +393,19 @@ public class TestVector3
         Assert.Equal(2.5f, result.Z);
     }
 
-    // Removed: System.Numerics produces NaN intentionally
-    // [Fact]
-    // public void TestVector3ZeroLengthNormalization()
-    // {
-    //     var zero = Vector3.Zero;
-    //     var normalized = Vector3.Normalize(zero);
-    //
-    //     // Normalizing zero vector should return zero (not NaN)
-    //     Assert.False(float.IsNaN(normalized.X));
-    //     Assert.False(float.IsNaN(normalized.Y));
-    //     Assert.False(float.IsNaN(normalized.Z));
-    // }
+    [Fact]
+    public void TestVector3ZeroLengthNormalization()
+    {
+        var zero = Vector3.Zero;
+        var normalized = Vector3.Normalize(zero);
+
+        // Unlike Stride's original zero-tolerant Normalize, this resolves to
+        // System.Numerics.Vector3.Normalize (identical signature, so it always wins over any
+        // ported extension) which divides by zero length unconditionally, producing NaN.
+        Assert.True(float.IsNaN(normalized.X));
+        Assert.True(float.IsNaN(normalized.Y));
+        Assert.True(float.IsNaN(normalized.Z));
+    }
 
     [Fact]
     public void TestVector3CrossProductParallel()
@@ -494,7 +494,7 @@ public class TestVector3
     public void TestVector2FromVector3TruncatesZ()
     {
         var v3 = new Vector3(1.0f, 2.0f, 999.0f);
-        var v2 = new Vector2(v3.X, v3.Y);
+        var v2 = v3.ToVector2();
 
         Assert.Equal(1.0f, v2.X);
         Assert.Equal(2.0f, v2.Y);
@@ -626,16 +626,16 @@ public class TestVector3
         Assert.True(MathUtil.NearEqual(result.Z, 0.0f));
     }
 
-    // [Fact]
-    // public void TestVector3RotationYawPitchRoll()
-    // {
-    //     var q = Quaternion.CreateStrideFromYawPitchRoll(0.5f, 0.3f, 0.2f);
-    //     var ypr = Vector3.RotationYawPitchRoll(q);
-    //
-    //     Assert.True(MathUtil.NearEqual(ypr.X, 0.5f) || Math.Abs(ypr.X - 0.5f) < 0.01f);
-    //     Assert.True(MathUtil.NearEqual(ypr.Y, 0.3f) || Math.Abs(ypr.Y - 0.3f) < 0.01f);
-    //     Assert.True(MathUtil.NearEqual(ypr.Z, 0.2f) || Math.Abs(ypr.Z - 0.2f) < 0.01f);
-    // }
+    [Fact]
+    public void TestVector3RotationYawPitchRoll()
+    {
+        var q = Quaternion.CreateFromYawPitchRoll(0.5f, 0.3f, 0.2f);
+        var ypr = Vector3.RotationYawPitchRoll(q);
+
+        Assert.True(MathUtil.NearEqual(ypr.X, 0.5f) || Math.Abs(ypr.X - 0.5f) < 0.01f);
+        Assert.True(MathUtil.NearEqual(ypr.Y, 0.3f) || Math.Abs(ypr.Y - 0.3f) < 0.01f);
+        Assert.True(MathUtil.NearEqual(ypr.Z, 0.2f) || Math.Abs(ypr.Z - 0.2f) < 0.01f);
+    }
 
     [Fact]
     public void TestVector3TransformArray()
@@ -658,7 +658,7 @@ public class TestVector3
         var dest = new Vector3[2];
         var transform = Matrix.CreateTranslation(10, 20, 30);
 
-        Vector3.Transform(source, ref transform, dest);
+        Vector3.TransformCoordinate(source, ref transform, dest);
 
         Assert.Equal(11.0f, dest[0].X);
         Assert.Equal(22.0f, dest[0].Y);

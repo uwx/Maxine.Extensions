@@ -23,6 +23,72 @@ public static class MatrixExtensions
         }
 
         /// <summary>
+        /// Calculates the determinant of the matrix.
+        /// </summary>
+        public float Determinant()
+        {
+            float temp1 = (matrix.M33 * matrix.M44) - (matrix.M34 * matrix.M43);
+            float temp2 = (matrix.M32 * matrix.M44) - (matrix.M34 * matrix.M42);
+            float temp3 = (matrix.M32 * matrix.M43) - (matrix.M33 * matrix.M42);
+            float temp4 = (matrix.M31 * matrix.M44) - (matrix.M34 * matrix.M41);
+            float temp5 = (matrix.M31 * matrix.M43) - (matrix.M33 * matrix.M41);
+            float temp6 = (matrix.M31 * matrix.M42) - (matrix.M32 * matrix.M41);
+
+            return (matrix.M11 * ((matrix.M22 * temp1) - (matrix.M23 * temp2) + (matrix.M24 * temp3)))
+                - (matrix.M12 * ((matrix.M21 * temp1) - (matrix.M23 * temp4) + (matrix.M24 * temp5)))
+                + (matrix.M13 * ((matrix.M21 * temp2) - (matrix.M22 * temp4) + (matrix.M24 * temp6)))
+                - (matrix.M14 * ((matrix.M21 * temp3) - (matrix.M22 * temp5) + (matrix.M23 * temp6)));
+        }
+
+        /// <summary>
+        /// Decomposes a rotation matrix into X, Y and Z euler angles in radians.
+        /// </summary>
+        public void DecomposeXYZ(out Vector3 rotation)
+        {
+            // Adapted from 'Euler Angle Formulas' by David Eberly - https://www.geometrictools.com/Documentation/EulerAngles.pdf
+            if (MathUtil.IsOne(Math.Abs(matrix.M13)))
+            {
+                if (matrix.M13 >= 0)
+                {
+                    rotation.Y = -MathUtil.PiOverTwo;
+                    rotation.Z = MathF.Atan2(-matrix.M32, matrix.M22);
+                    rotation.X = 0;
+                }
+                else
+                {
+                    rotation.Y = MathUtil.PiOverTwo;
+                    rotation.Z = -MathF.Atan2(-matrix.M32, matrix.M22);
+                    rotation.X = 0;
+                }
+            }
+            else
+            {
+                rotation.Y = MathF.Asin(-matrix.M13);
+                rotation.Z = MathF.Atan2(matrix.M12, matrix.M11);
+                rotation.X = MathF.Atan2(matrix.M23, matrix.M33);
+            }
+        }
+
+        /// <summary>
+        /// Inverts the matrix.
+        /// If the matrix cannot be inverted (eg. Determinant was zero), then the matrix will be set equivalent to <see cref="Zero"/>.
+        /// </summary>
+        /// <remarks>
+        /// This must live in this <c>extension(ref Matrix matrix)</c> block, not the value-receiver
+        /// block below - declaring a mutator in an <c>extension(Matrix matrix)</c> block compiles it
+        /// as taking the matrix by value (a copy), so writes to <c>matrix</c> inside it would never
+        /// propagate back to the caller's variable.
+        /// </remarks>
+        public void InvertSelf()
+        {
+            if (!Matrix.Invert(matrix, out var result))
+            {
+                result = default;
+            }
+            matrix = result;
+        }
+
+        /// <summary>
         /// Gets or sets the component at the specified index.
         /// </summary>
         /// <value>The value of the matrix component, depending on the index.</value>
@@ -1353,14 +1419,6 @@ public static class MatrixExtensions2
         /// This method delegates to <see cref="Matrix.Invert(Matrix4x4, out Matrix4x4)"/> from System.Numerics.
         /// Named InvertSelf to avoid ambiguity with FNA's Invert(Matrix) extension which returns a new matrix.
         /// </remarks>
-        public void InvertSelf()
-        {
-            if (!Matrix.Invert(matrix, out matrix))
-            {
-                matrix = default;
-            }
-        }
-        
         /// <summary>
         /// Calculates the inverse of the specified matrix.
         /// If the matrix cannot be inverted (eg. Determinant was zero), then <paramref name="result"/> will be <see cref="Zero"/>.
@@ -1375,6 +1433,224 @@ public static class MatrixExtensions2
             {
                 result = default;
             }
+        }
+
+        /// <summary>
+        /// Calculates the inverse of the specified matrix.
+        /// If the matrix cannot be inverted (eg. Determinant was zero), then the returning matrix will be <see cref="Matrix.Zero"/>.
+        /// </summary>
+        public static Matrix Invert(Matrix value)
+        {
+            InvertSelf(in value, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Calculates the transpose of the specified matrix.
+        /// </summary>
+        public static void Transpose(ref readonly Matrix value, out Matrix result)
+        {
+            result = new Matrix(
+                value.M11, value.M21, value.M31, value.M41,
+                value.M12, value.M22, value.M32, value.M42,
+                value.M13, value.M23, value.M33, value.M43,
+                value.M14, value.M24, value.M34, value.M44);
+        }
+
+        /// <summary>
+        /// Calculates the transpose of the specified matrix.
+        /// </summary>
+        public static Matrix Transpose(Matrix value)
+        {
+            value.Transpose();
+            return value;
+        }
+
+        /// <summary>
+        /// Negates a matrix.
+        /// </summary>
+        public static void Negate(ref readonly Matrix value, out Matrix result)
+        {
+            result = Matrix.Multiply(value, -1f);
+        }
+
+        /// <summary>
+        /// Negates a matrix.
+        /// </summary>
+        public static Matrix Negate(Matrix value)
+        {
+            return Matrix.Multiply(value, -1f);
+        }
+
+        /// <summary>
+        /// Scales a matrix by the given value.
+        /// </summary>
+        public static Matrix operator /(Matrix left, float right)
+        {
+            return Matrix.Multiply(left, 1f / right);
+        }
+
+        /// <summary>
+        /// Divides two matrices component-wise.
+        /// </summary>
+        public static Matrix operator /(Matrix left, Matrix right)
+        {
+            return new Matrix(
+                left.M11 / right.M11, left.M12 / right.M12, left.M13 / right.M13, left.M14 / right.M14,
+                left.M21 / right.M21, left.M22 / right.M22, left.M23 / right.M23, left.M24 / right.M24,
+                left.M31 / right.M31, left.M32 / right.M32, left.M33 / right.M33, left.M34 / right.M34,
+                left.M41 / right.M41, left.M42 / right.M42, left.M43 / right.M43, left.M44 / right.M44);
+        }
+
+        /// <summary>
+        /// Creates a matrix that flattens geometry into a shadow. The light's W component
+        /// distinguishes a directional light (0) from a point light (1), which
+        /// System.Numerics's own Matrix4x4.CreateShadow (direction-only) cannot express.
+        /// </summary>
+        public static void Shadow(ref readonly Vector4 light, ref readonly Plane plane, out Matrix result)
+        {
+            float dot = (plane.Normal.X * light.X) + (plane.Normal.Y * light.Y) + (plane.Normal.Z * light.Z) + (plane.D * light.W);
+            float x = -plane.Normal.X;
+            float y = -plane.Normal.Y;
+            float z = -plane.Normal.Z;
+            float d = -plane.D;
+
+            result.M11 = (x * light.X) + dot;
+            result.M21 = y * light.X;
+            result.M31 = z * light.X;
+            result.M41 = d * light.X;
+            result.M12 = x * light.Y;
+            result.M22 = (y * light.Y) + dot;
+            result.M32 = z * light.Y;
+            result.M42 = d * light.Y;
+            result.M13 = x * light.Z;
+            result.M23 = y * light.Z;
+            result.M33 = (z * light.Z) + dot;
+            result.M43 = d * light.Z;
+            result.M14 = x * light.W;
+            result.M24 = y * light.W;
+            result.M34 = z * light.W;
+            result.M44 = (d * light.W) + dot;
+        }
+
+        /// <summary>
+        /// Creates a matrix that flattens geometry into a shadow.
+        /// </summary>
+        public static Matrix Shadow(Vector4 light, Plane plane)
+        {
+            Shadow(ref light, ref plane, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a 3D affine transformation matrix.
+        /// </summary>
+        public static void AffineTransformation(float scaling, ref readonly Quaternion rotation, ref readonly Vector3 translation, out Matrix result)
+        {
+            result = Matrix.CreateScale(scaling) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(translation);
+        }
+
+        /// <summary>
+        /// Creates a 3D affine transformation matrix.
+        /// </summary>
+        public static Matrix AffineTransformation(float scaling, Quaternion rotation, Vector3 translation)
+        {
+            AffineTransformation(scaling, ref rotation, ref translation, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a 3D affine transformation matrix.
+        /// </summary>
+        public static void AffineTransformation(float scaling, ref readonly Vector3 rotationCenter, ref readonly Quaternion rotation, ref readonly Vector3 translation, out Matrix result)
+        {
+            result = Matrix.CreateScale(scaling) * Matrix.CreateTranslation(-rotationCenter) * Matrix.CreateFromQuaternion(rotation) *
+                Matrix.CreateTranslation(rotationCenter) * Matrix.CreateTranslation(translation);
+        }
+
+        /// <summary>
+        /// Creates a 3D affine transformation matrix.
+        /// </summary>
+        public static Matrix AffineTransformation(float scaling, Vector3 rotationCenter, Quaternion rotation, Vector3 translation)
+        {
+            AffineTransformation(scaling, ref rotationCenter, ref rotation, ref translation, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a 2D affine transformation matrix.
+        /// </summary>
+        public static void AffineTransformation2D(float scaling, float rotation, ref readonly Vector2 translation, out Matrix result)
+        {
+            result = Matrix.CreateScale(scaling, scaling, 1.0f) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(translation.ToVector3());
+        }
+
+        /// <summary>
+        /// Creates a 2D affine transformation matrix.
+        /// </summary>
+        public static Matrix AffineTransformation2D(float scaling, float rotation, Vector2 translation)
+        {
+            AffineTransformation2D(scaling, rotation, ref translation, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a 2D affine transformation matrix.
+        /// </summary>
+        public static void AffineTransformation2D(float scaling, ref readonly Vector2 rotationCenter, float rotation, ref readonly Vector2 translation, out Matrix result)
+        {
+            result = Matrix.CreateScale(scaling, scaling, 1.0f) * Matrix.CreateTranslation((-rotationCenter).ToVector3()) * Matrix.CreateRotationZ(rotation) *
+                Matrix.CreateTranslation(rotationCenter.ToVector3()) * Matrix.CreateTranslation(translation.ToVector3());
+        }
+
+        /// <summary>
+        /// Creates a 2D affine transformation matrix.
+        /// </summary>
+        public static Matrix AffineTransformation2D(float scaling, Vector2 rotationCenter, float rotation, Vector2 translation)
+        {
+            AffineTransformation2D(scaling, ref rotationCenter, rotation, ref translation, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a transformation matrix.
+        /// </summary>
+        public static void Transformation(ref readonly Vector3 scalingCenter, ref readonly Quaternion scalingRotation, ref readonly Vector3 scaling, ref readonly Vector3 rotationCenter, ref readonly Quaternion rotation, ref readonly Vector3 translation, out Matrix result)
+        {
+            Matrix sr = Matrix.CreateFromQuaternion(scalingRotation);
+
+            result = Matrix.CreateTranslation(-scalingCenter) * Transpose(sr) * Matrix.CreateScale(scaling) * sr * Matrix.CreateTranslation(scalingCenter) * Matrix.CreateTranslation(-rotationCenter) *
+                Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(rotationCenter) * Matrix.CreateTranslation(translation);
+        }
+
+        /// <summary>
+        /// Creates a transformation matrix.
+        /// </summary>
+        public static Matrix Transformation(Vector3 scalingCenter, Quaternion scalingRotation, Vector3 scaling, Vector3 rotationCenter, Quaternion rotation, Vector3 translation)
+        {
+            Transformation(ref scalingCenter, ref scalingRotation, ref scaling, ref rotationCenter, ref rotation, ref translation, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a 2D transformation matrix.
+        /// </summary>
+        public static void Transformation2D(ref readonly Vector2 scalingCenter, float scalingRotation, ref readonly Vector2 scaling, ref readonly Vector2 rotationCenter, float rotation, ref readonly Vector2 translation, out Matrix result)
+        {
+            result = Matrix.CreateTranslation((-scalingCenter).ToVector3()) * Matrix.CreateRotationZ(-scalingRotation) * Matrix.CreateScale(scaling.ToVector3()) * Matrix.CreateRotationZ(scalingRotation) * Matrix.CreateTranslation(scalingCenter.ToVector3()) *
+                Matrix.CreateTranslation((-rotationCenter).ToVector3()) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(rotationCenter.ToVector3()) * Matrix.CreateTranslation(translation.ToVector3());
+
+            result.M33 = 1f;
+            result.M44 = 1f;
+        }
+
+        /// <summary>
+        /// Creates a 2D transformation matrix.
+        /// </summary>
+        public static Matrix Transformation2D(Vector2 scalingCenter, float scalingRotation, Vector2 scaling, Vector2 rotationCenter, float rotation, Vector2 translation)
+        {
+            Transformation2D(ref scalingCenter, scalingRotation, ref scaling, ref rotationCenter, rotation, ref translation, out var result);
+            return result;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace Maxine.Extensions.Mathematics;
+﻿namespace Maxine.Extensions.Mathematics;
 
 public static class PlaneExtensions
 {
@@ -77,7 +75,7 @@ public static class PlaneExtensions
             {
                 Normal = normal
             };
-            Vector3.Dot(in normal, in point, out plane.D);
+            plane.D = Vector3.Dot(normal, point);
             return plane;
         }
         
@@ -203,8 +201,8 @@ public static class PlaneExtensions
             Plane.DotCoordinate(in plane, in point, out var distance);
 
             // compute: point - distance * plane.Normal
-            Vector3.Multiply(in plane.Normal, distance, out result);
-            Vector3.Subtract(in point, in result, out result);
+            result = Vector3.Multiply(plane.Normal, distance);
+            result = Vector3.Subtract(point, result);
         }
 
         /// <summary>
@@ -416,7 +414,7 @@ public static class PlaneExtensions
             float z = plane.Normal.Z;
             float d = plane.D;
 
-            transformation = Matrix.Invert(transformation);
+            Matrix.Invert(transformation, out transformation);
             result.Normal.X = (((x * transformation.M11) + (y * transformation.M12)) + (z * transformation.M13)) + (d * transformation.M14);
             result.Normal.Y = (((x * transformation.M21) + (y * transformation.M22)) + (z * transformation.M23)) + (d * transformation.M24);
             result.Normal.Z = (((x * transformation.M31) + (y * transformation.M32)) + (z * transformation.M33)) + (d * transformation.M34);

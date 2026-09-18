@@ -4,6 +4,24 @@ namespace Maxine.Extensions.Mathematics;
 
 public static class Vector2Extensions
 {
+    extension(ref Vector2 vec)
+    {
+        /// <summary>
+        /// Converts the vector into a unit vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Normalize()
+        {
+            float length = vec.Length();
+            if (length > MathUtil.ZeroTolerance)
+            {
+                float inverse = 1.0f / length;
+                vec.X *= inverse;
+                vec.Y *= inverse;
+            }
+        }
+    }
+
     extension(Vector2 vec)
     {
 
@@ -254,6 +272,174 @@ public static class Vector2Extensions
                 Transform(ref source[i], in transform, out destination[i]);
             }
         }
+
+        /// <summary>
+        /// Adds two vectors.
+        /// </summary>
+        public static void Add(ref readonly Vector2 left, ref readonly Vector2 right, out Vector2 result)
+        {
+            result = Vector2.Add(left, right);
+        }
+
+        /// <summary>
+        /// Subtracts two vectors.
+        /// </summary>
+        public static void Subtract(ref readonly Vector2 left, ref readonly Vector2 right, out Vector2 result)
+        {
+            result = Vector2.Subtract(left, right);
+        }
+
+        /// <summary>
+        /// Reverses the direction of a given vector.
+        /// </summary>
+        public static void Negate(ref readonly Vector2 value, out Vector2 result)
+        {
+            result = Vector2.Negate(value);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="Vector2"/> containing the 2D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 2D triangle.
+        /// </summary>
+        public static void Barycentric(ref readonly Vector2 value1, ref readonly Vector2 value2, ref readonly Vector2 value3, float amount1, float amount2, out Vector2 result)
+        {
+            result = new Vector2(
+                (value1.X + (amount1 * (value2.X - value1.X))) + (amount2 * (value3.X - value1.X)),
+                (value1.Y + (amount1 * (value2.Y - value1.Y))) + (amount2 * (value3.Y - value1.Y)));
+        }
+
+        /// <summary>
+        /// Returns a <see cref="Vector2"/> containing the 2D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 2D triangle.
+        /// </summary>
+        public static Vector2 Barycentric(Vector2 value1, Vector2 value2, Vector2 value3, float amount1, float amount2)
+        {
+            Barycentric(ref value1, ref value2, ref value3, amount1, amount2, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a cubic interpolation between two vectors.
+        /// </summary>
+        public static void SmoothStep(ref readonly Vector2 start, ref readonly Vector2 end, float amount, out Vector2 result)
+        {
+            amount = (amount > 1.0f) ? 1.0f : ((amount < 0.0f) ? 0.0f : amount);
+            amount = (amount * amount) * (3.0f - (2.0f * amount));
+
+            result.X = start.X + ((end.X - start.X) * amount);
+            result.Y = start.Y + ((end.Y - start.Y) * amount);
+        }
+
+        /// <summary>
+        /// Performs a cubic interpolation between two vectors.
+        /// </summary>
+        public static Vector2 SmoothStep(Vector2 start, Vector2 end, float amount)
+        {
+            SmoothStep(ref start, ref end, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a Hermite spline interpolation.
+        /// </summary>
+        public static void Hermite(ref readonly Vector2 value1, ref readonly Vector2 tangent1, ref readonly Vector2 value2, ref readonly Vector2 tangent2, float amount, out Vector2 result)
+        {
+            float squared = amount * amount;
+            float cubed = amount * squared;
+            float part1 = ((2.0f * cubed) - (3.0f * squared)) + 1.0f;
+            float part2 = (-2.0f * cubed) + (3.0f * squared);
+            float part3 = (cubed - (2.0f * squared)) + amount;
+            float part4 = cubed - squared;
+
+            result.X = (((value1.X * part1) + (value2.X * part2)) + (tangent1.X * part3)) + (tangent2.X * part4);
+            result.Y = (((value1.Y * part1) + (value2.Y * part2)) + (tangent1.Y * part3)) + (tangent2.Y * part4);
+        }
+
+        /// <summary>
+        /// Performs a Hermite spline interpolation.
+        /// </summary>
+        public static Vector2 Hermite(Vector2 value1, Vector2 tangent1, Vector2 value2, Vector2 tangent2, float amount)
+        {
+            Hermite(ref value1, ref tangent1, ref value2, ref tangent2, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a Catmull-Rom interpolation using the specified positions.
+        /// </summary>
+        public static void CatmullRom(ref readonly Vector2 value1, ref readonly Vector2 value2, ref readonly Vector2 value3, ref readonly Vector2 value4, float amount, out Vector2 result)
+        {
+            float squared = amount * amount;
+            float cubed = amount * squared;
+
+            result.X = 0.5f * ((((2.0f * value2.X) + ((-value1.X + value3.X) * amount)) +
+            (((((2.0f * value1.X) - (5.0f * value2.X)) + (4.0f * value3.X)) - value4.X) * squared)) +
+            ((((-value1.X + (3.0f * value2.X)) - (3.0f * value3.X)) + value4.X) * cubed));
+
+            result.Y = 0.5f * ((((2.0f * value2.Y) + ((-value1.Y + value3.Y) * amount)) +
+                (((((2.0f * value1.Y) - (5.0f * value2.Y)) + (4.0f * value3.Y)) - value4.Y) * squared)) +
+                ((((-value1.Y + (3.0f * value2.Y)) - (3.0f * value3.Y)) + value4.Y) * cubed));
+        }
+
+        /// <summary>
+        /// Performs a Catmull-Rom interpolation using the specified positions.
+        /// </summary>
+        public static Vector2 CatmullRom(Vector2 value1, Vector2 value2, Vector2 value3, Vector2 value4, float amount)
+        {
+            CatmullRom(ref value1, ref value2, ref value3, ref value4, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a normal transformation using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static void TransformNormal(ref readonly Vector2 normal, ref readonly Matrix transform, out Vector2 result)
+        {
+            result = new Vector2(
+                (normal.X * transform.M11) + (normal.Y * transform.M21),
+                (normal.X * transform.M12) + (normal.Y * transform.M22));
+        }
+
+        /// <summary>
+        /// Performs a normal transformation using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static Vector2 TransformNormal(Vector2 normal, Matrix transform)
+        {
+            TransformNormal(ref normal, ref transform, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a coordinate transformation using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static void TransformCoordinate(ref readonly Vector2 coordinate, ref readonly Matrix transform, out Vector2 result)
+        {
+            Transform(in coordinate, in transform, out Vector4 v4);
+            float invW = 1.0f / v4.W;
+            result = new Vector2(v4.X * invW, v4.Y * invW);
+        }
+
+        /// <summary>
+        /// Performs a coordinate transformation using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static Vector2 TransformCoordinate(Vector2 coordinate, Matrix transform)
+        {
+            TransformCoordinate(ref coordinate, ref transform, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Converts to a <see cref="Vector3"/> with Z = 0.
+        /// </summary>
+        /// <remarks>
+        /// C# does not allow conversion operators to be declared in an extension block for a type
+        /// this project does not own (System.Numerics.Vector2/3/4), so this is a named method
+        /// rather than an <c>explicit operator</c> as in Stride's original API.
+        /// </remarks>
+        public Vector3 ToVector3() => new(vec, 0.0f);
+
+        /// <summary>
+        /// Converts to a <see cref="Vector4"/> with Z = W = 0.
+        /// </summary>
+        public Vector4 ToVector4() => new(vec, 0.0f, 0.0f);
 
         /// <summary>
         /// Deconstructs the vector's components into named variables.

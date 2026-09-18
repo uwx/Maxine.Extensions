@@ -4,7 +4,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics;
 
@@ -100,7 +99,7 @@ public struct BoundingBoxExt : IEquatable<BoundingBoxExt>, ISpanFormattable
             }
         }
 
-        Vector3.TransformNormal(in extent, in world, out Extent);
+        Extent = Vector3.TransformNormal(extent, world);
     }
 
     /// <summary>

@@ -1,7 +1,5 @@
 ﻿namespace Maxine.Extensions.Mathematics;
 
-using Microsoft.Xna.Framework;
-
 public static class QuaternionExtensions
 {
     extension(ref Quaternion quat)
@@ -218,7 +216,7 @@ public static class QuaternionExtensions
         /// <returns>The scaled quaternion.</returns>
         public static Quaternion operator *(float scale, in Quaternion value)
         {
-            Quaternion.Multiply(in value, scale, out var result);
+            var result = Quaternion.Multiply(value, scale);
             return result;
         }
 
@@ -233,9 +231,9 @@ public static class QuaternionExtensions
         /// <param name="result">When the method completes, contains the spherical quadrangle interpolation of the quaternions.</param>
         public static void Squad(ref readonly Quaternion value1, ref readonly Quaternion value2, ref readonly Quaternion value3, ref readonly Quaternion value4, float amount, out Quaternion result)
         {
-            Quaternion.Slerp(in value1, in value4, amount, out var start);
-            Quaternion.Slerp(in value2, in value3, amount, out var end);
-            Quaternion.Slerp(in start, in end, 2.0f * amount * (1.0f - amount), out result);
+            var start = Quaternion.Slerp(value1, value4, amount);
+            var end = Quaternion.Slerp(value2, value3, amount);
+            result = Quaternion.Slerp(start, end, 2.0f * amount * (1.0f - amount));
         }
 
         /// <summary>
@@ -369,9 +367,9 @@ public static class QuaternionExtensions
         /// <param name="result">When the method completes, contains a new <see cref="Quaternion"/> containing the 4D Cartesian coordinates of the specified point.</param>
         public static void Barycentric(ref readonly Quaternion value1, ref readonly Quaternion value2, ref readonly Quaternion value3, float amount1, float amount2, out Quaternion result)
         {
-            Quaternion.Slerp(in value1, in value2, amount1 + amount2, out var start);
-            Quaternion.Slerp(in value1, in value3, amount1 + amount2, out var end);
-            Quaternion.Slerp(in start, in end, amount2 / (amount1 + amount2), out result);
+            var start = Quaternion.Slerp(value1, value2, amount1 + amount2);
+            var end = Quaternion.Slerp(value1, value3, amount1 + amount2);
+            result = Quaternion.Slerp(start, end, amount2 / (amount1 + amount2));
         }
 
         /// <summary>
@@ -619,6 +617,52 @@ public static class QuaternionExtensions2
         {
             Invert(ref value, out var result);
             return result;
+        }
+
+        /// <summary>
+        /// Calculate the yaw/pitch/roll rotation equivalent to the provided quaternion.
+        /// </summary>
+        public static void RotationYawPitchRoll(ref readonly Quaternion rotation, out float yaw, out float pitch, out float roll)
+        {
+            var xx = rotation.X * rotation.X;
+            var yy = rotation.Y * rotation.Y;
+            var zz = rotation.Z * rotation.Z;
+            var xy = rotation.X * rotation.Y;
+            var zw = rotation.Z * rotation.W;
+            var zx = rotation.Z * rotation.X;
+            var yw = rotation.Y * rotation.W;
+            var yz = rotation.Y * rotation.Z;
+            var xw = rotation.X * rotation.W;
+
+            var m11 = 1.0f - (2.0f * (yy + zz));
+            var m12 = 2.0f * (xy + zw);
+            var m21 = 2.0f * (xy - zw);
+            var m22 = 1.0f - (2.0f * (zz + xx));
+            var m31 = 2.0f * (zx + yw);
+            var m32 = 2.0f * (yz - xw);
+            var m33 = 1.0f - (2.0f * (yy + xx));
+
+            if (MathUtil.IsOne(Math.Abs(m32)))
+            {
+                if (m32 >= 0)
+                {
+                    pitch = -MathUtil.PiOverTwo;
+                    yaw = MathF.Atan2(-m21, m11);
+                    roll = 0;
+                }
+                else
+                {
+                    pitch = MathUtil.PiOverTwo;
+                    yaw = -MathF.Atan2(-m21, m11);
+                    roll = 0;
+                }
+            }
+            else
+            {
+                pitch = MathF.Asin(-m32);
+                yaw = MathF.Atan2(m31, m33);
+                roll = MathF.Atan2(m12, m22);
+            }
         }
     }
 }

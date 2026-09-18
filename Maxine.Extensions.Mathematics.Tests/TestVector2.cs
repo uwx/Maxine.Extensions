@@ -2,7 +2,6 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using Xunit;
-using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics.Tests;
 
@@ -293,7 +292,7 @@ public class TestVector2
     {
         var v = new Vector2(1.0f, 1.0f);
         var matrix = Matrix.CreateTranslation(5.0f, 10.0f, 0.0f);
-        var result = Vector2.Transform(v, matrix);
+        var result = Vector2.TransformCoordinate(v, matrix);
         Assert.Equal(6.0f, result.X, 3);
         Assert.Equal(11.0f, result.Y, 3);
     }
@@ -336,13 +335,13 @@ public class TestVector2
         Assert.Equal(v, backToStride);
 
         // Vector3
-        Vector3 v3 = new Vector3(v, 0.0f);
+        Vector3 v3 = v.ToVector3();
         Assert.Equal(3.5f, v3.X);
         Assert.Equal(4.2f, v3.Y);
         Assert.Equal(0.0f, v3.Z);
 
         // Vector4
-        Vector4 v4 = new Vector4(v, 0.0f, 0.0f);
+        Vector4 v4 = v.ToVector4();
         Assert.Equal(3.5f, v4.X);
         Assert.Equal(4.2f, v4.Y);
         Assert.Equal(0.0f, v4.Z);
@@ -369,17 +368,18 @@ public class TestVector2
         Assert.Equal(5.0f, result.Y);
     }
 
-    // Removed: System.Numerics Normalize intentionally produces NaN
-    // [Fact]
-    // public void TestVector2ZeroLengthNormalization()
-    // {
-    //     var zero = Vector2.Zero;
-    //     var normalized = Vector2.Normalize(zero);
-    //
-    //     // Normalizing zero vector should return zero (not NaN)
-    //     Assert.False(float.IsNaN(normalized.X));
-    //     Assert.False(float.IsNaN(normalized.Y));
-    // }
+    [Fact]
+    public void TestVector2ZeroLengthNormalization()
+    {
+        var zero = Vector2.Zero;
+        var normalized = Vector2.Normalize(zero);
+
+        // Unlike Stride's original zero-tolerant Normalize, this resolves to
+        // System.Numerics.Vector2.Normalize (identical signature, so it always wins over any
+        // ported extension) which divides by zero length unconditionally, producing NaN.
+        Assert.True(float.IsNaN(normalized.X));
+        Assert.True(float.IsNaN(normalized.Y));
+    }
 
     [Fact]
     public void TestVector2DivisionByZero()

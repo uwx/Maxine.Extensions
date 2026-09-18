@@ -604,7 +604,213 @@ public static class Vector3Extensions
                    MathUtil.WithinEpsilon(left.Y, right.Y, epsilon.Y) &&
                    MathUtil.WithinEpsilon(left.Z, right.Z, epsilon.Z);
         }
-        
+
+        /// <summary>
+        /// Adds two vectors.
+        /// </summary>
+        public static void Add(ref readonly Vector3 left, ref readonly Vector3 right, out Vector3 result)
+        {
+            result = Vector3.Add(left, right);
+        }
+
+        /// <summary>
+        /// Subtracts two vectors.
+        /// </summary>
+        public static void Subtract(ref readonly Vector3 left, ref readonly Vector3 right, out Vector3 result)
+        {
+            result = Vector3.Subtract(left, right);
+        }
+
+        /// <summary>
+        /// Reverses the direction of a given vector.
+        /// </summary>
+        public static void Negate(ref readonly Vector3 value, out Vector3 result)
+        {
+            result = Vector3.Negate(value);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="Vector3"/> containing the 3D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 3D triangle.
+        /// </summary>
+        public static void Barycentric(ref readonly Vector3 value1, ref readonly Vector3 value2, ref readonly Vector3 value3, float amount1, float amount2, out Vector3 result)
+        {
+            result = new Vector3(
+                (value1.X + (amount1 * (value2.X - value1.X))) + (amount2 * (value3.X - value1.X)),
+                (value1.Y + (amount1 * (value2.Y - value1.Y))) + (amount2 * (value3.Y - value1.Y)),
+                (value1.Z + (amount1 * (value2.Z - value1.Z))) + (amount2 * (value3.Z - value1.Z)));
+        }
+
+        /// <summary>
+        /// Returns a <see cref="Vector3"/> containing the 3D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 3D triangle.
+        /// </summary>
+        public static Vector3 Barycentric(Vector3 value1, Vector3 value2, Vector3 value3, float amount1, float amount2)
+        {
+            Barycentric(ref value1, ref value2, ref value3, amount1, amount2, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a cubic interpolation between two vectors.
+        /// </summary>
+        public static void SmoothStep(ref readonly Vector3 start, ref readonly Vector3 end, float amount, out Vector3 result)
+        {
+            amount = (amount > 1.0f) ? 1.0f : ((amount < 0.0f) ? 0.0f : amount);
+            amount = (amount * amount) * (3.0f - (2.0f * amount));
+
+            result.X = start.X + ((end.X - start.X) * amount);
+            result.Y = start.Y + ((end.Y - start.Y) * amount);
+            result.Z = start.Z + ((end.Z - start.Z) * amount);
+        }
+
+        /// <summary>
+        /// Performs a cubic interpolation between two vectors.
+        /// </summary>
+        public static Vector3 SmoothStep(Vector3 start, Vector3 end, float amount)
+        {
+            SmoothStep(ref start, ref end, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a Hermite spline interpolation.
+        /// </summary>
+        public static void Hermite(ref readonly Vector3 value1, ref readonly Vector3 tangent1, ref readonly Vector3 value2, ref readonly Vector3 tangent2, float amount, out Vector3 result)
+        {
+            float squared = amount * amount;
+            float cubed = amount * squared;
+            float part1 = ((2.0f * cubed) - (3.0f * squared)) + 1.0f;
+            float part2 = (-2.0f * cubed) + (3.0f * squared);
+            float part3 = (cubed - (2.0f * squared)) + amount;
+            float part4 = cubed - squared;
+
+            result.X = (((value1.X * part1) + (value2.X * part2)) + (tangent1.X * part3)) + (tangent2.X * part4);
+            result.Y = (((value1.Y * part1) + (value2.Y * part2)) + (tangent1.Y * part3)) + (tangent2.Y * part4);
+            result.Z = (((value1.Z * part1) + (value2.Z * part2)) + (tangent1.Z * part3)) + (tangent2.Z * part4);
+        }
+
+        /// <summary>
+        /// Performs a Hermite spline interpolation.
+        /// </summary>
+        public static Vector3 Hermite(Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, float amount)
+        {
+            Hermite(ref value1, ref tangent1, ref value2, ref tangent2, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a Catmull-Rom interpolation using the specified positions.
+        /// </summary>
+        public static void CatmullRom(ref readonly Vector3 value1, ref readonly Vector3 value2, ref readonly Vector3 value3, ref readonly Vector3 value4, float amount, out Vector3 result)
+        {
+            float squared = amount * amount;
+            float cubed = amount * squared;
+
+            result.X = 0.5f * ((((2.0f * value2.X) + ((-value1.X + value3.X) * amount)) +
+            (((((2.0f * value1.X) - (5.0f * value2.X)) + (4.0f * value3.X)) - value4.X) * squared)) +
+            ((((-value1.X + (3.0f * value2.X)) - (3.0f * value3.X)) + value4.X) * cubed));
+
+            result.Y = 0.5f * ((((2.0f * value2.Y) + ((-value1.Y + value3.Y) * amount)) +
+                (((((2.0f * value1.Y) - (5.0f * value2.Y)) + (4.0f * value3.Y)) - value4.Y) * squared)) +
+                ((((-value1.Y + (3.0f * value2.Y)) - (3.0f * value3.Y)) + value4.Y) * cubed));
+
+            result.Z = 0.5f * ((((2.0f * value2.Z) + ((-value1.Z + value3.Z) * amount)) +
+                (((((2.0f * value1.Z) - (5.0f * value2.Z)) + (4.0f * value3.Z)) - value4.Z) * squared)) +
+                ((((-value1.Z + (3.0f * value2.Z)) - (3.0f * value3.Z)) + value4.Z) * cubed));
+        }
+
+        /// <summary>
+        /// Performs a Catmull-Rom interpolation using the specified positions.
+        /// </summary>
+        public static Vector3 CatmullRom(Vector3 value1, Vector3 value2, Vector3 value3, Vector3 value4, float amount)
+        {
+            CatmullRom(ref value1, ref value2, ref value3, ref value4, amount, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a normal transformation using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static void TransformNormal(ref readonly Vector3 normal, ref readonly Matrix transform, out Vector3 result)
+        {
+            result = new Vector3(
+                (normal.X * transform.M11) + (normal.Y * transform.M21) + (normal.Z * transform.M31),
+                (normal.X * transform.M12) + (normal.Y * transform.M22) + (normal.Z * transform.M32),
+                (normal.X * transform.M13) + (normal.Y * transform.M23) + (normal.Z * transform.M33));
+        }
+
+        /// <summary>
+        /// Performs a normal transformation using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static Vector3 TransformNormal(Vector3 normal, Matrix transform)
+        {
+            TransformNormal(ref normal, ref transform, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a normal transformation on an array of vectors using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static void TransformNormal(Vector3[] source, ref readonly Matrix transform, Vector3[] destination)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(destination);
+            if (destination.Length < source.Length)
+                throw new ArgumentOutOfRangeException(nameof(destination), "The destination array must be of same length or larger length than the source array.");
+
+            for (int i = 0; i < source.Length; ++i)
+            {
+                TransformNormal(in source[i], in transform, out destination[i]);
+            }
+        }
+
+        /// <summary>
+        /// Performs a coordinate transformation on an array of vectors using the given <see cref="Matrix"/>.
+        /// </summary>
+        public static void TransformCoordinate(Vector3[] source, ref readonly Matrix transform, Vector3[] destination)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(destination);
+            if (destination.Length < source.Length)
+                throw new ArgumentOutOfRangeException(nameof(destination), "The destination array must be of same length or larger length than the source array.");
+
+            for (int i = 0; i < source.Length; ++i)
+            {
+                TransformCoordinate(in source[i], in transform, out destination[i]);
+            }
+        }
+
+        /// <summary>
+        /// Calculates the yaw/pitch/roll rotation equivalent to the provided quaternion.
+        /// </summary>
+        public static void RotationYawPitchRoll(ref readonly Quaternion quaternion, out Vector3 yawPitchRoll)
+        {
+            Quaternion.RotationYawPitchRoll(in quaternion, out yawPitchRoll.X, out yawPitchRoll.Y, out yawPitchRoll.Z);
+        }
+
+        /// <summary>
+        /// Calculates the yaw/pitch/roll rotation equivalent to the provided quaternion.
+        /// </summary>
+        public static Vector3 RotationYawPitchRoll(Quaternion quaternion)
+        {
+            RotationYawPitchRoll(in quaternion, out var yawPitchRoll);
+            return yawPitchRoll;
+        }
+
+        /// <summary>
+        /// Converts to a <see cref="Vector2"/>, dropping Z.
+        /// </summary>
+        /// <remarks>
+        /// C# does not allow conversion operators to be declared in an extension block for a type
+        /// this project does not own (System.Numerics.Vector2/3/4), so this is a named method
+        /// rather than an <c>explicit operator</c> as in Stride's original API.
+        /// </remarks>
+        public Vector2 ToVector2() => new(vec.X, vec.Y);
+
+        /// <summary>
+        /// Converts to a <see cref="Vector4"/> with W = 0.
+        /// </summary>
+        public Vector4 ToVector4() => new(vec, 0.0f);
+
         /// <summary>
         /// Deconstructs the vector's components into named variables.
         /// </summary>

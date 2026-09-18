@@ -3,7 +3,6 @@
 
 using Xunit;
 using System;
-using Microsoft.Xna.Framework;
 
 namespace Maxine.Extensions.Mathematics.Tests;
 
@@ -294,12 +293,12 @@ public class TestVector4
         Assert.Equal(v, backToStride);
 
         // Vector2
-        Vector2 v2 = new Vector2(v.X, v.Y);
+        Vector2 v2 = v.ToVector2();
         Assert.Equal(3.5f, v2.X);
         Assert.Equal(4.2f, v2.Y);
 
         // Vector3
-        Vector3 v3 = new Vector3(v.X, v.Y, v.Z);
+        Vector3 v3 = v.ToVector3();
         Assert.Equal(3.5f, v3.X);
         Assert.Equal(4.2f, v3.Y);
         Assert.Equal(5.1f, v3.Z);
@@ -327,19 +326,20 @@ public class TestVector4
         Assert.Equal(1.0f, result.W);
     }
 
-    // Removed: System.Numerics produces NaN intentionally
-    // [Fact]
-    // public void TestVector4ZeroLengthNormalization()
-    // {
-    //     var zero = Vector4.Zero;
-    //     var normalized = Vector4.Normalize(zero);
-    //
-    //     // Normalizing zero vector should return zero (not NaN)
-    //     Assert.False(float.IsNaN(normalized.X));
-    //     Assert.False(float.IsNaN(normalized.Y));
-    //     Assert.False(float.IsNaN(normalized.Z));
-    //     Assert.False(float.IsNaN(normalized.W));
-    // }
+    [Fact]
+    public void TestVector4ZeroLengthNormalization()
+    {
+        var zero = Vector4.Zero;
+        var normalized = Vector4.Normalize(zero);
+
+        // Unlike Stride's original zero-tolerant Normalize, this resolves to
+        // System.Numerics.Vector4.Normalize (identical signature, so it always wins over any
+        // ported extension) which divides by zero length unconditionally, producing NaN.
+        Assert.True(float.IsNaN(normalized.X));
+        Assert.True(float.IsNaN(normalized.Y));
+        Assert.True(float.IsNaN(normalized.Z));
+        Assert.True(float.IsNaN(normalized.W));
+    }
 
     [Fact]
     public void TestVector4DivisionByZero()
@@ -354,29 +354,29 @@ public class TestVector4
         Assert.True(float.IsInfinity(result.W));
     }
 
-    // Removed: System.Numerics does not accept inverted min/max
-    // [Fact]
-    // public void TestVector4ClampWithInvertedMinMax()
-    // {
-    //     var value = new Vector4(5.0f, 5.0f, 5.0f, 5.0f);
-    //     var min = new Vector4(10.0f, 10.0f, 10.0f, 10.0f);
-    //     var max = new Vector4(0.0f, 0.0f, 0.0f, 0.0f); // max < min (invalid)
-    //
-    //     // Behavior with inverted min/max - implementation clamps to min first
-    //     var result = Vector4.Clamp(value, min, max);
-    //
-    //     // Implementation clamps to min first, so result is min
-    //     Assert.Equal(10.0f, result.X);
-    //     Assert.Equal(10.0f, result.Y);
-    //     Assert.Equal(10.0f, result.Z);
-    //     Assert.Equal(10.0f, result.W);
-    // }
+    [Fact]
+    public void TestVector4ClampWithInvertedMinMax()
+    {
+        var value = new Vector4(5.0f, 5.0f, 5.0f, 5.0f);
+        var min = new Vector4(10.0f, 10.0f, 10.0f, 10.0f);
+        var max = new Vector4(0.0f, 0.0f, 0.0f, 0.0f); // max < min (invalid)
+
+        var result = Vector4.Clamp(value, min, max);
+
+        // This resolves to System.Numerics.Vector4.Clamp (identical signature, so it always wins
+        // over any ported extension), which clamps to max first then min - the reverse order of
+        // Stride's original implementation - so with inverted min/max the result is max, not min.
+        Assert.Equal(0.0f, result.X);
+        Assert.Equal(0.0f, result.Y);
+        Assert.Equal(0.0f, result.Z);
+        Assert.Equal(0.0f, result.W);
+    }
 
     [Fact]
     public void TestVector4FromVector2FillsZW()
     {
         var v2 = new Vector2(1.0f, 2.0f);
-        var v4 = new Vector4(v2, 0.0f, 0.0f);
+        var v4 = v2.ToVector4();
 
         Assert.Equal(1.0f, v4.X);
         Assert.Equal(2.0f, v4.Y);
@@ -388,7 +388,7 @@ public class TestVector4
     public void TestVector4FromVector3FillsW()
     {
         var v3 = new Vector3(1.0f, 2.0f, 3.0f);
-        var v4 = new Vector4(v3, 0.0f);
+        var v4 = v3.ToVector4();
 
         Assert.Equal(1.0f, v4.X);
         Assert.Equal(2.0f, v4.Y);
