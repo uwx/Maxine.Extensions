@@ -54,29 +54,29 @@ public partial struct Color : IEquatable<Color>
     /// <summary>
     /// Initializes a new instance of the <see cref="Color"/> struct.
     /// </summary>
-    /// <param name="red">The red component of the color.</param>
-    /// <param name="green">The green component of the color.</param>
-    /// <param name="blue">The blue component of the color.</param>
-    /// <param name="alpha">The alpha component of the color.</param>
-    public Color(byte red, byte green, byte blue, byte alpha)
+    /// <param name="red">The red component of the color, from 0 to 255.</param>
+    /// <param name="green">The green component of the color, from 0 to 255.</param>
+    /// <param name="blue">The blue component of the color, from 0 to 255.</param>
+    /// <param name="alpha">The alpha component of the color, from 0 to 255.</param>
+    public Color(int red, int green, int blue, int alpha)
     {
-        R = red;
-        G = green;
-        B = blue;
-        A = alpha;
+        R = ClampToByte(red);
+        G = ClampToByte(green);
+        B = ClampToByte(blue);
+        A = ClampToByte(alpha);
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Color"/> struct.  Alpha is set to 255.
     /// </summary>
-    /// <param name="red">The red component of the color.</param>
-    /// <param name="green">The green component of the color.</param>
-    /// <param name="blue">The blue component of the color.</param>
-    public Color(byte red, byte green, byte blue)
+    /// <param name="red">The red component of the color, from 0 to 255.</param>
+    /// <param name="green">The green component of the color, from 0 to 255.</param>
+    /// <param name="blue">The blue component of the color, from 0 to 255.</param>
+    public Color(int red, int green, int blue)
     {
-        R = red;
-        G = green;
-        B = blue;
+        R = ClampToByte(red);
+        G = ClampToByte(green);
+        B = ClampToByte(blue);
         A = 255;
     }
 
@@ -1099,9 +1099,22 @@ public partial struct Color : IEquatable<Color>
         return value is Color color && Equals(color);
     }
 
+    /// <summary>
+    /// Converts a normalized component (0 to 1) into a byte.
+    /// </summary>
     private static byte ToByte(float component)
     {
         var value = (int)(component * 255.0f);
         return (byte)(value < 0 ? 0 : value > 255 ? 255 : value);
+    }
+
+    /// <summary>
+    /// Clamps a component already expressed in the 0 to 255 range into a byte, for the
+    /// integer constructors. Same semantics as <c>Microsoft.Xna.Framework.Color</c>'s
+    /// integer constructors, which callers ported from XNA rely on.
+    /// </summary>
+    private static byte ClampToByte(int component)
+    {
+        return (byte)(component < 0 ? 0 : component > 255 ? 255 : component);
     }
 }
