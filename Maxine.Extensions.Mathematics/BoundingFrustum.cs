@@ -105,4 +105,15 @@ public struct BoundingFrustum
     {
         return CollisionHelper.FrustumContainsBox(ref this, in boundingBoxExt);
     }
+
+    /// <summary>
+    /// Check whether this frustum intersects (or contains) the specified <see cref="BoundingSphere"/>.
+    /// </summary>
+    /// <param name="sphere">The sphere.</param>
+    /// <returns><c>true</c> if this frustum intersects or contains the specified sphere.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Intersects(ref readonly BoundingSphere sphere)
+    {
+        return CollisionHelper.FrustumIntersectsSphere(ref this, in sphere);
+    }
 }

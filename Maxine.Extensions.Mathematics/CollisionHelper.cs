@@ -1462,6 +1462,37 @@ public static class CollisionHelper
     }
 
     /// <summary>
+    /// Determines whether a <see cref="BoundingFrustum" /> intersects or contains a <see cref="BoundingSphere" />.
+    /// The sphere equivalent of <see cref="FrustumContainsBox" />, and the test XNA's
+    /// <c>BoundingFrustum.Intersects(BoundingSphere)</c> performed: the frustum's planes point
+    /// inward, so a sphere is outside as soon as it lies entirely behind any one of them.
+    /// </summary>
+    /// <param name="frustum">The frustum.</param>
+    /// <param name="sphere">The sphere.</param>
+    /// <returns><c>true</c> if the frustum intersects or contains the sphere, <c>false</c> otherwise.</returns>
+    public static bool FrustumIntersectsSphere(ref readonly BoundingFrustum frustum, ref readonly BoundingSphere sphere)
+    {
+        unsafe
+        {
+            fixed (Plane* planeStart = &frustum.LeftPlane)
+            {
+                var plane = planeStart;
+                for (int i = 0; i < 6; ++i)
+                {
+                    if (Vector3.Dot(sphere.Center, plane->Normal) + plane->D < -sphere.Radius)
+                    {
+                        return false;
+                    }
+
+                    plane++;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    /// <summary>
     /// Determines whether a <see cref="BoundingFrustum" /> intersects or contains an AABB determined by its center and extent.
     /// Faster variant specific for frustum culling.
     /// </summary>
