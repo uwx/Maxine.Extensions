@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace Maxine.Extensions.Mathematics;
@@ -10,34 +11,20 @@ public static class MatrixExtensions
         /// <summary>
         /// Transposes the matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Transpose()
         {
-            (matrix.M21, matrix.M12) = (matrix.M12, matrix.M21);
-            (matrix.M31, matrix.M13) = (matrix.M13, matrix.M31);
-            (matrix.M41, matrix.M14) = (matrix.M14, matrix.M41);
-
-            (matrix.M32, matrix.M23) = (matrix.M23, matrix.M32);
-            (matrix.M42, matrix.M24) = (matrix.M24, matrix.M42);
-
-            (matrix.M43, matrix.M34) = (matrix.M34, matrix.M43);
+            // vectorized transpose
+            matrix = Matrix.Transpose(matrix);
         }
 
         /// <summary>
         /// Calculates the determinant of the matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Determinant()
         {
-            float temp1 = (matrix.M33 * matrix.M44) - (matrix.M34 * matrix.M43);
-            float temp2 = (matrix.M32 * matrix.M44) - (matrix.M34 * matrix.M42);
-            float temp3 = (matrix.M32 * matrix.M43) - (matrix.M33 * matrix.M42);
-            float temp4 = (matrix.M31 * matrix.M44) - (matrix.M34 * matrix.M41);
-            float temp5 = (matrix.M31 * matrix.M43) - (matrix.M33 * matrix.M41);
-            float temp6 = (matrix.M31 * matrix.M42) - (matrix.M32 * matrix.M41);
-
-            return (matrix.M11 * ((matrix.M22 * temp1) - (matrix.M23 * temp2) + (matrix.M24 * temp3)))
-                - (matrix.M12 * ((matrix.M21 * temp1) - (matrix.M23 * temp4) + (matrix.M24 * temp5)))
-                + (matrix.M13 * ((matrix.M21 * temp2) - (matrix.M22 * temp4) + (matrix.M24 * temp6)))
-                - (matrix.M14 * ((matrix.M21 * temp3) - (matrix.M22 * temp5) + (matrix.M23 * temp6)));
+            return matrix.GetDeterminant();
         }
 
         /// <summary>
@@ -79,6 +66,7 @@ public static class MatrixExtensions
         /// as taking the matrix by value (a copy), so writes to <c>matrix</c> inside it would never
         /// propagate back to the caller's variable.
         /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void InvertSelf()
         {
             if (!Matrix.Invert(matrix, out var result))
@@ -95,6 +83,7 @@ public static class MatrixExtensions
         /// <param name="index">The zero-based index of the component to access.</param>
         /// <returns>The value of the component at the specified index.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the <paramref name="index"/> is out of the range [0, 15].</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetComponent(int index, float value)
         {
             switch (index)
@@ -149,8 +138,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Row1
         {
-            get { return new Vector4(matrix.M11, matrix.M12, matrix.M13, matrix.M14); }
-            set { matrix.M11 = value.X; matrix.M12 = value.Y; matrix.M13 = value.Z; matrix.M14 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M11, matrix.M12, matrix.M13, matrix.M14); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M11 = value.X; matrix.M12 = value.Y; matrix.M13 = value.Z; matrix.M14 = value.W; }
         }
 
         /// <summary>
@@ -158,8 +147,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Row2
         {
-            get { return new Vector4(matrix.M21, matrix.M22, matrix.M23, matrix.M24); }
-            set { matrix.M21 = value.X; matrix.M22 = value.Y; matrix.M23 = value.Z; matrix.M24 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M21, matrix.M22, matrix.M23, matrix.M24); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M21 = value.X; matrix.M22 = value.Y; matrix.M23 = value.Z; matrix.M24 = value.W; }
         }
 
         /// <summary>
@@ -167,8 +156,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Row3
         {
-            get { return new Vector4(matrix.M31, matrix.M32, matrix.M33, matrix.M34); }
-            set { matrix.M31 = value.X; matrix.M32 = value.Y; matrix.M33 = value.Z; matrix.M34 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M31, matrix.M32, matrix.M33, matrix.M34); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M31 = value.X; matrix.M32 = value.Y; matrix.M33 = value.Z; matrix.M34 = value.W; }
         }
 
         /// <summary>
@@ -176,8 +165,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Row4
         {
-            get { return new Vector4(matrix.M41, matrix.M42, matrix.M43, matrix.M44); }
-            set { matrix.M41 = value.X; matrix.M42 = value.Y; matrix.M43 = value.Z; matrix.M44 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M41, matrix.M42, matrix.M43, matrix.M44); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M41 = value.X; matrix.M42 = value.Y; matrix.M43 = value.Z; matrix.M44 = value.W; }
         }
 
         /// <summary>
@@ -185,8 +174,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Column1
         {
-            get { return new Vector4(matrix.M11, matrix.M21, matrix.M31, matrix.M41); }
-            set { matrix.M11 = value.X; matrix.M21 = value.Y; matrix.M31 = value.Z; matrix.M41 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M11, matrix.M21, matrix.M31, matrix.M41); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M11 = value.X; matrix.M21 = value.Y; matrix.M31 = value.Z; matrix.M41 = value.W; }
         }
 
         /// <summary>
@@ -194,8 +183,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Column2
         {
-            get { return new Vector4(matrix.M12, matrix.M22, matrix.M32, matrix.M42); }
-            set { matrix.M12 = value.X; matrix.M22 = value.Y; matrix.M32 = value.Z; matrix.M42 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M12, matrix.M22, matrix.M32, matrix.M42); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M12 = value.X; matrix.M22 = value.Y; matrix.M32 = value.Z; matrix.M42 = value.W; }
         }
 
         /// <summary>
@@ -203,8 +192,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Column3
         {
-            get { return new Vector4(matrix.M13, matrix.M23, matrix.M33, matrix.M43); }
-            set { matrix.M13 = value.X; matrix.M23 = value.Y; matrix.M33 = value.Z; matrix.M43 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M13, matrix.M23, matrix.M33, matrix.M43); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M13 = value.X; matrix.M23 = value.Y; matrix.M33 = value.Z; matrix.M43 = value.W; }
         }
 
         /// <summary>
@@ -212,8 +201,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector4 Column4
         {
-            get { return new Vector4(matrix.M14, matrix.M24, matrix.M34, matrix.M44); }
-            set { matrix.M14 = value.X; matrix.M24 = value.Y; matrix.M34 = value.Z; matrix.M44 = value.W; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector4(matrix.M14, matrix.M24, matrix.M34, matrix.M44); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M14 = value.X; matrix.M24 = value.Y; matrix.M34 = value.Z; matrix.M44 = value.W; }
         }
 
         /// <summary>
@@ -221,8 +210,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector3 TranslationVector
         {
-            get { return new Vector3(matrix.M41, matrix.M42, matrix.M43); }
-            set { matrix.M41 = value.X; matrix.M42 = value.Y; matrix.M43 = value.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(matrix.M41, matrix.M42, matrix.M43); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M41 = value.X; matrix.M42 = value.Y; matrix.M43 = value.Z; }
         }
 
         /// <summary>
@@ -231,8 +220,8 @@ public static class MatrixExtensions
         /// <remarks>This property does not do any computation and will return a correct scale vector only if the matrix is a scale matrix.</remarks>
         public Vector3 ScaleVector
         {
-            get { return new Vector3(matrix.M11, matrix.M22, matrix.M33); }
-            set { matrix.M11 = value.X; matrix.M22 = value.Y; matrix.M33 = value.Z; }
+           [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(matrix.M11, matrix.M22, matrix.M33); }
+           [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M11 = value.X; matrix.M22 = value.Y; matrix.M33 = value.Z; }
         }
 
         /// <summary>
@@ -240,8 +229,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector3 Up
         {
-            get { return new Vector3(matrix.M21, matrix.M22, matrix.M23); }
-            set { matrix.M21 = value.X; matrix.M22 = value.Y; matrix.M23 = value.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(matrix.M21, matrix.M22, matrix.M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M21 = value.X; matrix.M22 = value.Y; matrix.M23 = value.Z; }
         }
 
         /// <summary>
@@ -249,8 +238,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector3 Down
         {
-            get { return new Vector3(-matrix.M21, -matrix.M22, -matrix.M23); }
-            set { matrix.M21 = -value.X; matrix.M22 = -value.Y; matrix.M23 = -value.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(-matrix.M21, -matrix.M22, -matrix.M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M21 = -value.X; matrix.M22 = -value.Y; matrix.M23 = -value.Z; }
         }
 
         /// <summary>
@@ -258,8 +247,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector3 Right
         {
-            get { return new Vector3(matrix.M11, matrix.M12, matrix.M13); }
-            set { matrix.M11 = value.X; matrix.M12 = value.Y; matrix.M13 = value.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(matrix.M11, matrix.M12, matrix.M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M11 = value.X; matrix.M12 = value.Y; matrix.M13 = value.Z; }
         }
 
         /// <summary>
@@ -267,8 +256,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector3 Left
         {
-            get { return new Vector3(-matrix.M11, -matrix.M12, -matrix.M13); }
-            set { matrix.M11 = -value.X; matrix.M12 = -value.Y; matrix.M13 = -value.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(-matrix.M11, -matrix.M12, -matrix.M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M11 = -value.X; matrix.M12 = -value.Y; matrix.M13 = -value.Z; }
         }
 
         /// <summary>
@@ -276,8 +265,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector3 Forward
         {
-            get { return new Vector3(-matrix.M31, -matrix.M32, -matrix.M33); }
-            set { matrix.M31 = -value.X; matrix.M32 = -value.Y; matrix.M33 = -value.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(-matrix.M31, -matrix.M32, -matrix.M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M31 = -value.X; matrix.M32 = -value.Y; matrix.M33 = -value.Z; }
         }
 
         /// <summary>
@@ -285,8 +274,8 @@ public static class MatrixExtensions
         /// </summary>
         public Vector3 Backward
         {
-            get { return new Vector3(matrix.M31, matrix.M32, matrix.M33); }
-            set { matrix.M31 = value.X; matrix.M32 = value.Y; matrix.M33 = value.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Vector3(matrix.M31, matrix.M32, matrix.M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { matrix.M31 = value.X; matrix.M32 = value.Y; matrix.M33 = value.Z; }
         }
 
         /// <summary>
